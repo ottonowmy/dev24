@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Annuaire — Ottonowmy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">Ottonowmy</a>
+    <div class="nav-links">
+      <a href="devs.html" class="active">Annuaire</a>
+      <a href="inscription.html" class="btn-nav">Rejoindre</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <h1>Développeurs bénévoles</h1>
+    <p>Tous ces développeurs offrent leur temps librement. Contactez celui qui correspond à votre besoin.</p>
+  </div>
+
+  <main class="annuaire-main">
+    <div class="container">
+
+      <div class="filters-bar">
+        <div class="search-wrap">
+          <span class="search-icon">&#8981;</span>
+          <input type="text" id="search" placeholder="Rechercher un nom, une technologie…" />
+        </div>
+        <div class="filter-group">
+          <select id="filter-specialite">
+            <option value="">Toutes spécialités</option>
+            <option value="Frontend">Frontend</option>
+            <option value="Backend">Backend</option>
+            <option value="Fullstack">Fullstack</option>
+            <option value="Mobile">Mobile</option>
+            <option value="DevOps">DevOps</option>
+            <option value="Data">Data</option>
+            <option value="Design">Design</option>
+          </select>
+          <select id="filter-dispo">
+            <option value="">Tous</option>
+            <option value="1">Disponibles uniquement</option>
+          </select>
+        </div>
+        <span class="filter-count" id="filter-count"></span>
+      </div>
+
+      <div class="ann-label">Sélection du moment</div>
+      <div id="top-devs" class="devs-top"></div>
+
+      <div class="ann-label" style="margin-top:44px">Tous les bénévoles</div>
+      <div id="devs-grid" class="devs-grid"></div>
+      <div id="loading" class="loading-state">Chargement en cours…</div>
+      <div id="empty" class="empty-state" style="display:none">
+        Aucun développeur ne correspond à votre recherche. <a href="inscription.html">Soyez le premier à vous
+          inscrire.</a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-logo">Ottonowmy</div>
+      <div class="footer-links">
+        <a href="devs.html">Annuaire</a>
+        <a href="inscription.html">Inscription</a>
+        <a href="mentions-legales.html">Mentions légales</a>
+      </div>
+      <div class="footer-copy">© 2026 Ottonowmy</div>
+    </div>
+  </footer>
+
+  <script>
+
+
+    let allDevs = [];
+
+    async function loadDevs() {
+      try {
+        const res = await fetch("http://localhost:3000/api/devs");
+        const records = await res.json();
+
+        allDevs = records;
+
+        document.getElementById('loading').style.display = 'none';
+        renderTop(allDevs);
+        renderDevs(allDevs);
+        updateCount(allDevs.length);
+      } catch (e) {
+        document.getElementById('loading').textContent =
+          'Impossible de charger les données. Veuillez réessayer.';
+      }
+    }
+
+    function initials(name) {
+      if (!name) return '?';
+      return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    }
+
+    function techBadges(techs) {
+      if (!techs || !techs.length) return '';
+      return techs.slice(0, 4).map(t => `<span class="tech-badge">${t}</span>`).join('') +
+        (techs.length > 4 ? `<span class="tech-badge more">+${techs.length - 4}</span>` : '');
+    }
+
+    function devCard(r, top = false) {
+      const f = r.fields;
+      const name = f['Nom'] || 'Développeur';
+      const spec = f['Spécialité'] || '';
+      const desc = f['Description'] || '';
+      const techs = f['Technologies'] || [];
+      const dispo = f['Disponible'];
+      const kofi = f['Lien Ko-fi'];
+      const github = f['GitHub'];
+      const portfolio = f['Portfolio'];
+      const photo = f['Photo'];
+
+      const avatar = photo
+        ? `<img src="${photo}" alt="${name}" class="dev-avatar" />`
+        : `<div class="dev-avatar">${initials(name)}</div>`;
+
+      const links = [
+        github ? `<a href="${github}" target="_blank" rel="noopener" class="dev-link">GitHub</a>` : '',
+        portfolio ? `<a href="${portfolio}" target="_blank" rel="noopener" class="dev-link">Portfolio</a>` : '',
+        kofi ? `<a href="${kofi}" target="_blank" rel="noopener" class="dev-link kofi">Ko-fi</a>` : '',
+      ].filter(Boolean).join('');
+
+      return `
+        <div class="dev-card ${top ? 'dev-card-top' : ''} ${dispo ? '' : 'unavailable'}">
+          ${top ? '<div class="top-tag">Mis en avant</div>' : ''}
+          <div class="dev-card-header">
+            ${avatar}
+            <div class="dev-info">
+              <div class="dev-name">${name}</div>
+              ${spec ? `<div class="dev-spec">${spec}</div>` : ''}
+            </div>
+            <div class="dev-dispo ${dispo ? 'available' : 'busy'}">${dispo ? 'Disponible' : 'Indisponible'}</div>
+          </div>
+          ${desc ? `<p class="dev-desc">${desc.slice(0, 115)}${desc.length > 115 ? '…' : ''}</p>` : ''}
+          <div class="dev-techs">${techBadges(techs)}</div>
+          ${links ? `<div class="dev-actions">${links}</div>` : ''}
+        </div>`;
+    }
+
+    function renderTop(devs) {
+      const top = devs.filter(r => r.fields['Disponible']).slice(0, 3);
+      document.getElementById('top-devs').innerHTML = top.map(r => devCard(r, true)).join('') ||
+        '<p style="color:var(--ink4);font-size:.85rem">Aucun développeur disponible pour le moment.</p>';
+    }
+
+    function renderDevs(devs) {
+      const el = document.getElementById('devs-grid');
+      const empty = document.getElementById('empty');
+      if (!devs.length) {
+        el.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+      el.innerHTML = devs.map(r => devCard(r)).join('');
+    }
+
+    function updateCount(n) {
+      document.getElementById('filter-count').textContent = n > 0 ? `${n} profil${n > 1 ? 's' : ''}` : '';
+    }
+
+    function filter() {
+      const q = document.getElementById('search').value.toLowerCase();
+      const spec = document.getElementById('filter-specialite').value;
+      const dispo = document.getElementById('filter-dispo').value;
+
+      const filtered = allDevs.filter(r => {
+        const f = r.fields;
+        const text = [(f['Nom'] || ''), (f['Description'] || ''), ...(f['Technologies'] || [])].join(' ').toLowerCase();
+        return (!q || text.includes(q))
+          && (!spec || f['Spécialité'] === spec)
+          && (!dispo || f['Disponible']);
+      });
+
+      renderDevs(filtered);
+      updateCount(filtered.length);
+    }
+
+    document.getElementById('search').addEventListener('input', filter);
+    document.getElementById('filter-specialite').addEventListener('change', filter);
+    document.getElementById('filter-dispo').addEventListener('change', filter);
+
+    loadDevs();
+  </script>
+</body>
+
+</html>
