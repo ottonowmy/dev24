@@ -64,8 +64,3 @@ app.post("/api/devs", async (req, res) => {
     res.status(500).json({ error: "Erreur serveur" });
   }
 });
-
-// ✅ START serveur à la fin
-app.listen(3000, () => {
-  console.log("API running on http://localhost:3000");
-});
