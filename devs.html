@@ -87,7 +87,7 @@
 
     async function loadDevs() {
       try {
-        const res = await fetch("http://localhost:3000/api/devs");
+        const res = await fetch("/.netlify/functions/devs-count");
         const records = await res.json();
 
         allDevs = records;
