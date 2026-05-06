@@ -4,7 +4,7 @@
 export async function handler(event, context) {
   const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
   const BASE_ID        = process.env.AIRTABLE_BASE_ID;
-  const TABLE          = encodeURIComponent('devs');
+  const TABLE          = encodeURIComponent('Devs');
 
   if (!AIRTABLE_TOKEN || !BASE_ID) {
     return {
