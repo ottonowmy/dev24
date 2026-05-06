@@ -4,7 +4,7 @@
 export async function handler(event, context) {
   const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
   const BASE_ID        = process.env.AIRTABLE_BASE_ID;
-  const TABLE          = encodeURIComponent('Développeurs');
+  const TABLE          = encodeURIComponent('devs');
 
   if (!AIRTABLE_TOKEN || !BASE_ID) {
     return {
@@ -18,7 +18,7 @@ export async function handler(event, context) {
     let offset     = null;
 
     do {
-      const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE}`
+      const url = `https://api.airtable.com/v0/${BASE_ID}/${tbl5FSoQvMMqqcyQv}`
         + `?sort[0][field]=Date%20inscription&sort[0][direction]=desc`
         + (offset ? `&offset=${offset}` : '');
 
