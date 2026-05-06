@@ -2,14 +2,11 @@
   "name": "ottonowmy-dev-24h",
   "version": "1.0.0",
   "description": "Trouver un dev en moins de 24h",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"No tests specified\" && exit 0"
+    "test": "echo \"No tests\" && exit 0"
   },
-  "keywords": [],
-  "author": "Ottonowmy",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.4.5"
   }
 }
