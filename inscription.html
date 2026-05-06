@@ -263,7 +263,7 @@
             if (photo) fields['Photo'] = photo;
 
             try {
-                const res = await fetch("http://localhost:3000/api/devs", {
+                const res = await fetch("/.netlify/functions/devs", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

@@ -174,7 +174,7 @@
   </footer>
 
   <script>
-fetch("http://localhost:3000/api/devs-count")
+fetch("/.netlify/functions/devs")
   .then(r => r.json())
   .then(data => {
     document.getElementById('stat-devs').textContent = data.count;
