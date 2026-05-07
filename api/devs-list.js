@@ -1,20 +1,28 @@
-// api/devs-list.js — Vercel Serverless Function
-// Retourne la liste des développeurs pour devs.html
+// api/devs-list.js
+// Vercel lit automatiquement ce dossier /api/
+// Accessible via : /api/devs-list
 
 export default async function handler(req, res) {
 
+  // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
 
   const TOKEN   = process.env.AIRTABLE_TOKEN;
   const BASE_ID = process.env.AIRTABLE_BASE_ID;
 
   if (!TOKEN || !BASE_ID) {
-    return res.status(500).json({ error: 'Variables manquantes : AIRTABLE_TOKEN et AIRTABLE_BASE_ID' });
+    return res.status(500).json({
+      error: 'Variables manquantes. Ajoutez AIRTABLE_TOKEN et AIRTABLE_BASE_ID dans Vercel → Settings → Environment Variables.'
+    });
   }
+
+  const TABLE = 'Devs';
 
   try {
     let allRecords = [];
@@ -22,7 +30,7 @@ export default async function handler(req, res) {
 
     do {
       const url =
-        `https://api.airtable.com/v0/${BASE_ID}/Devs` +
+        `https://api.airtable.com/v0/${BASE_ID}/${TABLE}` +
         `?sort[0][field]=Date%20inscription&sort[0][direction]=desc` +
         (offset ? `&offset=${offset}` : '');
 
@@ -31,9 +39,9 @@ export default async function handler(req, res) {
       });
 
       const data = await response.json();
-      console.log('Airtable GET →', response.status, 'records:', data.records?.length);
 
       if (!response.ok) {
+        console.error('Airtable error:', data);
         return res.status(response.status).json({
           error: data?.error?.message || 'Erreur Airtable',
           detail: data,
