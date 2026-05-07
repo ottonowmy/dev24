@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     });
   }
 
-  const TABLE = encodeURIComponent('Développeurs');
+  const TABLE = 'Devs';
 
   try {
     let allRecords = [];
