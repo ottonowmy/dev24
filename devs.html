@@ -82,7 +82,8 @@
     async function loadDevs() {
       const loadingEl = document.getElementById('loading');
       try {
-        const res = await fetch('/.netlify/functions/devs-list');
+        // Vercel : /api/devs-list  (pas /.netlify/functions/)
+        const res = await fetch('/api/devs-list');
 
         if (!res.ok) {
           const err = await res.json().catch(() => ({ error: res.statusText }));
@@ -91,10 +92,7 @@
 
         const records = await res.json();
 
-        // Si Airtable renvoie une erreur encapsulée
-        if (records.error) {
-          throw new Error(records.error);
-        }
+        if (records.error) throw new Error(records.error);
 
         allDevs = Array.isArray(records) ? records : [];
         loadingEl.style.display = 'none';

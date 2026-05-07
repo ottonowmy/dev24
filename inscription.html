@@ -180,7 +180,6 @@
   </footer>
 
   <script>
-    // Tech checkboxes interactifs
     document.querySelectorAll('.tech-check input').forEach(input => {
       input.addEventListener('change', () => {
         input.closest('.tech-check').classList.toggle('checked', input.checked);
@@ -197,7 +196,6 @@
       errorEl.style.display   = 'none';
       successEl.style.display = 'none';
 
-      // Récupération des valeurs
       const nom         = document.getElementById('nom').value.trim();
       const email       = document.getElementById('email').value.trim();
       const description = document.getElementById('description').value.trim();
@@ -207,29 +205,26 @@
         document.querySelectorAll('.tech-check input:checked')
       ).map(i => i.value);
 
-      // Validation client
       if (!nom || !email || !description || !specialite) {
-        errorEl.textContent = 'Merci de remplir tous les champs obligatoires.';
+        errorEl.textContent   = 'Merci de remplir tous les champs obligatoires.';
         errorEl.style.display = 'block';
         return;
       }
       if (!techs.length) {
-        errorEl.textContent = 'Sélectionnez au moins une technologie.';
+        errorEl.textContent   = 'Sélectionnez au moins une technologie.';
         errorEl.style.display = 'block';
         return;
       }
       if (!cgv) {
-        errorEl.textContent = 'Vous devez accepter les mentions légales pour continuer.';
+        errorEl.textContent   = 'Vous devez accepter les mentions légales pour continuer.';
         errorEl.style.display = 'block';
         return;
       }
 
-      // UI — état chargement
       document.getElementById('submit-text').style.display    = 'none';
       document.getElementById('submit-loading').style.display = 'inline';
       btn.disabled = true;
 
-      // Construction des champs Airtable
       const fields = {
         'Nom':              nom,
         'Email':            email,
@@ -250,27 +245,21 @@
       if (photo)     fields['Photo']      = photo;
 
       try {
-        const res = await fetch('/.netlify/functions/devs', {
+        // Vercel : /api/devs  (pas /.netlify/functions/devs)
+        const res = await fetch('/api/devs', {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
           body:    JSON.stringify({ fields }),
         });
 
-        // Lire la réponse même en cas d'erreur
         let data;
-        try {
-          data = await res.json();
-        } catch {
-          throw new Error(`Réponse serveur invalide (statut ${res.status})`);
-        }
+        try { data = await res.json(); }
+        catch { throw new Error(`Réponse invalide (statut ${res.status})`); }
 
         if (!res.ok || data.error) {
-          // Afficher le message d'erreur exact pour faciliter le debug
-          const msg = data?.error || data?.detail?.error?.message || `Erreur ${res.status}`;
-          throw new Error(msg);
+          throw new Error(data?.error || `Erreur ${res.status}`);
         }
 
-        // Succès
         successEl.style.display = 'block';
         document.getElementById('form').reset();
         document.querySelectorAll('.tech-check').forEach(el => el.classList.remove('checked'));
@@ -278,7 +267,7 @@
 
       } catch (err) {
         console.error('Erreur inscription:', err);
-        errorEl.textContent = `Erreur : ${err.message}`;
+        errorEl.textContent   = `Erreur : ${err.message}`;
         errorEl.style.display = 'block';
       } finally {
         document.getElementById('submit-text').style.display    = 'inline';
