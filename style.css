@@ -1031,7 +1031,7 @@ img { max-width: 100%; display: block; }
   border-radius: 20px;
   background-color: var(--sand-l);
   border: 1px solid var(--terracotta);
-  padding: 2px;
+  padding: 2px 5px;
 }
 
 .profil-name {
