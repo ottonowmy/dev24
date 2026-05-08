@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ottonowmy — Trouvez un développeur bénévole</title>
-  <meta name="description" content="Des développeurs passionnés offrent leur temps pour vous aider. Gratuit, rapide, humain." />
+  <meta name="description"
+    content="Des développeurs passionnés offrent leur temps pour vous aider. Gratuit, rapide, humain." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
 </head>
+
 <body>
 
   <nav class="nav">
@@ -25,11 +31,12 @@
       <div class="hero-inner">
         <div class="hero-left">
           <h1 class="hero-title">
-            Votre dev <em>disponible</em><br/>
+            Votre dev <em>disponible</em><br />
             <strong>en 24 heures</strong>
           </h1>
           <p class="hero-sub">
-            Des développeurs passionnés offrent leur temps librement pour vous aider. Pas de tarif, pas de contrat. Juste de l'entraide vraie.
+            Des développeurs passionnés offrent leur temps librement pour vous aider. Pas de tarif, pas de contrat.
+            Juste de l'entraide vraie.
           </p>
           <div class="hero-actions">
             <a href="devs.html" class="btn-primary">Voir les développeurs</a>
@@ -72,18 +79,20 @@
     <div class="container">
       <div class="how-header">
         <div class="section-tag">Comment ça marche</div>
-        <h2 class="section-title">Simple comme<br/><em>une conversation</em></h2>
+        <h2 class="section-title">Simple comme<br /><em>une conversation</em></h2>
       </div>
       <div class="steps">
         <div class="step">
           <div class="step-num">01</div>
           <h3>Parcourez l'annuaire</h3>
-          <p>Explorez les profils, lisez les touches perso de chaque développeur et trouvez celui qui résonne avec votre projet.</p>
+          <p>Explorez les profils, lisez les touches perso de chaque développeur et trouvez celui qui résonne avec votre
+            projet.</p>
         </div>
         <div class="step">
           <div class="step-num">02</div>
           <h3>Contactez directement</h3>
-          <p>Cliquez sur le profil et envoyez un email directement. Pas d'intermédiaire, pas de formulaire, juste un humain à un autre.</p>
+          <p>Cliquez sur le profil et envoyez un email directement. Pas d'intermédiaire, pas de formulaire, juste un
+            humain à un autre.</p>
         </div>
         <div class="step">
           <div class="step-num">03</div>
@@ -99,8 +108,9 @@
     <div class="container">
       <div class="forwho-header">
         <div class="section-tag">Pour qui</div>
-        <h2 class="section-title">Toute demande<br/><em>est la bienvenue</em></h2>
-        <p class="section-sub">Ottonowmy s'adresse à tous ceux qui ont besoin d'aide technique sans avoir accès aux ressources habituelles.</p>
+        <h2 class="section-title">Toute demande<br /><em>est la bienvenue</em></h2>
+        <p class="section-sub">Ottonowmy s'adresse à tous ceux qui ont besoin d'aide technique sans avoir accès aux
+          ressources habituelles.</p>
       </div>
       <div class="forwho-grid">
         <div class="fcard">
@@ -132,8 +142,9 @@
     <div class="container">
       <div class="cta-inner">
         <div class="cta-text">
-          <h2>Vous êtes développeur ?<br/><em>Votre aide compte vraiment.</em></h2>
-          <p>Inscription gratuite, aucun engagement. Vous choisissez les demandes auxquelles vous répondez, quand vous voulez.</p>
+          <h2>Vous êtes développeur ?<br /><em>Votre aide compte vraiment.</em></h2>
+          <p>Inscription gratuite, aucun engagement. Vous choisissez les demandes auxquelles vous répondez, quand vous
+            voulez.</p>
         </div>
         <a href="inscription.html" class="btn-white">Créer mon profil</a>
       </div>
@@ -151,13 +162,27 @@
   </footer>
 
   <script>
-    const TOKEN   = null; // token côté client désactivé — appel via /api
+    function loadAnalytics() {
+      const script = document.createElement("script");
+      script.src = "https://va.vercel-scripts.com/v1/script.js";
+      script.defer = true;
+      document.body.appendChild(script);
+    }
+
+    // Exemple : après acceptation cookies
+    if (localStorage.getItem("cookiesAccepted") === "true") {
+      loadAnalytics();
+    }
+  </script>
+
+  <script>
+    const TOKEN = null; // token côté client désactivé — appel via /api
     const BASE_ID = null;
 
     // Charger les vrais devs pour la hero
     async function loadHeroDevs() {
       try {
-        const res     = await fetch('/api/devs-list');
+        const res = await fetch('/api/devs-list');
         if (!res.ok) return;
         const records = await res.json();
         if (!Array.isArray(records) || !records.length) return;
@@ -169,14 +194,14 @@
         const top3 = records.slice(0, 3);
         const container = document.getElementById('hero-devs');
         container.innerHTML = top3.map(r => {
-          const f        = r.fields || {};
-          const name     = f['Nom'] || 'Développeur';
+          const f = r.fields || {};
+          const name = f['Nom'] || 'Développeur';
           const accroche = f['Accroche'] || '';
-          const vues     = f['Vues']  || 0;
-          const stars    = f['Stars'] || 0;
+          const vues = f['Vues'] || 0;
+          const stars = f['Stars'] || 0;
           const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-          const photo    = f['Photo'];
-          const avatar   = photo
+          const photo = f['Photo'];
+          const avatar = photo
             ? `<img src="${photo}" style="width:42px;height:42px;border-radius:12px;object-fit:cover;" />`
             : `<div class="hc-avatar">${initials}</div>`;
           return `
@@ -184,7 +209,7 @@
               ${avatar}
               <div class="hc-info">
                 <div class="hc-name">${name}</div>
-                ${accroche ? `<div class="hc-accroche">${accroche.slice(0,55)}${accroche.length>55?'…':''}</div>` : ''}
+                ${accroche ? `<div class="hc-accroche">${accroche.slice(0, 55)}${accroche.length > 55 ? '…' : ''}</div>` : ''}
               </div>
               <div class="hc-stats">
                 <span>◎ ${vues}</span>
@@ -199,4 +224,5 @@
     loadHeroDevs();
   </script>
 </body>
+
 </html>
