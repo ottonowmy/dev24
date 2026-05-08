@@ -14,9 +14,13 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<div id="cookie-banner" class="cookie-banner">
+
+
+<body>
+
+  <div id="cookie-banner" class="cookie-banner">
   <p>
-    Nus utilisons des cookies pour mesurer l’audience du site (Vercel Analytics).
+    Nous utilisons des cookies pour mesurer l’audience du site (Vercel Analytics).
   </p>
 
   <div class="cookie-actions">
@@ -24,8 +28,6 @@
     <button id="reject-cookies">Refuser</button>
   </div>
 </div>
-
-<body>
 
   <nav class="nav">
     <a href="index.html" class="nav-logo">Ottonowmy</a>
@@ -180,6 +182,8 @@
   }
 
   const banner = document.getElementById("cookie-banner");
+
+if (banner) {
   const acceptBtn = document.getElementById("accept-cookies");
   const rejectBtn = document.getElementById("reject-cookies");
 
@@ -194,16 +198,17 @@
     banner.style.display = "none";
   }
 
-  acceptBtn.addEventListener("click", () => {
+  acceptBtn?.addEventListener("click", () => {
     localStorage.setItem("cookiesAccepted", "true");
     loadAnalytics();
     banner.style.display = "none";
   });
 
-  rejectBtn.addEventListener("click", () => {
+  rejectBtn?.addEventListener("click", () => {
     localStorage.setItem("cookiesAccepted", "false");
     banner.style.display = "none";
   });
+}
 </script>
 
   <script>
