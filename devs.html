@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Annuaire — Ottonowmy</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -14,50 +14,36 @@
     <a href="index.html" class="nav-logo">Ottonowmy</a>
     <div class="nav-links">
       <a href="devs.html" class="active">Annuaire</a>
-      <a href="inscription.html" class="btn-nav">Rejoindre</a>
+      <a href="inscription.html" class="btn-nav">Je suis dev</a>
     </div>
   </nav>
 
   <div class="page-header">
     <h1>Les développeurs bénévoles</h1>
-    <p>Chaque profil est unique. Cliquez pour découvrir la touche perso de chaque développeur.</p>
+    <p>Cliquez sur un profil pour découvrir la touche perso et prendre contact.</p>
   </div>
 
   <main class="annuaire-main">
     <div class="container">
 
+      <!-- Recherche uniquement par texte libre -->
       <div class="filters-bar">
         <div class="search-wrap">
           <span class="search-icon">&#8981;</span>
-          <input type="text" id="search" placeholder="Rechercher un nom, un langage…" />
-        </div>
-        <div class="filter-group">
-          <select id="filter-specialite">
-            <option value="">Toutes spécialités</option>
-            <option value="Frontend">Frontend</option>
-            <option value="Backend">Backend</option>
-            <option value="Fullstack">Fullstack</option>
-            <option value="Mobile">Mobile</option>
-            <option value="DevOps">DevOps</option>
-            <option value="Data">Data</option>
-            <option value="Design">Design</option>
-          </select>
-          <select id="filter-dispo">
-            <option value="">Tous</option>
-            <option value="1">Disponibles uniquement</option>
-          </select>
+          <input type="text" id="search" placeholder="Rechercher par nom, technologie, accroche…" />
         </div>
         <span class="filter-count" id="filter-count"></span>
       </div>
 
-      <div class="ann-label">Sélection du moment</div>
+      <div class="ann-label">Les plus consultés</div>
       <div id="top-devs" class="devs-top"></div>
 
       <div class="ann-label" style="margin-top:44px">Tous les bénévoles</div>
       <div id="devs-grid" class="devs-grid"></div>
+
       <div id="loading" class="loading-state">Chargement en cours…</div>
       <div id="empty" class="empty-state" style="display:none">
-        Aucun développeur ne correspond à votre recherche.
+        Aucun développeur trouvé.
         <a href="inscription.html">Soyez le premier à vous inscrire.</a>
       </div>
 
@@ -84,19 +70,21 @@
       try {
         const res = await fetch('/api/devs-list');
         if (!res.ok) {
-          const err = await res.json().catch(() => ({ error: res.statusText }));
-          throw new Error(`Erreur ${res.status} : ${err.error || res.statusText}`);
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || `Erreur ${res.status}`);
         }
         const records = await res.json();
         if (records.error) throw new Error(records.error);
         allDevs = Array.isArray(records) ? records : [];
         loadingEl.style.display = 'none';
-        renderTop(allDevs);
+        // Top = les 3 avec le plus de vues
+        const sorted = [...allDevs].sort((a,b) => (b.fields?.['Vues']||0) - (a.fields?.['Vues']||0));
+        renderTop(sorted.slice(0, 3));
         renderDevs(allDevs);
         updateCount(allDevs.length);
       } catch (err) {
-        loadingEl.textContent = `Impossible de charger les données : ${err.message}`;
-        loadingEl.style.color = '#d43a2a';
+        loadingEl.textContent = `Impossible de charger : ${err.message}`;
+        loadingEl.style.color = '#c0392b';
       }
     }
 
@@ -105,58 +93,40 @@
       return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     }
 
-    function techBadges(techs) {
-      if (!techs?.length) return '';
-      return techs.slice(0, 4).map(t => `<span class="tech-badge">${t}</span>`).join('') +
-        (techs.length > 4 ? `<span class="tech-badge more">+${techs.length - 4}</span>` : '');
-    }
-
     function devCard(r, top = false) {
       const f        = r.fields || {};
       const name     = f['Nom'] || 'Développeur';
-      const spec     = f['Spécialité'] || '';
-      const accroche = f['Accroche'] || f['Description'] || '';
-      const techs    = f['Technologies'] || [];
-      const dispo    = f['Disponible'];
+      const accroche = f['Accroche'] || f['Touche perso'] || '';
+      const vues     = f['Vues']  || 0;
+      const stars    = f['Stars'] || 0;
       const photo    = f['Photo'];
-
-      // Détection Ko-fi dans les liens JSON
-      let kofiUrl = '';
-      try {
-        const liens = JSON.parse(f['Liens'] || '[]');
-        const kofi  = liens.find(l => l.label === 'Ko-fi');
-        if (kofi) kofiUrl = kofi.url;
-      } catch {}
 
       const avatar = photo
         ? `<img src="${photo}" alt="${name}" class="dev-avatar" />`
         : `<div class="dev-avatar">${initials(name)}</div>`;
 
       return `
-        <a href="profil.html?id=${r.id}" class="dev-card ${top ? 'dev-card-top' : ''} ${dispo ? '' : 'unavailable'}" style="text-decoration:none;display:block;">
-          ${top ? '<div class="top-tag">Mis en avant</div>' : ''}
+        <a href="profil.html?id=${r.id}" class="dev-card ${top ? 'dev-card-top' : ''}">
+          ${top ? '<div class="top-tag">Populaire</div>' : ''}
           <div class="dev-card-header">
             ${avatar}
             <div class="dev-info">
               <div class="dev-name">${name}</div>
-              ${spec ? `<div class="dev-spec">${spec}</div>` : ''}
             </div>
-            <div class="dev-dispo ${dispo ? 'available' : 'busy'}">${dispo ? 'Disponible' : 'Indisponible'}</div>
           </div>
-          ${accroche ? `<p class="dev-accroche">"${accroche.slice(0, 90)}${accroche.length > 90 ? '…' : ''}"</p>` : ''}
-          <div class="dev-techs">${techBadges(techs)}</div>
-          <div class="dev-card-footer">
+          ${accroche ? `<p class="dev-accroche">"${accroche.slice(0,100)}${accroche.length>100?'…':''}"</p>` : ''}
+          <div class="dev-card-stats">
+            <span class="dev-stat">◎ ${vues} vue${vues>1?'s':''}</span>
+            <span class="dev-stat">★ ${stars} étoile${stars>1?'s':''}</span>
             <span class="dev-voir">Voir le profil →</span>
-            ${kofiUrl ? `<span class="dev-kofi-badge">☕ Ko-fi</span>` : ''}
           </div>
         </a>`;
     }
 
     function renderTop(devs) {
-      const top = devs.filter(r => r.fields?.['Disponible']).slice(0, 3);
-      document.getElementById('top-devs').innerHTML = top.length
-        ? top.map(r => devCard(r, true)).join('')
-        : '<p style="color:var(--ink4);font-size:.85rem">Aucun développeur disponible pour le moment.</p>';
+      document.getElementById('top-devs').innerHTML = devs.length
+        ? devs.map(r => devCard(r, true)).join('')
+        : '<p style="color:var(--ink4);font-size:.85rem;font-weight:300">Aucun profil pour le moment.</p>';
     }
 
     function renderDevs(devs) {
@@ -172,22 +142,21 @@
         n > 0 ? `${n} profil${n > 1 ? 's' : ''}` : '';
     }
 
-    function filter() {
-      const q     = document.getElementById('search').value.toLowerCase();
-      const spec  = document.getElementById('filter-specialite').value;
-      const dispo = document.getElementById('filter-dispo').value;
+    document.getElementById('search').addEventListener('input', function() {
+      const q = this.value.toLowerCase().trim();
+      if (!q) { renderDevs(allDevs); updateCount(allDevs.length); return; }
       const filtered = allDevs.filter(r => {
-        const f    = r.fields || {};
-        const text = [f['Nom']||'', f['Accroche']||'', f['Touche perso']||'', ...(f['Technologies']||[])].join(' ').toLowerCase();
-        return (!q || text.includes(q)) && (!spec || f['Spécialité'] === spec) && (!dispo || f['Disponible']);
+        const f = r.fields || {};
+        return [
+          f['Nom'] || '',
+          f['Accroche'] || '',
+          f['Touche perso'] || '',
+          ...(f['Technologies'] || [])
+        ].join(' ').toLowerCase().includes(q);
       });
       renderDevs(filtered);
       updateCount(filtered.length);
-    }
-
-    document.getElementById('search').addEventListener('input', filter);
-    document.getElementById('filter-specialite').addEventListener('change', filter);
-    document.getElementById('filter-dispo').addEventListener('change', filter);
+    });
 
     loadDevs();
   </script>

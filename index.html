@@ -3,112 +3,92 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ottonowmy — Un développeur en moins de 24h</title>
-  <meta name="description" content="Mettez-vous en relation avec des développeurs bénévoles. Gratuit, rapide, sans engagement." />
+  <title>Ottonowmy — Trouvez un développeur bénévole</title>
+  <meta name="description" content="Des développeurs passionnés offrent leur temps pour vous aider. Gratuit, rapide, humain." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- NAV -->
   <nav class="nav">
     <a href="index.html" class="nav-logo">Ottonowmy</a>
     <div class="nav-links">
       <a href="devs.html">Annuaire</a>
-      <a href="inscription.html" class="btn-nav">Rejoindre</a>
+      <a href="inscription.html" class="btn-nav">Je suis dev</a>
     </div>
   </nav>
 
   <!-- HERO -->
-  <section class="hero">
-    <div class="hero-left" style="animation: fadeUp .7s ease both;">
-      <div class="hero-eyebrow">Confiance &amp; Création</div>
-      <h1 class="hero-title">
-        Trouvez le développeur<br/>
-        <em>Qui vous correspond</em>
-      </h1>
-      <p class="hero-sub">Des développeurs expérimentés offrent leur temps. Aucun tarif, aucune contrainte. Juste l'entraide sous sa forme la plus simple.</p>
-      <div class="hero-actions">
-        <a href="devs.html" class="btn-primary">Parcourir l'annuaire</a>
-        <a href="inscription.html" class="btn-ghost">Devenir bénévole</a>
-      </div>
-      <div class="hero-stats">
-        <div class="stat">
-          <span class="stat-value" id="stat-devs">—</span>
-          <span class="stat-label">Développeurs</span>
-        </div>
-        <div class="stat">
-          <span class="stat-value">24h</span>
-          <span class="stat-label">Délai garanti</span>
-        </div>
-        <div class="stat">
-          <span class="stat-value">0 €</span>
-          <span class="stat-label">Toujours gratuit</span>
-        </div>
-      </div>
-    </div>
-    <div class="hero-right">
-      <div class="preview-stack">
-        <div class="preview-card">
-          <div class="pc-avatar">JL</div>
-          <div class="pc-info">
-            <div class="pc-name">Julie Lefevre</div>
-            <div class="pc-role">Fullstack · React, Node.js</div>
+  <section>
+    <div class="hero">
+      <div class="hero-inner">
+        <div class="hero-left">
+          <h1 class="hero-title">
+            Votre dev <em>disponible</em><br/>
+            <strong>en 24 heures</strong>
+          </h1>
+          <p class="hero-sub">
+            Des développeurs passionnés offrent leur temps librement pour vous aider. Pas de tarif, pas de contrat. Juste de l'entraide vraie.
+          </p>
+          <div class="hero-actions">
+            <a href="devs.html" class="btn-primary">Voir les développeurs</a>
+            <a href="inscription.html" class="btn-ghost">Devenir bénévole</a>
           </div>
-          <div class="pc-status on">Disponible</div>
-        </div>
-        <div class="preview-card">
-          <div class="pc-avatar" style="background:#f5f0e8">MK</div>
-          <div class="pc-info">
-            <div class="pc-name">Marc Kouassi</div>
-            <div class="pc-role">Backend · Python, Django</div>
+          <div class="hero-stats">
+            <div class="stat">
+              <span class="stat-value" id="stat-devs">—</span>
+              <span class="stat-label">Développeurs</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">24h</span>
+              <span class="stat-label">Délai max</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">0 €</span>
+              <span class="stat-label">Toujours gratuit</span>
+            </div>
           </div>
-          <div class="pc-status on">Disponible</div>
         </div>
-        <div class="preview-card">
-          <div class="pc-avatar" style="background:#edf0f5">SR</div>
-          <div class="pc-info">
-            <div class="pc-name">Sofia Renard</div>
-            <div class="pc-role">Mobile · Flutter, Swift</div>
+        <div class="hero-right">
+          <div class="hero-visual" id="hero-devs">
+            <!-- Rempli dynamiquement depuis Airtable -->
+            <div class="hero-card" style="opacity:.4">
+              <div class="hc-avatar">?</div>
+              <div class="hc-info">
+                <div class="hc-name">Chargement…</div>
+                <div class="hc-accroche">Les vrais profils arrivent</div>
+              </div>
+            </div>
           </div>
-          <div class="pc-status off">En pause</div>
-        </div>
-        <div class="preview-card">
-          <div class="pc-avatar" style="background:#f0f5ee">AB</div>
-          <div class="pc-info">
-            <div class="pc-name">Antoine Bernard</div>
-            <div class="pc-role">Frontend · Vue.js, CSS</div>
-          </div>
-          <div class="pc-status on">Disponible</div>
+          <p class="hero-caption">Profils réels — mis à jour en temps réel</p>
         </div>
       </div>
-      <p class="hero-caption">Profils mis à jour en temps réel</p>
     </div>
   </section>
 
-  <!-- HOW IT WORKS -->
+  <!-- HOW -->
   <section class="how">
     <div class="container">
       <div class="how-header">
-        <div class="section-eyebrow">Comment ça fonctionne</div>
-        <h2 class="section-title">Trois étapes,<br/><em>une solution</em></h2>
+        <div class="section-tag">Comment ça marche</div>
+        <h2 class="section-title">Simple comme<br/><em>une conversation</em></h2>
       </div>
       <div class="steps">
         <div class="step">
-          <div class="step-index">01</div>
-          <h3>Cherchez un développeur</h3>
-          <p>Filtrez par spécialité, technologie ou disponibilité. Trouvez le profil qui correspond exactement à votre besoin.</p>
+          <div class="step-num">01</div>
+          <h3>Parcourez l'annuaire</h3>
+          <p>Explorez les profils, lisez les touches perso de chaque développeur et trouvez celui qui résonne avec votre projet.</p>
         </div>
         <div class="step">
-          <div class="step-index">02</div>
-          <h3>Prenez contact</h3>
-          <p>Consultez le profil, accédez au GitHub ou au portfolio, et contactez directement le développeur. Réponse sous 24 heures.</p>
+          <div class="step-num">02</div>
+          <h3>Contactez directement</h3>
+          <p>Cliquez sur le profil et envoyez un email directement. Pas d'intermédiaire, pas de formulaire, juste un humain à un autre.</p>
         </div>
         <div class="step">
-          <div class="step-index">03</div>
+          <div class="step-num">03</div>
           <h3>Lancez votre projet</h3>
-          <p>Le développeur vous accompagne bénévolement. Si vous souhaitez le remercier, son lien Ko-fi est disponible sur son profil.</p>
+          <p>Le développeur vous aide bénévolement. Si vous voulez le remercier, son lien Ko-fi est là pour ça.</p>
         </div>
       </div>
     </div>
@@ -118,30 +98,30 @@
   <section class="forwho">
     <div class="container">
       <div class="forwho-header">
-        <div class="section-eyebrow">Pour qui</div>
-        <h2 class="section-title">Toute demande<br/><em>est légitime</em></h2>
+        <div class="section-tag">Pour qui</div>
+        <h2 class="section-title">Toute demande<br/><em>est la bienvenue</em></h2>
         <p class="section-sub">Ottonowmy s'adresse à tous ceux qui ont besoin d'aide technique sans avoir accès aux ressources habituelles.</p>
       </div>
       <div class="forwho-grid">
         <div class="fcard">
-          <div class="fcard-label">01</div>
+          <div class="fcard-num">01</div>
           <h3>Indépendants</h3>
-          <p>Site vitrine, outil interne, bug critique — nos développeurs peuvent vous débloquer rapidement.</p>
+          <p>Site cassé, outil à créer, bug bloquant — trouvez quelqu'un rapidement sans vous ruiner.</p>
         </div>
         <div class="fcard">
-          <div class="fcard-label">02</div>
+          <div class="fcard-num">02</div>
           <h3>Associations</h3>
-          <p>Budget contraint, mission forte. Les développeurs sont particulièrement engagés pour les projets à impact.</p>
+          <p>Budget serré, mission forte. Les développeurs adorent aider les projets qui ont du sens.</p>
         </div>
         <div class="fcard">
-          <div class="fcard-label">03</div>
+          <div class="fcard-num">03</div>
           <h3>Porteurs de projet</h3>
-          <p>Vous avez une idée mais pas les compétences techniques. Trouvez quelqu'un pour vous orienter ou démarrer.</p>
+          <p>Une idée mais pas les compétences ? Trouvez quelqu'un pour vous guider ou démarrer avec vous.</p>
         </div>
         <div class="fcard">
-          <div class="fcard-label">04</div>
+          <div class="fcard-num">04</div>
           <h3>Particuliers</h3>
-          <p>Un problème informatique ou une petite demande de code. Posez la question, sans gêne et sans frais.</p>
+          <p>Une question, un petit besoin, une curiosité. Posez la question sans gêne et sans frais.</p>
         </div>
       </div>
     </div>
@@ -152,34 +132,73 @@
     <div class="container">
       <div class="cta-inner">
         <div class="cta-text">
-          <h2>Vous êtes développeur&nbsp;?<br/><em style="font-style:italic;opacity:.7">Votre aide compte.</em></h2>
-          <p>Inscription gratuite, sans engagement. Vous définissez vos disponibilités et choisissez les demandes auxquelles vous répondez.</p>
+          <h2>Vous êtes développeur ?<br/><em>Votre aide compte vraiment.</em></h2>
+          <p>Inscription gratuite, aucun engagement. Vous choisissez les demandes auxquelles vous répondez, quand vous voulez.</p>
         </div>
-        <a href="inscription.html" class="btn-primary-inv">Rejoindre la plateforme</a>
+        <a href="inscription.html" class="btn-white">Créer mon profil</a>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer class="footer">
     <div class="container footer-inner">
       <div class="footer-logo">Ottonowmy</div>
       <div class="footer-links">
+        <a href="devs.html">Annuaire</a>
+        <a href="inscription.html">Inscription</a>
         <a href="mentions-legales.html">Mentions légales</a>
       </div>
-      <div class="footer-copy">© 2026 Ottonowmy</div>
+      <div class="footer-copy">© 2025 Ottonowmy</div>
     </div>
   </footer>
 
   <script>
-fetch("/.netlify/functions/devs")
-  .then(r => r.json())
-  .then(data => {
-    document.getElementById('stat-devs').textContent = data.count;
-  })
-  .catch(() => {
-    document.getElementById('stat-devs').textContent = "—";
-  });
-</script>
+    const TOKEN   = null; // token côté client désactivé — appel via /api
+    const BASE_ID = null;
+
+    // Charger les vrais devs pour la hero
+    async function loadHeroDevs() {
+      try {
+        const res     = await fetch('/api/devs-list');
+        if (!res.ok) return;
+        const records = await res.json();
+        if (!Array.isArray(records) || !records.length) return;
+
+        // Compter
+        document.getElementById('stat-devs').textContent = records.length;
+
+        // Afficher les 3 premiers dans la hero
+        const top3 = records.slice(0, 3);
+        const container = document.getElementById('hero-devs');
+        container.innerHTML = top3.map(r => {
+          const f        = r.fields || {};
+          const name     = f['Nom'] || 'Développeur';
+          const accroche = f['Accroche'] || '';
+          const vues     = f['Vues']  || 0;
+          const stars    = f['Stars'] || 0;
+          const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+          const photo    = f['Photo'];
+          const avatar   = photo
+            ? `<img src="${photo}" style="width:42px;height:42px;border-radius:12px;object-fit:cover;" />`
+            : `<div class="hc-avatar">${initials}</div>`;
+          return `
+            <a href="profil.html?id=${r.id}" class="hero-card" style="text-decoration:none;color:inherit">
+              ${avatar}
+              <div class="hc-info">
+                <div class="hc-name">${name}</div>
+                ${accroche ? `<div class="hc-accroche">${accroche.slice(0,55)}${accroche.length>55?'…':''}</div>` : ''}
+              </div>
+              <div class="hc-stats">
+                <span>◎ ${vues}</span>
+                <span>★ ${stars}</span>
+              </div>
+            </a>`;
+        }).join('');
+
+      } catch (e) { /* silencieux */ }
+    }
+
+    loadHeroDevs();
+  </script>
 </body>
 </html>

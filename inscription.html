@@ -5,77 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inscription — Ottonowmy</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .form-section-highlight {
-      border-color: rgba(255,154,124,0.25) !important;
-    }
-    .form-section-highlight .form-section-head {
-      background: rgba(255,235,225,0.5) !important;
-      border-bottom-color: rgba(255,154,124,0.15) !important;
-    }
-    .form-section-highlight .form-section-head h2 { color: var(--peach) !important; }
-
-    .link-row { margin-bottom: 10px; animation: slideUp .3s cubic-bezier(.22,1,.36,1) both; }
-    .link-row-inner { display: grid; grid-template-columns: 160px 1fr 36px; gap: 8px; align-items: center; }
-
-    .link-label-select,
-    .link-url-input {
-      padding: 10px 13px;
-      background: rgba(255,255,255,0.7);
-      border: 1px solid var(--border);
-      border-radius: var(--r-sm);
-      color: var(--ink);
-      font-family: var(--font-sans);
-      font-size: .855rem;
-      outline: none;
-      transition: border-color .18s, box-shadow .18s;
-      width: 100%;
-    }
-    .link-label-select {
-      appearance: none; -webkit-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23b0aca5' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 10px center;
-      background-color: rgba(255,255,255,0.7);
-      padding-right: 28px;
-      cursor: pointer;
-    }
-    .link-label-select:focus,
-    .link-url-input:focus {
-      border-color: rgba(255,154,124,0.5);
-      box-shadow: 0 0 0 3px rgba(255,154,124,0.1);
-      background: white;
-    }
-    .link-url-input::placeholder { color: var(--ink4); }
-
-    .link-remove-btn {
-      width: 36px; height: 36px;
-      border: 1px solid var(--border); border-radius: var(--r-sm);
-      background: rgba(255,255,255,0.6); color: var(--ink4);
-      font-size: 1.1rem; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all .18s; flex-shrink: 0;
-    }
-    .link-remove-btn:hover { background: #fff1f0; border-color: rgba(255,80,60,0.25); color: #d43a2a; }
-
-    .btn-add-link {
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      background: transparent;
-      border: 1px dashed var(--border2); border-radius: var(--r-sm);
-      color: var(--ink3); font-family: var(--font-sans);
-      font-size: .84rem; font-weight: 500;
-      padding: 10px 16px; cursor: pointer;
-      transition: all .18s; width: 100%; margin-top: 4px;
-    }
-    .btn-add-link:hover { border-color: var(--peach); color: var(--peach); background: var(--peach-l); }
-
-    @media (max-width: 480px) {
-      .link-row-inner { grid-template-columns: 1fr 36px; grid-template-rows: auto auto; }
-      .link-label-select { grid-column: 1 / -1; }
-    }
-  </style>
 </head>
 <body>
 
@@ -83,13 +14,13 @@
     <a href="index.html" class="nav-logo">Ottonowmy</a>
     <div class="nav-links">
       <a href="devs.html">Annuaire</a>
-      <a href="inscription.html" class="btn-nav">Rejoindre</a>
+      <a href="inscription.html" class="btn-nav">Je suis dev</a>
     </div>
   </nav>
 
   <div class="page-header">
     <h1>Rejoindre la plateforme</h1>
-    <p>Votre profil sera votre vitrine. Prenez le temps de bien le remplir — c'est ce qui fera la différence.</p>
+    <p>Votre profil est votre vitrine. Prenez le temps de bien le remplir — c'est ce qui fera la différence.</p>
   </div>
 
   <main class="form-main">
@@ -97,14 +28,13 @@
 
       <div class="form-intro-grid">
         <div class="form-intro-item">Inscription entièrement gratuite</div>
-        <div class="form-intro-item">Votre email n'est jamais affiché</div>
+        <div class="form-intro-item">Votre email est affiché sur votre profil</div>
         <div class="form-intro-item">Jusqu'à 5 liens personnalisés</div>
-        <div class="form-intro-item">Modifiable sur demande</div>
+        <div class="form-intro-item">Suppression sur simple demande</div>
       </div>
 
       <form id="form" novalidate>
 
-        <!-- IDENTITÉ -->
         <div class="form-section">
           <div class="form-section-head"><h2>Identité</h2></div>
           <div class="form-body">
@@ -116,7 +46,7 @@
               <div class="form-group">
                 <label for="email">Email <span class="required">*</span></label>
                 <input type="email" id="email" placeholder="julie@exemple.com" required />
-                <small>Non affiché publiquement</small>
+                <small>Affiché publiquement sur votre profil pour être contacté</small>
               </div>
             </div>
             <div class="form-group">
@@ -127,32 +57,29 @@
           </div>
         </div>
 
-        <!-- TOUCHE PERSO -->
         <div class="form-section form-section-highlight">
-          <div class="form-section-head"><h2>Votre touche perso <span class="required">*</span></h2></div>
+          <div class="form-section-head"><h2>Votre touche perso — l'essentiel <span class="required">*</span></h2></div>
           <div class="form-body">
             <div class="form-group">
               <label for="accroche">Une phrase qui vous définit <span class="required">*</span></label>
               <input type="text" id="accroche"
-                placeholder="Ex : Je transforme vos idées en produits en moins d'un week-end."
+                placeholder="Ex : Je transforme des idées brouillonnes en produits qui marchent."
                 maxlength="120" required />
-              <small>Max 120 caractères — affiché en grand sur votre profil</small>
+              <small>Max 120 caractères — affiché en grand sur votre profil et dans l'annuaire</small>
             </div>
             <div class="form-group">
               <label for="touche">Ce qui fait votre essence <span class="required">*</span></label>
               <textarea id="touche" rows="5"
-                placeholder="Pourquoi faites-vous ça bénévolement ? Quel type de projets vous fait vibrer ? Qu'est-ce que vous apportez que personne d'autre n'apporte ?"
+                placeholder="Pourquoi faites-vous ça bénévolement ? Quel type de projets vous fait vibrer ? Qu'est-ce que vous apportez d'unique ?"
                 required></textarea>
-              <small>La partie la plus importante de votre profil. Soyez authentique.</small>
+              <small>La partie la plus importante de votre profil. Soyez honnête et authentique.</small>
             </div>
           </div>
         </div>
 
-        <!-- COMPÉTENCES -->
         <div class="form-section">
           <div class="form-section-head"><h2>Compétences</h2></div>
           <div class="form-body">
-           
             <div class="form-group">
               <label>Langages &amp; technologies <span class="required">*</span></label>
               <div class="tech-grid">
@@ -185,31 +112,29 @@
           </div>
         </div>
 
-        <!-- LIENS -->
         <div class="form-section">
           <div class="form-section-head"><h2>Liens (max 5)</h2></div>
           <div class="form-body">
             <p style="font-size:.84rem;color:var(--ink3);margin-bottom:18px;font-weight:300;">
-              GitHub, Ko-fi, Portfolio, LinkedIn — ajoutez ce que vous voulez.
+              GitHub, Ko-fi, Portfolio, LinkedIn… ajoutez ce que vous voulez.
             </p>
             <div id="links-container"></div>
             <button type="button" id="add-link-btn" class="btn-add-link">+ Ajouter un lien</button>
           </div>
         </div>
 
-        <!-- CONSENTEMENT -->
         <div class="consent-row">
           <input type="checkbox" id="cgv" required />
           <label for="cgv">
             J'ai lu et j'accepte les <a href="mentions-legales.html" target="_blank">mentions légales</a>.
-            Je consens à ce que mon profil (hors email) soit affiché publiquement.
+            Je consens à ce que mon profil, y compris mon adresse email, soit affiché publiquement sur Ottonowmy.
             <span class="required">*</span>
           </label>
         </div>
 
         <div id="form-error" class="form-error" style="display:none;margin-top:20px"></div>
         <div id="form-success" class="form-success" style="display:none;margin-top:20px">
-          Votre profil a bien été soumis. Il apparaîtra dans l'annuaire très prochainement.
+          Votre profil a bien été soumis et sera visible dans l'annuaire très prochainement.
         </div>
 
         <button type="submit" class="btn-primary btn-submit" id="submit-btn" style="margin-top:20px">
@@ -243,90 +168,67 @@
 
     // Liens dynamiques
     const PRESETS = [
-      { label: 'GitHub',    placeholder: 'https://github.com/pseudo' },
-      { label: 'Ko-fi',     placeholder: 'https://ko-fi.com/pseudo' },
-      { label: 'Portfolio', placeholder: 'https://votre-site.fr' },
-      { label: 'LinkedIn',  placeholder: 'https://linkedin.com/in/pseudo' },
-      { label: 'Autre',     placeholder: 'https://…' },
+      { label: 'GitHub',    ph: 'https://github.com/pseudo' },
+      { label: 'Ko-fi',     ph: 'https://ko-fi.com/pseudo' },
+      { label: 'Portfolio', ph: 'https://votre-site.fr' },
+      { label: 'LinkedIn',  ph: 'https://linkedin.com/in/pseudo' },
+      { label: 'Autre',     ph: 'https://…' },
     ];
-
     const container = document.getElementById('links-container');
     const addBtn    = document.getElementById('add-link-btn');
-    let linkCount   = 0;
+    let   cnt       = 0;
 
     function addLink() {
-      if (linkCount >= 5) return;
-      const preset = PRESETS[linkCount] || PRESETS[4];
-      const row    = document.createElement('div');
+      if (cnt >= 5) return;
+      const p   = PRESETS[cnt] || PRESETS[4];
+      const row = document.createElement('div');
       row.className = 'link-row';
       row.innerHTML = `
         <div class="link-row-inner">
           <select class="link-label-select">
-            <option value="GitHub">GitHub</option>
-            <option value="Ko-fi">Ko-fi</option>
-            <option value="Portfolio">Portfolio</option>
-            <option value="LinkedIn">LinkedIn</option>
-            <option value="Twitter / X">Twitter / X</option>
-            <option value="Dribbble">Dribbble</option>
-            <option value="Behance">Behance</option>
-            <option value="YouTube">YouTube</option>
-            <option value="Autre">Autre</option>
+            <option>GitHub</option><option>Ko-fi</option><option>Portfolio</option>
+            <option>LinkedIn</option><option>Twitter / X</option><option>Dribbble</option>
+            <option>Behance</option><option>YouTube</option><option>Autre</option>
           </select>
-          <input type="url" class="link-url-input" placeholder="${preset.placeholder}" />
+          <input type="url" class="link-url-input" placeholder="${p.ph}" />
           <button type="button" class="link-remove-btn" title="Supprimer">×</button>
         </div>`;
-      row.querySelector('select').value = preset.label;
+      row.querySelector('select').value = p.label;
       row.querySelector('.link-remove-btn').addEventListener('click', () => {
-        row.remove(); linkCount--; updateBtn();
+        row.remove(); cnt--; upd();
       });
       container.appendChild(row);
-      linkCount++;
-      updateBtn();
+      cnt++; upd();
     }
-
-    function updateBtn() {
-      addBtn.style.display = linkCount >= 5 ? 'none' : 'flex';
-    }
-
+    function upd() { addBtn.style.display = cnt >= 5 ? 'none' : 'flex'; }
     addBtn.addEventListener('click', addLink);
-    addLink(); // un lien par défaut
+    addLink();
 
     // Soumission
-    document.getElementById('form').addEventListener('submit', async (e) => {
+    document.getElementById('form').addEventListener('submit', async e => {
       e.preventDefault();
-      const errorEl   = document.getElementById('form-error');
-      const successEl = document.getElementById('form-success');
-      const btn       = document.getElementById('submit-btn');
-      errorEl.style.display = successEl.style.display = 'none';
+      const errEl = document.getElementById('form-error');
+      const okEl  = document.getElementById('form-success');
+      const btn   = document.getElementById('submit-btn');
+      errEl.style.display = okEl.style.display = 'none';
 
       const nom      = document.getElementById('nom').value.trim();
       const email    = document.getElementById('email').value.trim();
       const accroche = document.getElementById('accroche').value.trim();
       const touche   = document.getElementById('touche').value.trim();
-      const spec     = document.getElementById('specialite').value;
-      const cgv      = document.getElementById('cgv').checked;
       const photo    = document.getElementById('photo').value.trim();
-      const techs    = Array.from(document.querySelectorAll('.tech-check input:checked')).map(i => i.value);
+      const cgv      = document.getElementById('cgv').checked;
+      const techs    = [...document.querySelectorAll('.tech-check input:checked')].map(i => i.value);
+      const liens    = [...document.querySelectorAll('.link-row')]
+        .map(r => ({ label: r.querySelector('select').value, url: r.querySelector('.link-url-input').value.trim() }))
+        .filter(l => l.url);
 
-      const liens = [];
-      document.querySelectorAll('.link-row').forEach(row => {
-        const label = row.querySelector('.link-label-select').value;
-        const url   = row.querySelector('.link-url-input').value.trim();
-        if (url) liens.push({ label, url });
-      });
-
-      if (!nom || !email || !accroche || !touche) {
-        errorEl.textContent   = 'Merci de remplir tous les champs obligatoires.';
-        errorEl.style.display = 'block'; return;
-      }
-      if (!techs.length) {
-        errorEl.textContent   = 'Sélectionnez au moins un langage ou une technologie.';
-        errorEl.style.display = 'block'; return;
-      }
-      if (!cgv) {
-        errorEl.textContent   = 'Vous devez accepter les mentions légales.';
-        errorEl.style.display = 'block'; return;
-      }
+      if (!nom)      { errEl.textContent = 'Le nom est obligatoire.';            errEl.style.display = 'block'; return; }
+      if (!email)    { errEl.textContent = "L'email est obligatoire.";           errEl.style.display = 'block'; return; }
+      if (!accroche) { errEl.textContent = "L'accroche est obligatoire.";        errEl.style.display = 'block'; return; }
+      if (!touche)   { errEl.textContent = 'La touche perso est obligatoire.';   errEl.style.display = 'block'; return; }
+      if (!techs.length) { errEl.textContent = 'Sélectionnez au moins un langage.'; errEl.style.display = 'block'; return; }
+      if (!cgv)      { errEl.textContent = 'Acceptez les mentions légales.';     errEl.style.display = 'block'; return; }
 
       document.getElementById('submit-text').style.display    = 'none';
       document.getElementById('submit-loading').style.display = 'inline';
@@ -341,28 +243,27 @@
         'Liens':            JSON.stringify(liens),
         'Date inscription': new Date().toISOString().split('T')[0],
       };
-      if (spec)  fields['Spécialité'] = spec;
-      if (photo) fields['Photo']      = photo;
+      if (photo) fields['Photo'] = photo;
 
       try {
         const res  = await fetch('/api/devs', {
-          method: 'POST',
+          method:  'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fields }),
+          body:    JSON.stringify({ fields }),
         });
         let data;
         try { data = await res.json(); } catch { throw new Error(`Statut ${res.status}`); }
         if (!res.ok || data.error) throw new Error(data?.error || `Erreur ${res.status}`);
 
-        successEl.style.display = 'block';
+        okEl.style.display = 'block';
         document.getElementById('form').reset();
         document.querySelectorAll('.tech-check').forEach(el => el.classList.remove('checked'));
-        container.innerHTML = ''; linkCount = 0; addLink(); updateBtn();
-        successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        container.innerHTML = ''; cnt = 0; addLink(); upd();
+        okEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
       } catch (err) {
-        errorEl.textContent   = `Erreur : ${err.message}`;
-        errorEl.style.display = 'block';
+        errEl.textContent   = `Erreur : ${err.message}`;
+        errEl.style.display = 'block';
       } finally {
         document.getElementById('submit-text').style.display    = 'inline';
         document.getElementById('submit-loading').style.display = 'none';

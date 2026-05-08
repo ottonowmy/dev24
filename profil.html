@@ -5,317 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Profil — Ottonowmy</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .profil-wrap {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 100px 28px 100px;
-    }
-
-    /* Hero */
-    .profil-hero {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 36px;
-      align-items: start;
-      margin-bottom: 48px;
-      animation: slideUp .7s cubic-bezier(.22,1,.36,1) both;
-    }
-
-    .profil-avatar {
-      width: 110px; height: 110px;
-      border-radius: 24px;
-      background: linear-gradient(135deg, var(--bg2), var(--bg3));
-      color: var(--ink2);
-      font-family: var(--font-sans);
-      font-weight: 600;
-      font-size: 2rem;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      object-fit: cover;
-      box-shadow: var(--shadow), inset 0 0 0 1px rgba(0,0,0,0.06);
-      letter-spacing: -0.02em;
-    }
-
-    .profil-hero-info { min-width: 0; padding-top: 4px; }
-
-    .profil-meta-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-      flex-wrap: wrap;
-    }
-
-    .profil-spec {
-      font-size: .72rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      color: var(--peach);
-      background: var(--peach-l);
-      border: 1px solid rgba(255,154,124,0.2);
-      padding: 4px 12px;
-      border-radius: 100px;
-    }
-
-    /* Stats : vues + stars */
-    .profil-stats {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-    .profil-stat {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: .78rem;
-      color: var(--ink4);
-      font-weight: 400;
-    }
-    .profil-stat-icon { font-size: .85rem; }
-
-    .profil-name {
-      font-family: var(--font-serif);
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 400;
-      letter-spacing: -0.025em;
-      line-height: 1.08;
-      color: var(--ink);
-      margin-bottom: 16px;
-    }
-
-    /* Bouton étoile */
-    .btn-star {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      font-size: .82rem;
-      font-weight: 600;
-      color: var(--amber);
-      background: var(--amber-l);
-      border: 1px solid rgba(232,160,32,0.25);
-      padding: 7px 16px;
-      border-radius: 100px;
-      cursor: pointer;
-      transition: all .2s;
-      letter-spacing: -0.01em;
-    }
-    .btn-star:hover {
-      background: #fde8b8;
-      border-color: rgba(232,160,32,0.4);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(232,160,32,0.15);
-    }
-    .btn-star.starred {
-      background: var(--amber);
-      color: white;
-      border-color: var(--amber);
-      box-shadow: 0 4px 12px rgba(232,160,32,0.3);
-    }
-    .btn-star.starred:hover { opacity: .88; }
-    .btn-star:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-
-    /* Liens */
-    .profil-links {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
-    .profil-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: .82rem;
-      font-weight: 500;
-      color: var(--ink2);
-      padding: 7px 16px;
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      background: rgba(255,255,255,0.65);
-      backdrop-filter: blur(8px);
-      transition: all .2s;
-      text-decoration: none;
-    }
-    .profil-link:hover {
-      border-color: var(--border2);
-      background: white;
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-sm);
-    }
-    .profil-link.kofi {
-      color: var(--amber);
-      border-color: rgba(232,160,32,0.25);
-      background: var(--amber-l);
-    }
-    .profil-link.kofi:hover { background: #fde8b8; }
-    .profil-link.contact {
-      background: var(--ink);
-      color: white;
-      border-color: var(--ink);
-      box-shadow: 0 3px 12px rgba(0,0,0,0.15);
-    }
-    .profil-link.contact:hover {
-      opacity: .88;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    }
-
-    /* Accroche */
-    .profil-accroche-block {
-      background: linear-gradient(135deg, rgba(255,154,124,0.06), rgba(192,132,252,0.06));
-      border: 1px solid rgba(255,154,124,0.15);
-      border-radius: var(--r-lg);
-      padding: 36px 40px;
-      margin-bottom: 24px;
-      animation: slideUp .7s .1s cubic-bezier(.22,1,.36,1) both;
-      position: relative;
-      overflow: hidden;
-    }
-    .profil-accroche-block::before {
-      content: '"';
-      position: absolute;
-      top: -20px; left: 24px;
-      font-family: var(--font-serif);
-      font-size: 8rem;
-      color: rgba(255,154,124,0.1);
-      line-height: 1;
-      pointer-events: none;
-      user-select: none;
-    }
-    .profil-accroche {
-      font-family: var(--font-serif);
-      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
-      font-weight: 400;
-      font-style: italic;
-      color: var(--ink);
-      line-height: 1.35;
-      letter-spacing: -0.015em;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Cards infos */
-    .profil-cards {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin-bottom: 24px;
-      animation: slideUp .7s .2s cubic-bezier(.22,1,.36,1) both;
-    }
-
-    .profil-card {
-      background: linear-gradient(145deg, rgba(255,255,255,0.97), rgba(255,248,242,0.92));
-      border: 1px solid rgba(255,255,255,0.9);
-      border-radius: var(--r);
-      padding: 28px 26px;
-      box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,0.9);
-    }
-    .profil-card-label {
-      font-size: .68rem;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--ink4);
-      margin-bottom: 16px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border);
-    }
-    .profil-touche {
-      font-size: .95rem;
-      color: var(--ink2);
-      line-height: 1.85;
-      font-weight: 300;
-      white-space: pre-wrap;
-    }
-    .profil-techs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-    }
-    .profil-techs .tech-badge {
-      font-size: .78rem;
-      padding: 5px 12px;
-    }
-
-    /* Contact */
-    .profil-contact {
-      background: var(--grad-cta);
-      border-radius: var(--r-lg);
-      padding: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 32px;
-      position: relative;
-      overflow: hidden;
-      animation: slideUp .7s .3s cubic-bezier(.22,1,.36,1) both;
-      box-shadow: var(--shadow-lg);
-    }
-    .profil-contact::before {
-      content: '';
-      position: absolute;
-      top: -80px; right: -60px;
-      width: 280px; height: 280px;
-      background: radial-gradient(circle, rgba(255,154,124,0.12), transparent 65%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-    .profil-contact h3 {
-      font-family: var(--font-serif);
-      font-size: 1.5rem;
-      font-weight: 400;
-      color: white;
-      margin-bottom: 8px;
-      letter-spacing: -0.02em;
-    }
-    .profil-contact p {
-      font-size: .85rem;
-      color: rgba(255,255,255,0.45);
-      font-weight: 300;
-      line-height: 1.65;
-      max-width: 360px;
-    }
-    .profil-contact-btns {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      flex-shrink: 0;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* États */
-    .profil-loading {
-      text-align: center;
-      padding: 120px 0;
-      color: var(--ink4);
-      font-size: .9rem;
-    }
-    .profil-not-found {
-      text-align: center;
-      padding: 100px 0;
-    }
-    .profil-not-found h2 {
-      font-family: var(--font-serif);
-      font-size: 2rem;
-      color: var(--ink);
-      margin-bottom: 12px;
-    }
-    .profil-not-found p { color: var(--ink3); margin-bottom: 24px; }
-
-    @media (max-width: 640px) {
-      .profil-hero { grid-template-columns: 1fr; }
-      .profil-avatar { width: 80px; height: 80px; font-size: 1.5rem; border-radius: 18px; }
-      .profil-contact { flex-direction: column; padding: 28px 24px; }
-      .profil-contact-btns { width: 100%; }
-      .profil-accroche-block { padding: 24px; }
-    }
-  </style>
 </head>
 <body>
 
@@ -323,7 +14,7 @@
     <a href="index.html" class="nav-logo">Ottonowmy</a>
     <div class="nav-links">
       <a href="devs.html">Annuaire</a>
-      <a href="inscription.html" class="btn-nav">Rejoindre</a>
+      <a href="inscription.html" class="btn-nav">Je suis dev</a>
     </div>
   </nav>
 
@@ -342,31 +33,22 @@
 
         <!-- HERO -->
         <div class="profil-hero">
-          <div id="p-avatar" class="profil-avatar"></div>
+          <div id="p-avatar-wrap">
+            <div id="p-avatar" class="profil-avatar"></div>
+          </div>
           <div class="profil-hero-info">
-
-            <div class="profil-meta-row">
+            <div class="profil-meta">
               <span id="p-spec" class="profil-spec" style="display:none"></span>
             </div>
-
-            <div class="profil-stats">
-              <div class="profil-stat">
-                <span class="profil-stat-icon">◎</span>
-                <span id="p-vues">0</span> vue<span id="p-vues-s"></span>
-              </div>
-              <div class="profil-stat">
-                <span class="profil-stat-icon">★</span>
-                <span id="p-stars">0</span> étoile<span id="p-stars-s"></span>
-              </div>
+            <div class="profil-counters">
+              <div class="profil-counter">◎ <span id="p-vues">0</span> vue<span id="p-vues-s"></span></div>
+              <div class="profil-counter">★ <span id="p-stars">0</span> étoile<span id="p-stars-s"></span></div>
             </div>
-
             <h1 id="p-name" class="profil-name"></h1>
-
             <button id="btn-star" class="btn-star">
               ★ <span id="btn-star-label">Mettre en avant</span>
             </button>
-
-            <div id="p-links" class="profil-links"></div>
+            <div id="p-links" class="profil-links" style="margin-top:14px"></div>
           </div>
         </div>
 
@@ -375,7 +57,7 @@
           <p id="p-accroche" class="profil-accroche"></p>
         </div>
 
-        <!-- INFOS -->
+        <!-- CARDS -->
         <div class="profil-cards">
           <div id="p-touche-card" class="profil-card" style="display:none">
             <div class="profil-card-label">Touche perso</div>
@@ -391,7 +73,7 @@
         <div id="p-contact" class="profil-contact">
           <div>
             <h3>Vous avez un projet ?</h3>
-            <p>Contactez ce développeur directement par email, ou soutenez son travail bénévole.</p>
+            <p>Envoyez un email directement à ce développeur. Pas d'intermédiaire, juste vous et lui.</p>
           </div>
           <div id="p-contact-btns" class="profil-contact-btns"></div>
         </div>
@@ -414,21 +96,25 @@
 
   <script>
     const LINK_ICONS = {
-      'GitHub': '⌥', 'Ko-fi': '☕', 'Portfolio': '◈',
-      'LinkedIn': '◉', 'Twitter / X': '◎', 'Dribbble': '◎',
-      'Behance': '◎', 'YouTube': '▶', 'Autre': '→',
+      'GitHub':'⌥','Ko-fi':'☕','Portfolio':'◈','LinkedIn':'◉',
+      'Twitter / X':'◎','Dribbble':'◎','Behance':'◎','YouTube':'▶','Autre':'→',
     };
 
-    const params  = new URLSearchParams(window.location.search);
+    const params    = new URLSearchParams(window.location.search);
     const RECORD_ID = params.get('id');
+    const STAR_KEY  = `otto_starred_${RECORD_ID}`;
 
-    // Anti-double star : stocké en sessionStorage
-    const STAR_KEY = `starred_${RECORD_ID}`;
-    let   hasStarred = sessionStorage.getItem(STAR_KEY) === '1';
+    // Anti-doublon : stocké en localStorage (persistant entre sessions)
+    let hasStarred = localStorage.getItem(STAR_KEY) === '1';
 
     function initials(name) {
       if (!name) return '?';
-      return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+      return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+    }
+
+    function showError() {
+      document.getElementById('profil-loading').style.display = 'none';
+      document.getElementById('profil-error').style.display   = 'block';
     }
 
     async function loadProfil() {
@@ -439,11 +125,6 @@
         if (!res.ok || data.error) { showError(); return; }
         renderProfil(data);
       } catch { showError(); }
-    }
-
-    function showError() {
-      document.getElementById('profil-loading').style.display = 'none';
-      document.getElementById('profil-error').style.display   = 'block';
     }
 
     function renderProfil(record) {
@@ -457,7 +138,8 @@
       const avatarEl = document.getElementById('p-avatar');
       if (f['Photo']) {
         const img = document.createElement('img');
-        img.src = f['Photo']; img.alt = f['Nom']; img.className = 'profil-avatar';
+        img.src = f['Photo']; img.alt = f['Nom'] || '';
+        img.className = 'profil-avatar';
         avatarEl.replaceWith(img);
       } else {
         avatarEl.textContent = initials(f['Nom']);
@@ -466,44 +148,46 @@
       // Nom
       document.getElementById('p-name').textContent = f['Nom'] || 'Développeur';
 
-      // Spécialité
+      // Spécialité (facultatif)
       if (f['Spécialité']) {
         const el = document.getElementById('p-spec');
-        el.textContent = f['Spécialité'];
-        el.style.display = 'inline-flex';
+        el.textContent = f['Spécialité']; el.style.display = 'inline-flex';
       }
 
-      // Stats
+      // Vues / Stars
       const vues  = f['Vues']  || 0;
       const stars = f['Stars'] || 0;
-      document.getElementById('p-vues').textContent   = vues;
-      document.getElementById('p-stars').textContent  = stars;
-      document.getElementById('p-vues-s').textContent = vues > 1 ? 's' : '';
-      document.getElementById('p-stars-s').textContent = stars > 1 ? 's' : '';
+      document.getElementById('p-vues').textContent    = vues;
+      document.getElementById('p-stars').textContent   = stars;
+      document.getElementById('p-vues-s').textContent  = vues  !== 1 ? 's' : '';
+      document.getElementById('p-stars-s').textContent = stars !== 1 ? 's' : '';
 
       // Bouton étoile
       const starBtn = document.getElementById('btn-star');
+      const starLbl = document.getElementById('btn-star-label');
       if (hasStarred) {
         starBtn.classList.add('starred');
-        document.getElementById('btn-star-label').textContent = 'Mis en avant !';
-        starBtn.disabled = true;
+        starLbl.textContent = 'Mis en avant !';
+        starBtn.disabled    = true;
       }
+
       starBtn.addEventListener('click', async () => {
         if (hasStarred) return;
         starBtn.disabled = true;
         try {
           const res  = await fetch('/api/star', {
-            method: 'POST',
+            method:  'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: RECORD_ID }),
+            body:    JSON.stringify({ id: RECORD_ID }),
           });
           const data = await res.json();
           if (res.ok && data.success) {
             starBtn.classList.add('starred');
-            document.getElementById('btn-star-label').textContent = 'Mis en avant !';
-            document.getElementById('p-stars').textContent = data.stars;
-            document.getElementById('p-stars-s').textContent = data.stars > 1 ? 's' : '';
-            sessionStorage.setItem(STAR_KEY, '1');
+            starLbl.textContent = 'Mis en avant !';
+            document.getElementById('p-stars').textContent   = data.stars;
+            document.getElementById('p-stars-s').textContent = data.stars !== 1 ? 's' : '';
+            // Stocker en localStorage — persistant
+            localStorage.setItem(STAR_KEY, '1');
             hasStarred = true;
           }
         } catch { starBtn.disabled = false; }
@@ -511,9 +195,8 @@
 
       // Liens
       const linksEl = document.getElementById('p-links');
-      const email   = f['Email'];
-      let   kofiUrl = '';
-      let   liens   = [];
+      let kofiUrl   = '';
+      let liens     = [];
       try { liens = JSON.parse(f['Liens'] || '[]'); } catch {}
 
       liens.forEach(l => {
@@ -537,7 +220,7 @@
         document.getElementById('p-touche-card').style.display = 'block';
       }
 
-      // Technologies
+      // Techs
       const techs = f['Technologies'] || [];
       if (techs.length) {
         document.getElementById('p-techs').innerHTML =
@@ -547,16 +230,20 @@
 
       // Boutons contact
       const btnsEl = document.getElementById('p-contact-btns');
+      const email  = f['Email'];
+
       if (email) {
         const a = document.createElement('a');
-        a.href = `mailto:${email}`; a.className = 'profil-link contact';
+        a.href = `mailto:${email}`;
+        a.className = 'profil-link email-btn';
         a.innerHTML = '✉ Envoyer un email';
         btnsEl.appendChild(a);
       }
       if (kofiUrl) {
         const a = document.createElement('a');
         a.href = kofiUrl; a.target = '_blank'; a.rel = 'noopener';
-        a.className = 'profil-link kofi'; a.innerHTML = '☕ Offrir un café';
+        a.className = 'profil-link kofi';
+        a.innerHTML = '☕ Offrir un café';
         btnsEl.appendChild(a);
       }
       if (!email && !kofiUrl) {
