@@ -1,15 +1,20 @@
+# netlify.toml
+# Ce fichier doit être à la RACINE du repo (même niveau que index.html)
+
 [build]
+  # Pas de commande de build pour un site statique pur
   publish = "."
   functions = "netlify/functions"
- 
+
 [functions]
+  # CRITIQUE : active le support ES modules (import/export)
+  # Sans ça, vos fichiers .js avec "export async function handler"
+  # retournent une erreur 500 "handler is not a function"
   node_bundler = "esbuild"
- 
+
 [[headers]]
   for = "/.netlify/functions/*"
   [headers.values]
     Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Methods = "GET, POST, OPTIONS"
     Access-Control-Allow-Headers = "Content-Type"
- 
-
