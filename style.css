@@ -1468,3 +1468,173 @@ img {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+
+/* ================================================
+   OTTONOWMY — additions.css
+   Ajouts pour inscription v3 et page profil
+   À coller à la FIN de votre style.css existant
+================================================ */
+
+/* ========================
+   LIENS DYNAMIQUES (inscription)
+======================== */
+.link-row {
+  margin-bottom: 10px;
+  animation: slideUp .3s cubic-bezier(.22,1,.36,1) both;
+}
+
+.link-row-inner {
+  display: grid;
+  grid-template-columns: 160px 1fr 36px;
+  gap: 8px;
+  align-items: center;
+}
+
+.link-label-select {
+  padding: 10px 13px;
+  background: rgba(255,255,255,0.7);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--ink2);
+  font-family: var(--font-sans);
+  font-size: .83rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color .18s;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23b0aca5' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-color: rgba(255,255,255,0.7);
+  padding-right: 28px;
+}
+.link-label-select:focus {
+  border-color: rgba(255,154,124,0.5);
+  box-shadow: 0 0 0 3px rgba(255,154,124,0.1);
+}
+
+.link-url-input {
+  padding: 10px 13px;
+  background: rgba(255,255,255,0.7);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: .855rem;
+  outline: none;
+  transition: border-color .18s, box-shadow .18s;
+  width: 100%;
+}
+.link-url-input:focus {
+  border-color: rgba(255,154,124,0.5);
+  box-shadow: 0 0 0 3px rgba(255,154,124,0.1);
+  background: white;
+}
+.link-url-input::placeholder { color: var(--ink4); }
+
+.link-remove-btn {
+  width: 36px; height: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: rgba(255,255,255,0.6);
+  color: var(--ink4);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .18s;
+  flex-shrink: 0;
+}
+.link-remove-btn:hover {
+  background: #fff1f0;
+  border-color: rgba(255,80,60,0.25);
+  color: #d43a2a;
+}
+
+.btn-add-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px dashed var(--border2);
+  border-radius: var(--r-sm);
+  color: var(--ink3);
+  font-family: var(--font-sans);
+  font-size: .84rem;
+  font-weight: 500;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all .18s;
+  width: 100%;
+  justify-content: center;
+  margin-top: 4px;
+}
+.btn-add-link:hover {
+  border-color: var(--peach);
+  color: var(--peach);
+  background: var(--peach-l);
+}
+
+/* Section mise en avant (touche perso) */
+.form-section-highlight {
+  border-color: rgba(255,154,124,0.25) !important;
+  background: linear-gradient(145deg,
+    rgba(255,255,255,0.98),
+    rgba(255,245,240,0.95)) !important;
+}
+.form-section-highlight .form-section-head {
+  background: rgba(255,235,225,0.5) !important;
+  border-bottom-color: rgba(255,154,124,0.15) !important;
+}
+.form-section-highlight .form-section-head h2 {
+  color: var(--peach) !important;
+}
+
+/* ========================
+   CARDS ANNUAIRE — nouveaux éléments
+======================== */
+.dev-accroche {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: .88rem;
+  color: var(--ink2);
+  line-height: 1.55;
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
+}
+
+.dev-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  margin-top: 4px;
+}
+.dev-voir {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--ink3);
+  letter-spacing: -0.01em;
+  transition: color .18s;
+}
+.dev-card:hover .dev-voir { color: var(--ink); }
+
+.dev-kofi-badge {
+  font-size: .7rem;
+  font-weight: 600;
+  color: var(--amber);
+  background: var(--amber-l);
+  border: 1px solid rgba(232,160,32,0.2);
+  padding: 3px 9px;
+  border-radius: 100px;
+}
+
+@media (max-width: 480px) {
+  .link-row-inner {
+    grid-template-columns: 1fr 36px;
+    grid-template-rows: auto auto;
+  }
+  .link-label-select { grid-column: 1 / -1; }
+}

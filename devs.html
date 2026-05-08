@@ -5,23 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Annuaire — Ottonowmy</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- NAV -->
   <nav class="nav">
     <a href="index.html" class="nav-logo">Ottonowmy</a>
     <div class="nav-links">
-      <a href="devs.html">Annuaire</a>
+      <a href="devs.html" class="active">Annuaire</a>
       <a href="inscription.html" class="btn-nav">Rejoindre</a>
     </div>
   </nav>
 
   <div class="page-header">
-    <h1>Développeurs bénévoles</h1>
-    <p>Tous ces développeurs offrent leur temps librement. Contactez celui qui correspond à votre besoin.</p>
+    <h1>Les développeurs bénévoles</h1>
+    <p>Chaque profil est unique. Cliquez pour découvrir la touche perso de chaque développeur.</p>
   </div>
 
   <main class="annuaire-main">
@@ -30,7 +29,7 @@
       <div class="filters-bar">
         <div class="search-wrap">
           <span class="search-icon">&#8981;</span>
-          <input type="text" id="search" placeholder="Rechercher un nom, une technologie…" />
+          <input type="text" id="search" placeholder="Rechercher un nom, un langage…" />
         </div>
         <div class="filter-group">
           <select id="filter-specialite">
@@ -69,9 +68,11 @@
     <div class="container footer-inner">
       <div class="footer-logo">Ottonowmy</div>
       <div class="footer-links">
+        <a href="devs.html">Annuaire</a>
+        <a href="inscription.html">Inscription</a>
         <a href="mentions-legales.html">Mentions légales</a>
       </div>
-      <div class="footer-copy">© 2026 Ottonowmy</div>
+      <div class="footer-copy">© 2025 Ottonowmy</div>
     </div>
   </footer>
 
@@ -81,28 +82,21 @@
     async function loadDevs() {
       const loadingEl = document.getElementById('loading');
       try {
-        // Vercel : /api/devs-list  (pas /.netlify/functions/)
         const res = await fetch('/api/devs-list');
-
         if (!res.ok) {
           const err = await res.json().catch(() => ({ error: res.statusText }));
           throw new Error(`Erreur ${res.status} : ${err.error || res.statusText}`);
         }
-
         const records = await res.json();
-
         if (records.error) throw new Error(records.error);
-
         allDevs = Array.isArray(records) ? records : [];
         loadingEl.style.display = 'none';
         renderTop(allDevs);
         renderDevs(allDevs);
         updateCount(allDevs.length);
-
       } catch (err) {
-        console.error('Erreur chargement:', err);
         loadingEl.textContent = `Impossible de charger les données : ${err.message}`;
-        loadingEl.style.color = '#c0392b';
+        loadingEl.style.color = '#d43a2a';
       }
     }
 
@@ -112,35 +106,34 @@
     }
 
     function techBadges(techs) {
-      if (!techs || !techs.length) return '';
+      if (!techs?.length) return '';
       return techs.slice(0, 4).map(t => `<span class="tech-badge">${t}</span>`).join('') +
         (techs.length > 4 ? `<span class="tech-badge more">+${techs.length - 4}</span>` : '');
     }
 
     function devCard(r, top = false) {
-      const f     = r.fields || {};
-      const name  = f['Nom'] || 'Développeur';
-      const spec  = f['Spécialité'] || '';
-      const desc  = f['Description'] || '';
-      const techs = f['Technologies'] || [];
-      const dispo = f['Disponible'];
-      const kofi  = f['Lien Ko-fi'];
-      const github    = f['GitHub'];
-      const portfolio = f['Portfolio'];
-      const photo     = f['Photo'];
+      const f        = r.fields || {};
+      const name     = f['Nom'] || 'Développeur';
+      const spec     = f['Spécialité'] || '';
+      const accroche = f['Accroche'] || f['Description'] || '';
+      const techs    = f['Technologies'] || [];
+      const dispo    = f['Disponible'];
+      const photo    = f['Photo'];
+
+      // Détection Ko-fi dans les liens JSON
+      let kofiUrl = '';
+      try {
+        const liens = JSON.parse(f['Liens'] || '[]');
+        const kofi  = liens.find(l => l.label === 'Ko-fi');
+        if (kofi) kofiUrl = kofi.url;
+      } catch {}
 
       const avatar = photo
         ? `<img src="${photo}" alt="${name}" class="dev-avatar" />`
         : `<div class="dev-avatar">${initials(name)}</div>`;
 
-      const links = [
-        github    ? `<a href="${github}" target="_blank" rel="noopener" class="dev-link">GitHub</a>` : '',
-        portfolio ? `<a href="${portfolio}" target="_blank" rel="noopener" class="dev-link">Portfolio</a>` : '',
-        kofi      ? `<a href="${kofi}" target="_blank" rel="noopener" class="dev-link kofi">Ko-fi</a>` : '',
-      ].filter(Boolean).join('');
-
       return `
-        <div class="dev-card ${top ? 'dev-card-top' : ''} ${dispo ? '' : 'unavailable'}">
+        <a href="profil.html?id=${r.id}" class="dev-card ${top ? 'dev-card-top' : ''} ${dispo ? '' : 'unavailable'}" style="text-decoration:none;display:block;">
           ${top ? '<div class="top-tag">Mis en avant</div>' : ''}
           <div class="dev-card-header">
             ${avatar}
@@ -150,10 +143,13 @@
             </div>
             <div class="dev-dispo ${dispo ? 'available' : 'busy'}">${dispo ? 'Disponible' : 'Indisponible'}</div>
           </div>
-          ${desc ? `<p class="dev-desc">${desc.slice(0, 115)}${desc.length > 115 ? '…' : ''}</p>` : ''}
+          ${accroche ? `<p class="dev-accroche">"${accroche.slice(0, 90)}${accroche.length > 90 ? '…' : ''}"</p>` : ''}
           <div class="dev-techs">${techBadges(techs)}</div>
-          ${links ? `<div class="dev-actions">${links}</div>` : ''}
-        </div>`;
+          <div class="dev-card-footer">
+            <span class="dev-voir">Voir le profil →</span>
+            ${kofiUrl ? `<span class="dev-kofi-badge">☕ Ko-fi</span>` : ''}
+          </div>
+        </a>`;
     }
 
     function renderTop(devs) {
@@ -166,11 +162,7 @@
     function renderDevs(devs) {
       const el    = document.getElementById('devs-grid');
       const empty = document.getElementById('empty');
-      if (!devs.length) {
-        el.innerHTML = '';
-        empty.style.display = 'block';
-        return;
-      }
+      if (!devs.length) { el.innerHTML = ''; empty.style.display = 'block'; return; }
       empty.style.display = 'none';
       el.innerHTML = devs.map(r => devCard(r)).join('');
     }
@@ -184,16 +176,11 @@
       const q     = document.getElementById('search').value.toLowerCase();
       const spec  = document.getElementById('filter-specialite').value;
       const dispo = document.getElementById('filter-dispo').value;
-
       const filtered = allDevs.filter(r => {
         const f    = r.fields || {};
-        const text = [f['Nom'] || '', f['Description'] || '', ...(f['Technologies'] || [])]
-          .join(' ').toLowerCase();
-        return (!q    || text.includes(q))
-            && (!spec  || f['Spécialité'] === spec)
-            && (!dispo || f['Disponible']);
+        const text = [f['Nom']||'', f['Accroche']||'', f['Touche perso']||'', ...(f['Technologies']||[])].join(' ').toLowerCase();
+        return (!q || text.includes(q)) && (!spec || f['Spécialité'] === spec) && (!dispo || f['Disponible']);
       });
-
       renderDevs(filtered);
       updateCount(filtered.length);
     }
