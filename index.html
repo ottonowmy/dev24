@@ -174,7 +174,12 @@
   </footer>
 
   <script>
+  let analyticsLoaded = false;
+
   function loadAnalytics() {
+    if (analyticsLoaded) return;
+    analyticsLoaded = true;
+
     const script = document.createElement("script");
     script.src = "https://va.vercel-scripts.com/v1/script.js";
     script.defer = true;
@@ -183,32 +188,40 @@
 
   const banner = document.getElementById("cookie-banner");
 
-if (banner) {
-  const acceptBtn = document.getElementById("accept-cookies");
-  const rejectBtn = document.getElementById("reject-cookies");
+  if (banner) {
+    const acceptBtn = document.getElementById("accept-cookies");
+    const rejectBtn = document.getElementById("reject-cookies");
 
-  const consent = localStorage.getItem("cookiesAccepted");
+    const consent = localStorage.getItem("cookiesAccepted");
 
-  if (consent === "true") {
-    loadAnalytics();
-    banner.style.display = "none";
+    // Si déjà accepté
+    if (consent === "true") {
+      loadAnalytics();
+      banner.style.display = "none";
+    }
+
+    // Si refusé
+    if (consent === "false") {
+      banner.style.display = "none";
+    }
+
+    // Acceptation
+    if (acceptBtn) {
+      acceptBtn.addEventListener("click", () => {
+        localStorage.setItem("cookiesAccepted", "true");
+        loadAnalytics();
+        banner.style.display = "none";
+      });
+    }
+
+    // Refus
+    if (rejectBtn) {
+      rejectBtn.addEventListener("click", () => {
+        localStorage.setItem("cookiesAccepted", "false");
+        banner.style.display = "none";
+      });
+    }
   }
-
-  if (consent === "false") {
-    banner.style.display = "none";
-  }
-
-  acceptBtn?.addEventListener("click", () => {
-    localStorage.setItem("cookiesAccepted", "true");
-    loadAnalytics();
-    banner.style.display = "none";
-  });
-
-  rejectBtn?.addEventListener("click", () => {
-    localStorage.setItem("cookiesAccepted", "false");
-    banner.style.display = "none";
-  });
-}
 </script>
 
   <script>
