@@ -7,6 +7,75 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .form-section-highlight {
+      border-color: rgba(255,154,124,0.25) !important;
+    }
+    .form-section-highlight .form-section-head {
+      background: rgba(255,235,225,0.5) !important;
+      border-bottom-color: rgba(255,154,124,0.15) !important;
+    }
+    .form-section-highlight .form-section-head h2 { color: var(--peach) !important; }
+
+    .link-row { margin-bottom: 10px; animation: slideUp .3s cubic-bezier(.22,1,.36,1) both; }
+    .link-row-inner { display: grid; grid-template-columns: 160px 1fr 36px; gap: 8px; align-items: center; }
+
+    .link-label-select,
+    .link-url-input {
+      padding: 10px 13px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-size: .855rem;
+      outline: none;
+      transition: border-color .18s, box-shadow .18s;
+      width: 100%;
+    }
+    .link-label-select {
+      appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23b0aca5' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-color: rgba(255,255,255,0.7);
+      padding-right: 28px;
+      cursor: pointer;
+    }
+    .link-label-select:focus,
+    .link-url-input:focus {
+      border-color: rgba(255,154,124,0.5);
+      box-shadow: 0 0 0 3px rgba(255,154,124,0.1);
+      background: white;
+    }
+    .link-url-input::placeholder { color: var(--ink4); }
+
+    .link-remove-btn {
+      width: 36px; height: 36px;
+      border: 1px solid var(--border); border-radius: var(--r-sm);
+      background: rgba(255,255,255,0.6); color: var(--ink4);
+      font-size: 1.1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .18s; flex-shrink: 0;
+    }
+    .link-remove-btn:hover { background: #fff1f0; border-color: rgba(255,80,60,0.25); color: #d43a2a; }
+
+    .btn-add-link {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      background: transparent;
+      border: 1px dashed var(--border2); border-radius: var(--r-sm);
+      color: var(--ink3); font-family: var(--font-sans);
+      font-size: .84rem; font-weight: 500;
+      padding: 10px 16px; cursor: pointer;
+      transition: all .18s; width: 100%; margin-top: 4px;
+    }
+    .btn-add-link:hover { border-color: var(--peach); color: var(--peach); background: var(--peach-l); }
+
+    @media (max-width: 480px) {
+      .link-row-inner { grid-template-columns: 1fr 36px; grid-template-rows: auto auto; }
+      .link-label-select { grid-column: 1 / -1; }
+    }
+  </style>
 </head>
 <body>
 
@@ -30,7 +99,7 @@
         <div class="form-intro-item">Inscription entièrement gratuite</div>
         <div class="form-intro-item">Votre email n'est jamais affiché</div>
         <div class="form-intro-item">Jusqu'à 5 liens personnalisés</div>
-        <div class="form-intro-item">Modifiable à tout moment</div>
+        <div class="form-intro-item">Modifiable sur demande</div>
       </div>
 
       <form id="form" novalidate>
@@ -47,36 +116,34 @@
               <div class="form-group">
                 <label for="email">Email <span class="required">*</span></label>
                 <input type="email" id="email" placeholder="julie@exemple.com" required />
-                <small>Non affiché — utilisé pour les contacts directs si vous choisissez de le partager</small>
+                <small>Non affiché publiquement</small>
               </div>
             </div>
             <div class="form-group">
               <label for="photo">Photo de profil</label>
               <input type="url" id="photo" placeholder="https://github.com/votre-pseudo.png" />
-              <small>URL vers une image publique (avatar GitHub : github.com/PSEUDO.png)</small>
+              <small>URL vers une image publique (ex : github.com/PSEUDO.png)</small>
             </div>
           </div>
         </div>
 
-        <!-- TOUCHE PERSO — le coeur du profil -->
+        <!-- TOUCHE PERSO -->
         <div class="form-section form-section-highlight">
-          <div class="form-section-head">
-            <h2>Votre touche perso <span class="required">*</span></h2>
-          </div>
+          <div class="form-section-head"><h2>Votre touche perso <span class="required">*</span></h2></div>
           <div class="form-body">
             <div class="form-group">
-              <label for="accroche">Une phrase qui vous définit</label>
+              <label for="accroche">Une phrase qui vous définit <span class="required">*</span></label>
               <input type="text" id="accroche"
                 placeholder="Ex : Je transforme vos idées en produits en moins d'un week-end."
                 maxlength="120" required />
-              <small>Max 120 caractères — ce sera affiché en grand sur votre profil</small>
+              <small>Max 120 caractères — affiché en grand sur votre profil</small>
             </div>
             <div class="form-group">
               <label for="touche">Ce qui fait votre essence <span class="required">*</span></label>
               <textarea id="touche" rows="5"
-                placeholder="Parlez de ce qui vous anime vraiment. Pourquoi vous faites ça bénévolement ? Quel type de projets vous fait vibrer ? Qu'est-ce que vous apportez que personne d'autre n'apporte ?"
+                placeholder="Pourquoi faites-vous ça bénévolement ? Quel type de projets vous fait vibrer ? Qu'est-ce que vous apportez que personne d'autre n'apporte ?"
                 required></textarea>
-              <small>C'est la partie la plus importante de votre profil. Soyez authentique.</small>
+              <small>La partie la plus importante de votre profil. Soyez authentique.</small>
             </div>
           </div>
         </div>
@@ -85,22 +152,10 @@
         <div class="form-section">
           <div class="form-section-head"><h2>Compétences</h2></div>
           <div class="form-body">
-            <div class="form-group">
-              <label for="specialite">Spécialité principale <span class="required">*</span></label>
-              <select id="specialite" required>
-                <option value="">Sélectionner…</option>
-                <option value="Frontend">Frontend</option>
-                <option value="Backend">Backend</option>
-                <option value="Fullstack">Fullstack</option>
-                <option value="Mobile">Mobile</option>
-                <option value="DevOps">DevOps</option>
-                <option value="Data">Data</option>
-                <option value="Design">Design</option>
-              </select>
-            </div>
+           
             <div class="form-group">
               <label>Langages &amp; technologies <span class="required">*</span></label>
-              <div class="tech-grid" id="tech-grid">
+              <div class="tech-grid">
                 <label class="tech-check"><input type="checkbox" value="HTML/CSS" />HTML / CSS</label>
                 <label class="tech-check"><input type="checkbox" value="JavaScript" />JavaScript</label>
                 <label class="tech-check"><input type="checkbox" value="TypeScript" />TypeScript</label>
@@ -130,36 +185,15 @@
           </div>
         </div>
 
-        <!-- LIENS DYNAMIQUES -->
+        <!-- LIENS -->
         <div class="form-section">
           <div class="form-section-head"><h2>Liens (max 5)</h2></div>
           <div class="form-body">
             <p style="font-size:.84rem;color:var(--ink3);margin-bottom:18px;font-weight:300;">
-              Ajoutez jusqu'à 5 liens : GitHub, Ko-fi, Portfolio, LinkedIn, ou n'importe quoi d'autre.
+              GitHub, Ko-fi, Portfolio, LinkedIn — ajoutez ce que vous voulez.
             </p>
             <div id="links-container"></div>
-            <button type="button" id="add-link-btn" class="btn-add-link">
-              + Ajouter un lien
-            </button>
-          </div>
-        </div>
-
-        <!-- DISPONIBILITÉ -->
-        <div class="form-section">
-          <div class="form-section-head"><h2>Disponibilité</h2></div>
-          <div class="form-body">
-            <div class="dispo-row">
-              <div>
-                <p>Je suis disponible pour recevoir des demandes</p>
-                <small>Vous pouvez nous écrire pour changer cela à tout moment</small>
-              </div>
-              <div class="toggle-wrap">
-                <input type="checkbox" class="toggle-input" id="disponible" checked />
-                <label class="toggle-track" for="disponible">
-                  <span class="toggle-thumb"></span>
-                </label>
-              </div>
-            </div>
+            <button type="button" id="add-link-btn" class="btn-add-link">+ Ajouter un lien</button>
           </div>
         </div>
 
@@ -168,7 +202,7 @@
           <input type="checkbox" id="cgv" required />
           <label for="cgv">
             J'ai lu et j'accepte les <a href="mentions-legales.html" target="_blank">mentions légales</a>.
-            Je consens à ce que mon profil (hors email) soit affiché publiquement sur Ottonowmy.
+            Je consens à ce que mon profil (hors email) soit affiché publiquement.
             <span class="required">*</span>
           </label>
         </div>
@@ -200,20 +234,20 @@
   </footer>
 
   <script>
-    // ---- Tech checkboxes ----
+    // Tech checkboxes
     document.querySelectorAll('.tech-check input').forEach(input => {
       input.addEventListener('change', () => {
         input.closest('.tech-check').classList.toggle('checked', input.checked);
       });
     });
 
-    // ---- Liens dynamiques ----
-    const LINK_PRESETS = [
-      { label: 'GitHub',    placeholder: 'https://github.com/pseudo',       icon: '⌥' },
-      { label: 'Ko-fi',     placeholder: 'https://ko-fi.com/pseudo',         icon: '☕' },
-      { label: 'Portfolio', placeholder: 'https://votre-site.fr',            icon: '◈' },
-      { label: 'LinkedIn',  placeholder: 'https://linkedin.com/in/pseudo',   icon: '◉' },
-      { label: 'Autre',     placeholder: 'https://…',                        icon: '◎' },
+    // Liens dynamiques
+    const PRESETS = [
+      { label: 'GitHub',    placeholder: 'https://github.com/pseudo' },
+      { label: 'Ko-fi',     placeholder: 'https://ko-fi.com/pseudo' },
+      { label: 'Portfolio', placeholder: 'https://votre-site.fr' },
+      { label: 'LinkedIn',  placeholder: 'https://linkedin.com/in/pseudo' },
+      { label: 'Autre',     placeholder: 'https://…' },
     ];
 
     const container = document.getElementById('links-container');
@@ -222,15 +256,12 @@
 
     function addLink() {
       if (linkCount >= 5) return;
-
-      const idx  = linkCount;
-      const preset = LINK_PRESETS[idx] || LINK_PRESETS[4];
-      const row  = document.createElement('div');
+      const preset = PRESETS[linkCount] || PRESETS[4];
+      const row    = document.createElement('div');
       row.className = 'link-row';
-      row.dataset.index = idx;
       row.innerHTML = `
         <div class="link-row-inner">
-          <select class="link-label-select" data-idx="${idx}">
+          <select class="link-label-select">
             <option value="GitHub">GitHub</option>
             <option value="Ko-fi">Ko-fi</option>
             <option value="Portfolio">Portfolio</option>
@@ -241,120 +272,92 @@
             <option value="YouTube">YouTube</option>
             <option value="Autre">Autre</option>
           </select>
-          <input type="url" class="link-url-input" data-idx="${idx}"
-            placeholder="${preset.placeholder}" />
-          <button type="button" class="link-remove-btn" data-idx="${idx}" title="Supprimer">×</button>
+          <input type="url" class="link-url-input" placeholder="${preset.placeholder}" />
+          <button type="button" class="link-remove-btn" title="Supprimer">×</button>
         </div>`;
-
-      // Pré-sélectionner selon l'ordre
       row.querySelector('select').value = preset.label;
-
       row.querySelector('.link-remove-btn').addEventListener('click', () => {
-        row.remove();
-        linkCount--;
-        updateAddBtn();
+        row.remove(); linkCount--; updateBtn();
       });
-
       container.appendChild(row);
       linkCount++;
-      updateAddBtn();
+      updateBtn();
     }
 
-    function updateAddBtn() {
+    function updateBtn() {
       addBtn.style.display = linkCount >= 5 ? 'none' : 'flex';
     }
 
     addBtn.addEventListener('click', addLink);
-    // Ajouter un premier lien par défaut
-    addLink();
+    addLink(); // un lien par défaut
 
-    // ---- Soumission ----
+    // Soumission
     document.getElementById('form').addEventListener('submit', async (e) => {
       e.preventDefault();
-
       const errorEl   = document.getElementById('form-error');
       const successEl = document.getElementById('form-success');
       const btn       = document.getElementById('submit-btn');
-      errorEl.style.display   = 'none';
-      successEl.style.display = 'none';
+      errorEl.style.display = successEl.style.display = 'none';
 
-      const nom       = document.getElementById('nom').value.trim();
-      const email     = document.getElementById('email').value.trim();
-      const accroche  = document.getElementById('accroche').value.trim();
-      const touche    = document.getElementById('touche').value.trim();
-      const specialite = document.getElementById('specialite').value;
-      const cgv       = document.getElementById('cgv').checked;
-      const photo     = document.getElementById('photo').value.trim();
-      const techs     = Array.from(
-        document.querySelectorAll('.tech-check input:checked')
-      ).map(i => i.value);
+      const nom      = document.getElementById('nom').value.trim();
+      const email    = document.getElementById('email').value.trim();
+      const accroche = document.getElementById('accroche').value.trim();
+      const touche   = document.getElementById('touche').value.trim();
+      const spec     = document.getElementById('specialite').value;
+      const cgv      = document.getElementById('cgv').checked;
+      const photo    = document.getElementById('photo').value.trim();
+      const techs    = Array.from(document.querySelectorAll('.tech-check input:checked')).map(i => i.value);
 
-      // Collecte des liens
-      const links = [];
+      const liens = [];
       document.querySelectorAll('.link-row').forEach(row => {
-        const label = row.querySelector('.link-label-select').value.trim();
+        const label = row.querySelector('.link-label-select').value;
         const url   = row.querySelector('.link-url-input').value.trim();
-        if (url) links.push({ label, url });
+        if (url) liens.push({ label, url });
       });
 
-      // Validation
-      if (!nom || !email || !touche || !specialite) {
+      if (!nom || !email || !accroche || !touche) {
         errorEl.textContent   = 'Merci de remplir tous les champs obligatoires.';
-        errorEl.style.display = 'block';
-        return;
+        errorEl.style.display = 'block'; return;
       }
       if (!techs.length) {
         errorEl.textContent   = 'Sélectionnez au moins un langage ou une technologie.';
-        errorEl.style.display = 'block';
-        return;
+        errorEl.style.display = 'block'; return;
       }
       if (!cgv) {
-        errorEl.textContent   = 'Vous devez accepter les mentions légales pour continuer.';
-        errorEl.style.display = 'block';
-        return;
+        errorEl.textContent   = 'Vous devez accepter les mentions légales.';
+        errorEl.style.display = 'block'; return;
       }
 
       document.getElementById('submit-text').style.display    = 'none';
       document.getElementById('submit-loading').style.display = 'inline';
       btn.disabled = true;
 
-      // Construction des champs Airtable
-      // Les liens sont sérialisés en JSON dans un champ texte "Liens"
       const fields = {
         'Nom':              nom,
         'Email':            email,
         'Accroche':         accroche,
         'Touche perso':     touche,
-        'Spécialité':       specialite,
         'Technologies':     techs,
-        'Disponible':       document.getElementById('disponible').checked,
+        'Liens':            JSON.stringify(liens),
         'Date inscription': new Date().toISOString().split('T')[0],
-        'Liens':            JSON.stringify(links),
       };
-      if (photo) fields['Photo'] = photo;
+      if (spec)  fields['Spécialité'] = spec;
+      if (photo) fields['Photo']      = photo;
 
       try {
-        const res = await fetch('/api/devs', {
-          method:  'POST',
+        const res  = await fetch('/api/devs', {
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({ fields }),
+          body: JSON.stringify({ fields }),
         });
-
         let data;
-        try { data = await res.json(); }
-        catch { throw new Error(`Réponse invalide (statut ${res.status})`); }
-
-        if (!res.ok || data.error) {
-          throw new Error(data?.error || `Erreur ${res.status}`);
-        }
+        try { data = await res.json(); } catch { throw new Error(`Statut ${res.status}`); }
+        if (!res.ok || data.error) throw new Error(data?.error || `Erreur ${res.status}`);
 
         successEl.style.display = 'block';
         document.getElementById('form').reset();
         document.querySelectorAll('.tech-check').forEach(el => el.classList.remove('checked'));
-        container.innerHTML = '';
-        linkCount = 0;
-        addLink();
-        updateAddBtn();
+        container.innerHTML = ''; linkCount = 0; addLink(); updateBtn();
         successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
       } catch (err) {

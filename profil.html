@@ -8,21 +8,19 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* ---- Styles spécifiques à la page profil ---- */
-
     .profil-wrap {
       max-width: 860px;
       margin: 0 auto;
       padding: 100px 28px 100px;
     }
 
-    /* Hero profil */
+    /* Hero */
     .profil-hero {
       display: grid;
       grid-template-columns: auto 1fr;
       gap: 36px;
       align-items: start;
-      margin-bottom: 56px;
+      margin-bottom: 48px;
       animation: slideUp .7s cubic-bezier(.22,1,.36,1) both;
     }
 
@@ -37,20 +35,20 @@
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
       object-fit: cover;
-      box-shadow: var(--shadow),
-                  inset 0 0 0 1px rgba(0,0,0,0.06);
+      box-shadow: var(--shadow), inset 0 0 0 1px rgba(0,0,0,0.06);
       letter-spacing: -0.02em;
     }
 
-    .profil-hero-info { min-width: 0; }
+    .profil-hero-info { min-width: 0; padding-top: 4px; }
 
-    .profil-badge-row {
+    .profil-meta-row {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       flex-wrap: wrap;
     }
+
     .profil-spec {
       font-size: .72rem;
       font-weight: 700;
@@ -62,14 +60,23 @@
       padding: 4px 12px;
       border-radius: 100px;
     }
-    .profil-dispo {
-      font-size: .72rem;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 100px;
+
+    /* Stats : vues + stars */
+    .profil-stats {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
     }
-    .profil-dispo.on  { background: var(--sage-l);  color: var(--sage);  border: 1px solid rgba(109,185,144,0.2); }
-    .profil-dispo.off { background: var(--bg2);     color: var(--ink4);  border: 1px solid var(--border); }
+    .profil-stat {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .78rem;
+      color: var(--ink4);
+      font-weight: 400;
+    }
+    .profil-stat-icon { font-size: .85rem; }
 
     .profil-name {
       font-family: var(--font-serif);
@@ -78,15 +85,46 @@
       letter-spacing: -0.025em;
       line-height: 1.08;
       color: var(--ink);
-      margin-bottom: 8px;
+      margin-bottom: 16px;
     }
 
-    /* Links row */
+    /* Bouton étoile */
+    .btn-star {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--amber);
+      background: var(--amber-l);
+      border: 1px solid rgba(232,160,32,0.25);
+      padding: 7px 16px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all .2s;
+      letter-spacing: -0.01em;
+    }
+    .btn-star:hover {
+      background: #fde8b8;
+      border-color: rgba(232,160,32,0.4);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(232,160,32,0.15);
+    }
+    .btn-star.starred {
+      background: var(--amber);
+      color: white;
+      border-color: var(--amber);
+      box-shadow: 0 4px 12px rgba(232,160,32,0.3);
+    }
+    .btn-star.starred:hover { opacity: .88; }
+    .btn-star:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    /* Liens */
     .profil-links {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      margin-top: 16px;
+      margin-top: 14px;
     }
     .profil-link {
       display: inline-flex;
@@ -133,7 +171,7 @@
       border: 1px solid rgba(255,154,124,0.15);
       border-radius: var(--r-lg);
       padding: 36px 40px;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
       animation: slideUp .7s .1s cubic-bezier(.22,1,.36,1) both;
       position: relative;
       overflow: hidden;
@@ -144,7 +182,7 @@
       top: -20px; left: 24px;
       font-family: var(--font-serif);
       font-size: 8rem;
-      color: rgba(255,154,124,0.12);
+      color: rgba(255,154,124,0.1);
       line-height: 1;
       pointer-events: none;
       user-select: none;
@@ -161,24 +199,22 @@
       z-index: 1;
     }
 
-    /* Grid infos */
-    .profil-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    /* Cards infos */
+    .profil-cards {
+      display: flex;
+      flex-direction: column;
       gap: 16px;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
       animation: slideUp .7s .2s cubic-bezier(.22,1,.36,1) both;
     }
 
     .profil-card {
-      background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,248,242,0.9));
+      background: linear-gradient(145deg, rgba(255,255,255,0.97), rgba(255,248,242,0.92));
       border: 1px solid rgba(255,255,255,0.9);
       border-radius: var(--r);
       padding: 28px 26px;
       box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,0.9);
     }
-    .profil-card.full { grid-column: 1 / -1; }
-
     .profil-card-label {
       font-size: .68rem;
       font-weight: 700;
@@ -189,15 +225,13 @@
       padding-bottom: 10px;
       border-bottom: 1px solid var(--border);
     }
-
     .profil-touche {
       font-size: .95rem;
       color: var(--ink2);
-      line-height: 1.8;
+      line-height: 1.85;
       font-weight: 300;
       white-space: pre-wrap;
     }
-
     .profil-techs {
       display: flex;
       flex-wrap: wrap;
@@ -208,11 +242,11 @@
       padding: 5px 12px;
     }
 
-    /* Contact card */
-    .profil-contact-card {
+    /* Contact */
+    .profil-contact {
       background: var(--grad-cta);
       border-radius: var(--r-lg);
-      padding: 40px 40px;
+      padding: 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -222,7 +256,7 @@
       animation: slideUp .7s .3s cubic-bezier(.22,1,.36,1) both;
       box-shadow: var(--shadow-lg);
     }
-    .profil-contact-card::before {
+    .profil-contact::before {
       content: '';
       position: absolute;
       top: -80px; right: -60px;
@@ -231,7 +265,7 @@
       border-radius: 50%;
       pointer-events: none;
     }
-    .profil-contact-card h3 {
+    .profil-contact h3 {
       font-family: var(--font-serif);
       font-size: 1.5rem;
       font-weight: 400;
@@ -239,7 +273,7 @@
       margin-bottom: 8px;
       letter-spacing: -0.02em;
     }
-    .profil-contact-card p {
+    .profil-contact p {
       font-size: .85rem;
       color: rgba(255,255,255,0.45);
       font-weight: 300;
@@ -255,7 +289,7 @@
       z-index: 1;
     }
 
-    /* Loading / erreur */
+    /* États */
     .profil-loading {
       text-align: center;
       padding: 120px 0;
@@ -277,10 +311,9 @@
     @media (max-width: 640px) {
       .profil-hero { grid-template-columns: 1fr; }
       .profil-avatar { width: 80px; height: 80px; font-size: 1.5rem; border-radius: 18px; }
-      .profil-grid { grid-template-columns: 1fr; }
-      .profil-contact-card { flex-direction: column; padding: 28px 24px; }
+      .profil-contact { flex-direction: column; padding: 28px 24px; }
       .profil-contact-btns { width: 100%; }
-      .profil-accroche-block { padding: 24px 24px; }
+      .profil-accroche-block { padding: 24px; }
     }
   </style>
 </head>
@@ -297,28 +330,42 @@
   <main>
     <div class="profil-wrap">
 
-      <!-- État chargement -->
       <div id="profil-loading" class="profil-loading">Chargement du profil…</div>
 
-      <!-- État erreur -->
       <div id="profil-error" class="profil-not-found" style="display:none">
         <h2>Profil introuvable</h2>
         <p>Ce développeur n'existe pas ou a été retiré de la plateforme.</p>
         <a href="devs.html" class="btn-primary">← Retour à l'annuaire</a>
       </div>
 
-      <!-- Contenu profil -->
       <div id="profil-content" style="display:none">
 
         <!-- HERO -->
         <div class="profil-hero">
           <div id="p-avatar" class="profil-avatar"></div>
           <div class="profil-hero-info">
-            <div class="profil-badge-row">
+
+            <div class="profil-meta-row">
               <span id="p-spec" class="profil-spec" style="display:none"></span>
-              <span id="p-dispo" class="profil-dispo"></span>
             </div>
+
+            <div class="profil-stats">
+              <div class="profil-stat">
+                <span class="profil-stat-icon">◎</span>
+                <span id="p-vues">0</span> vue<span id="p-vues-s"></span>
+              </div>
+              <div class="profil-stat">
+                <span class="profil-stat-icon">★</span>
+                <span id="p-stars">0</span> étoile<span id="p-stars-s"></span>
+              </div>
+            </div>
+
             <h1 id="p-name" class="profil-name"></h1>
+
+            <button id="btn-star" class="btn-star">
+              ★ <span id="btn-star-label">Mettre en avant</span>
+            </button>
+
             <div id="p-links" class="profil-links"></div>
           </div>
         </div>
@@ -328,28 +375,28 @@
           <p id="p-accroche" class="profil-accroche"></p>
         </div>
 
-        <!-- GRID : touche perso + techs -->
-        <div class="profil-grid">
-          <div id="p-touche-card" class="profil-card full" style="display:none">
+        <!-- INFOS -->
+        <div class="profil-cards">
+          <div id="p-touche-card" class="profil-card" style="display:none">
             <div class="profil-card-label">Touche perso</div>
             <p id="p-touche" class="profil-touche"></p>
           </div>
-          <div id="p-techs-card" class="profil-card full" style="display:none">
+          <div id="p-techs-card" class="profil-card" style="display:none">
             <div class="profil-card-label">Langages &amp; technologies</div>
             <div id="p-techs" class="profil-techs"></div>
           </div>
         </div>
 
         <!-- CONTACT -->
-        <div id="p-contact-card" class="profil-contact-card">
+        <div id="p-contact" class="profil-contact">
           <div>
             <h3>Vous avez un projet ?</h3>
-            <p>Contactez ce développeur directement par email, ou soutenez son bénévolat via Ko-fi.</p>
+            <p>Contactez ce développeur directement par email, ou soutenez son travail bénévole.</p>
           </div>
           <div id="p-contact-btns" class="profil-contact-btns"></div>
         </div>
 
-      </div><!-- /profil-content -->
+      </div>
     </div>
   </main>
 
@@ -367,16 +414,17 @@
 
   <script>
     const LINK_ICONS = {
-      'GitHub':     '⌥',
-      'Ko-fi':      '☕',
-      'Portfolio':  '◈',
-      'LinkedIn':   '◉',
-      'Twitter / X':'◎',
-      'Dribbble':   '◎',
-      'Behance':    '◎',
-      'YouTube':    '▶',
-      'Autre':      '→',
+      'GitHub': '⌥', 'Ko-fi': '☕', 'Portfolio': '◈',
+      'LinkedIn': '◉', 'Twitter / X': '◎', 'Dribbble': '◎',
+      'Behance': '◎', 'YouTube': '▶', 'Autre': '→',
     };
+
+    const params  = new URLSearchParams(window.location.search);
+    const RECORD_ID = params.get('id');
+
+    // Anti-double star : stocké en sessionStorage
+    const STAR_KEY = `starred_${RECORD_ID}`;
+    let   hasStarred = sessionStorage.getItem(STAR_KEY) === '1';
 
     function initials(name) {
       if (!name) return '?';
@@ -384,21 +432,13 @@
     }
 
     async function loadProfil() {
-      const params = new URLSearchParams(window.location.search);
-      const id     = params.get('id');
-
-      if (!id) { showError(); return; }
-
+      if (!RECORD_ID) { showError(); return; }
       try {
-        const res  = await fetch(`/api/dev?id=${id}`);
+        const res  = await fetch(`/api/dev?id=${RECORD_ID}`);
         const data = await res.json();
-
         if (!res.ok || data.error) { showError(); return; }
-
         renderProfil(data);
-      } catch {
-        showError();
-      }
+      } catch { showError(); }
     }
 
     function showError() {
@@ -409,19 +449,15 @@
     function renderProfil(record) {
       const f = record.fields || {};
 
-      document.getElementById('profil-loading').style.display  = 'none';
-      document.getElementById('profil-content').style.display  = 'block';
-
-      // Titre de la page
+      document.getElementById('profil-loading').style.display = 'none';
+      document.getElementById('profil-content').style.display = 'block';
       document.title = `${f['Nom'] || 'Développeur'} — Ottonowmy`;
 
       // Avatar
       const avatarEl = document.getElementById('p-avatar');
       if (f['Photo']) {
         const img = document.createElement('img');
-        img.src = f['Photo'];
-        img.alt = f['Nom'];
-        img.className = 'profil-avatar';
+        img.src = f['Photo']; img.alt = f['Nom']; img.className = 'profil-avatar';
         avatarEl.replaceWith(img);
       } else {
         avatarEl.textContent = initials(f['Nom']);
@@ -437,26 +473,54 @@
         el.style.display = 'inline-flex';
       }
 
-      // Disponibilité
-      const dispoEl = document.getElementById('p-dispo');
-      dispoEl.textContent = f['Disponible'] ? 'Disponible' : 'Indisponible';
-      dispoEl.classList.add(f['Disponible'] ? 'on' : 'off');
+      // Stats
+      const vues  = f['Vues']  || 0;
+      const stars = f['Stars'] || 0;
+      document.getElementById('p-vues').textContent   = vues;
+      document.getElementById('p-stars').textContent  = stars;
+      document.getElementById('p-vues-s').textContent = vues > 1 ? 's' : '';
+      document.getElementById('p-stars-s').textContent = stars > 1 ? 's' : '';
 
-      // Liens (dans la hero)
-      const linksEl  = document.getElementById('p-links');
-      const email    = f['Email'];
-      let   kofiUrl  = '';
-      let   liens    = [];
+      // Bouton étoile
+      const starBtn = document.getElementById('btn-star');
+      if (hasStarred) {
+        starBtn.classList.add('starred');
+        document.getElementById('btn-star-label').textContent = 'Mis en avant !';
+        starBtn.disabled = true;
+      }
+      starBtn.addEventListener('click', async () => {
+        if (hasStarred) return;
+        starBtn.disabled = true;
+        try {
+          const res  = await fetch('/api/star', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: RECORD_ID }),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            starBtn.classList.add('starred');
+            document.getElementById('btn-star-label').textContent = 'Mis en avant !';
+            document.getElementById('p-stars').textContent = data.stars;
+            document.getElementById('p-stars-s').textContent = data.stars > 1 ? 's' : '';
+            sessionStorage.setItem(STAR_KEY, '1');
+            hasStarred = true;
+          }
+        } catch { starBtn.disabled = false; }
+      });
 
+      // Liens
+      const linksEl = document.getElementById('p-links');
+      const email   = f['Email'];
+      let   kofiUrl = '';
+      let   liens   = [];
       try { liens = JSON.parse(f['Liens'] || '[]'); } catch {}
 
       liens.forEach(l => {
         if (l.label === 'Ko-fi') kofiUrl = l.url;
         const a = document.createElement('a');
-        a.href        = l.url;
-        a.target      = '_blank';
-        a.rel         = 'noopener';
-        a.className   = `profil-link${l.label === 'Ko-fi' ? ' kofi' : ''}`;
+        a.href = l.url; a.target = '_blank'; a.rel = 'noopener';
+        a.className = `profil-link${l.label === 'Ko-fi' ? ' kofi' : ''}`;
         a.textContent = `${LINK_ICONS[l.label] || '→'} ${l.label}`;
         linksEl.appendChild(a);
       });
@@ -476,35 +540,27 @@
       // Technologies
       const techs = f['Technologies'] || [];
       if (techs.length) {
-        const el = document.getElementById('p-techs');
-        el.innerHTML = techs.map(t => `<span class="tech-badge">${t}</span>`).join('');
+        document.getElementById('p-techs').innerHTML =
+          techs.map(t => `<span class="tech-badge">${t}</span>`).join('');
         document.getElementById('p-techs-card').style.display = 'block';
       }
 
-      // Boutons de contact (bas de page)
+      // Boutons contact
       const btnsEl = document.getElementById('p-contact-btns');
-
       if (email) {
         const a = document.createElement('a');
-        a.href      = `mailto:${email}`;
-        a.className = 'profil-link contact';
+        a.href = `mailto:${email}`; a.className = 'profil-link contact';
         a.innerHTML = '✉ Envoyer un email';
         btnsEl.appendChild(a);
       }
-
       if (kofiUrl) {
         const a = document.createElement('a');
-        a.href      = kofiUrl;
-        a.target    = '_blank';
-        a.rel       = 'noopener';
-        a.className = 'profil-link kofi';
-        a.innerHTML = '☕ Offrir un café';
+        a.href = kofiUrl; a.target = '_blank'; a.rel = 'noopener';
+        a.className = 'profil-link kofi'; a.innerHTML = '☕ Offrir un café';
         btnsEl.appendChild(a);
       }
-
-      // Si pas de liens de contact du tout
       if (!email && !kofiUrl) {
-        document.getElementById('p-contact-card').style.display = 'none';
+        document.getElementById('p-contact').style.display = 'none';
       }
     }
 
