@@ -1163,3 +1163,51 @@ img { max-width: 100%; display: block; }
   .link-label-select { grid-column: 1 / -1; }
   .hero-stats { gap: 20px; }
 }
+
+
+.cookie-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  background: #111;
+  color: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  z-index: 9999;
+  font-family: DM Sans, sans-serif;
+}
+
+.cookie-banner p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.cookie-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.cookie-actions button {
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+#accept-cookies {
+  background: #fff;
+  color: #000;
+}
+
+#reject-cookies {
+  background: transparent;
+  color: #fff;
+  border: 1px solid #555;
+}
