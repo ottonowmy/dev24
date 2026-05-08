@@ -1,263 +1,274 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Profil — Ottonowmy</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profil — Ottonowmy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-  <nav class="nav">
-    <a href="index.html" class="nav-logo">Ottonowmy</a>
-    <div class="nav-links">
-      <a href="devs.html">Annuaire</a>
-      <a href="inscription.html" class="btn-nav">Je suis dev</a>
-    </div>
-  </nav>
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">Ottonowmy</a>
+        <div class="nav-links">
+            <a href="devs.html">Annuaire</a>
+            <a href="inscription.html" class="btn-nav">Je suis dev</a>
+        </div>
+    </nav>
 
-  <main>
-    <div class="profil-wrap">
+    <main>
+        <div class="profil-wrap">
 
-      <div id="profil-loading" class="profil-loading">Chargement du profil…</div>
+            <div id="profil-loading" class="profil-loading">Chargement du profil…</div>
 
-      <div id="profil-error" class="profil-not-found" style="display:none">
-        <h2>Profil introuvable</h2>
-        <p>Ce développeur n'existe pas ou a été retiré de la plateforme.</p>
-        <a href="devs.html" class="btn-primary">← Retour à l'annuaire</a>
-      </div>
-
-      <div id="profil-content" style="display:none">
-
-        <!-- HERO -->
-        <div class="profil-hero">
-          <div id="p-avatar-wrap">
-            <div id="p-avatar" class="profil-avatar"></div>
-          </div>
-          <div class="profil-hero-info">
-            <div class="profil-meta">
-              <span id="p-spec" class="profil-spec" style="display:none"></span>
+            <div id="profil-error" class="profil-not-found" style="display:none">
+                <h2>Profil introuvable</h2>
+                <p>Ce développeur n'existe pas ou a été retiré de la plateforme.</p>
+                <a href="devs.html" class="btn-primary">← Retour à l'annuaire</a>
             </div>
-            <div class="profil-counters">
-              <div class="profil-counter">◎ <span id="p-vues">0</span> vue<span id="p-vues-s"></span></div>
-              <div class="profil-counter">★ <span id="p-stars">0</span> étoile<span id="p-stars-s"></span></div>
+
+            <div id="profil-content" style="display:none">
+
+                <!-- HERO -->
+                <div class="profil-hero">
+                    <div id="p-avatar-wrap">
+                        <div id="p-avatar" class="profil-avatar"></div>
+                    </div>
+                    <div class="profil-hero-info">
+                        <div class="profil-meta">
+                            <span id="p-spec" class="profil-spec" style="display:none"></span>
+                        </div>
+                        <div class="profil-counters">
+                            <div class="profil-counter">◎ <span id="p-vues">0</span> vue<span id="p-vues-s"></span>
+                            </div>
+                            <div class="profil-counter">★ <span id="p-stars">0</span> étoile<span id="p-stars-s"></span>
+                            </div>
+                        </div>
+                        <h1 id="p-name" class="profil-name"></h1>
+                        <button id="btn-star" class="btn-star">
+                            ★ <span id="btn-star-label">Mettre en avant</span>
+                        </button>
+                        <div id="p-links" class="profil-links" style="margin-top:14px"></div>
+                    </div>
+                </div>
+
+                <!-- ACCROCHE -->
+                <div id="p-accroche-block" class="profil-accroche-block" style="display:none">
+                    <p id="p-accroche" class="profil-accroche"></p>
+                </div>
+
+                <!-- CARDS -->
+                <div class="profil-cards">
+                    <div id="p-touche-card" class="profil-card" style="display:none">
+                        <div class="profil-card-label">Touche perso</div>
+                        <p id="p-touche" class="profil-touche"></p>
+                    </div>
+                    <div id="p-techs-card" class="profil-card" style="display:none">
+                        <div class="profil-card-label">Langages &amp; technologies</div>
+                        <div id="p-techs" class="profil-techs"></div>
+                    </div>
+                </div>
+
+                <!-- CONTACT -->
+                <div id="p-contact" class="profil-contact">
+                    <div>
+                        <h3>Vous avez un projet ?</h3>
+                        <p>Envoyez un email directement à ce développeur. Pas d'intermédiaire, juste vous et lui.</p>
+                    </div>
+                    <div id="p-contact-btns" class="profil-contact-btns"></div>
+                </div>
+
             </div>
-            <h1 id="p-name" class="profil-name"></h1>
-            <button id="btn-star" class="btn-star">
-              ★ <span id="btn-star-label">Mettre en avant</span>
-            </button>
-            <div id="p-links" class="profil-links" style="margin-top:14px"></div>
-          </div>
         </div>
+    </main>
 
-        <!-- ACCROCHE -->
-        <div id="p-accroche-block" class="profil-accroche-block" style="display:none">
-          <p id="p-accroche" class="profil-accroche"></p>
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-logo">Ottonowmy</div>
+            <div class="footer-links">
+                <a href="devs.html">Annuaire</a>
+                <a href="inscription.html">Inscription</a>
+                <a href="mentions-legales.html">Mentions légales</a>
+            </div>
+            <div class="footer-copy">© 2025 Ottonowmy</div>
         </div>
+    </footer>
 
-        <!-- CARDS -->
-        <div class="profil-cards">
-          <div id="p-touche-card" class="profil-card" style="display:none">
-            <div class="profil-card-label">Touche perso</div>
-            <p id="p-touche" class="profil-touche"></p>
-          </div>
-          <div id="p-techs-card" class="profil-card" style="display:none">
-            <div class="profil-card-label">Langages &amp; technologies</div>
-            <div id="p-techs" class="profil-techs"></div>
-          </div>
-        </div>
+    <script>
+        const LINK_ICONS = {
+            'GitHub': '⌥', 'Ko-fi': '☕', 'Portfolio': '◈', 'LinkedIn': '◉',
+            'Twitter / X': '◎', 'Dribbble': '◎', 'Behance': '◎', 'YouTube': '▶', 'Autre': '→',
+        };
 
-        <!-- CONTACT -->
-        <div id="p-contact" class="profil-contact">
-          <div>
-            <h3>Vous avez un projet ?</h3>
-            <p>Envoyez un email directement à ce développeur. Pas d'intermédiaire, juste vous et lui.</p>
-          </div>
-          <div id="p-contact-btns" class="profil-contact-btns"></div>
-        </div>
+        const params = new URLSearchParams(window.location.search);
+        const RECORD_ID = params.get('id');
+        const STAR_KEY = `otto_starred_${RECORD_ID}`;
 
-      </div>
-    </div>
-  </main>
+        // Anti-doublon : stocké en localStorage (persistant entre sessions)
+        let hasStarred = localStorage.getItem(STAR_KEY) === '1';
 
-  <footer class="footer">
-    <div class="container footer-inner">
-      <div class="footer-logo">Ottonowmy</div>
-      <div class="footer-links">
-        <a href="devs.html">Annuaire</a>
-        <a href="inscription.html">Inscription</a>
-        <a href="mentions-legales.html">Mentions légales</a>
-      </div>
-      <div class="footer-copy">© 2025 Ottonowmy</div>
-    </div>
-  </footer>
+        function initials(name) {
+            if (!name) return '?';
+            return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        }
 
-  <script>
-    const LINK_ICONS = {
-      'GitHub':'⌥','Ko-fi':'☕','Portfolio':'◈','LinkedIn':'◉',
-      'Twitter / X':'◎','Dribbble':'◎','Behance':'◎','YouTube':'▶','Autre':'→',
-    };
+        function showError() {
+            document.getElementById('profil-loading').style.display = 'none';
+            document.getElementById('profil-error').style.display = 'block';
+        }
 
-    const params    = new URLSearchParams(window.location.search);
-    const RECORD_ID = params.get('id');
-    const STAR_KEY  = `otto_starred_${RECORD_ID}`;
+        async function loadProfil() {
+            if (!RECORD_ID) { showError(); return; }
+            try {
+                const res = await fetch(`/api/dev?id=${RECORD_ID}`);
+                const data = await res.json();
+                if (!res.ok || data.error) { showError(); return; }
+                renderProfil(data);
+            } catch { showError(); }
+        }
 
-    // Anti-doublon : stocké en localStorage (persistant entre sessions)
-    let hasStarred = localStorage.getItem(STAR_KEY) === '1';
+        function renderProfil(record) {
+            const f = record.fields || {};
 
-    function initials(name) {
-      if (!name) return '?';
-      return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
-    }
+            document.getElementById('profil-loading').style.display = 'none';
+            document.getElementById('profil-content').style.display = 'block';
+            document.title = `${f['Nom'] || 'Développeur'} — Ottonowmy`;
 
-    function showError() {
-      document.getElementById('profil-loading').style.display = 'none';
-      document.getElementById('profil-error').style.display   = 'block';
-    }
+            // Avatar
+            const avatarEl = document.getElementById('p-avatar');
+            if (f['Photo']) {
+                avatarEl.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = f['Photo'];
+                img.alt = f['Nom'] || '';
+                img.className = 'profil-avatar-img';
+                avatarEl.appendChild(img);
+            } else {
+                avatarEl.textContent = initials(f['Nom']);
+            }
 
-    async function loadProfil() {
-      if (!RECORD_ID) { showError(); return; }
-      try {
-        const res  = await fetch(`/api/dev?id=${RECORD_ID}`);
-        const data = await res.json();
-        if (!res.ok || data.error) { showError(); return; }
-        renderProfil(data);
-      } catch { showError(); }
-    }
+            // Nom
+            document.getElementById('p-name').textContent = f['Nom'] || 'Développeur';
 
-    function renderProfil(record) {
-      const f = record.fields || {};
+            // Spécialité (facultatif)
+            if (f['Spécialité']) {
+                const el = document.getElementById('p-spec');
+                el.textContent = f['Spécialité']; el.style.display = 'inline-flex';
+            }
 
-      document.getElementById('profil-loading').style.display = 'none';
-      document.getElementById('profil-content').style.display = 'block';
-      document.title = `${f['Nom'] || 'Développeur'} — Ottonowmy`;
+            // Vues / Stars
+            const vues = f['Vues'] || 0;
+            const stars = f['Stars'] || 0;
+            document.getElementById('p-vues').textContent = vues;
+            document.getElementById('p-stars').textContent = stars;
+            document.getElementById('p-vues-s').textContent = vues !== 1 ? 's' : '';
+            document.getElementById('p-stars-s').textContent = stars !== 1 ? 's' : '';
 
-      // Avatar
-      const avatarEl = document.getElementById('p-avatar');
-      if (f['Photo']) {
-        const img = document.createElement('img');
-        img.src = f['Photo']; img.alt = f['Nom'] || '';
-        img.className = 'profil-avatar';
-        avatarEl.replaceWith(img);
-      } else {
-        avatarEl.textContent = initials(f['Nom']);
-      }
+            // Bouton étoile
+            const starBtn = document.getElementById('btn-star');
+            const starLbl = document.getElementById('btn-star-label');
+            if (hasStarred) {
+                starBtn.classList.add('starred');
+                starLbl.textContent = 'Mis en avant !';
+                starBtn.disabled = true;
+            }
 
-      // Nom
-      document.getElementById('p-name').textContent = f['Nom'] || 'Développeur';
+            starBtn.addEventListener('click', async () => {
+                if (hasStarred) return;
+                starBtn.disabled = true;
+                try {
+                    const res = await fetch(`/api/dev?id=${RECORD_ID}`);
 
-      // Spécialité (facultatif)
-      if (f['Spécialité']) {
-        const el = document.getElementById('p-spec');
-        el.textContent = f['Spécialité']; el.style.display = 'inline-flex';
-      }
+                    if (!res.ok) {
+                        showError();
+                        return;
+                    }
 
-      // Vues / Stars
-      const vues  = f['Vues']  || 0;
-      const stars = f['Stars'] || 0;
-      document.getElementById('p-vues').textContent    = vues;
-      document.getElementById('p-stars').textContent   = stars;
-      document.getElementById('p-vues-s').textContent  = vues  !== 1 ? 's' : '';
-      document.getElementById('p-stars-s').textContent = stars !== 1 ? 's' : '';
+                    const data = await res.json();
+                    if (res.ok && data.success) {
+                        starBtn.classList.add('starred');
+                        starLbl.textContent = 'Mis en avant !';
+                        document.getElementById('p-stars').textContent = data.stars;
+                        document.getElementById('p-stars-s').textContent = data.stars !== 1 ? 's' : '';
+                        // Stocker en localStorage — persistant
+                        localStorage.setItem(STAR_KEY, '1');
+                        hasStarred = true;
+                    }
+                } catch { starBtn.disabled = false; }
+            });
 
-      // Bouton étoile
-      const starBtn = document.getElementById('btn-star');
-      const starLbl = document.getElementById('btn-star-label');
-      if (hasStarred) {
-        starBtn.classList.add('starred');
-        starLbl.textContent = 'Mis en avant !';
-        starBtn.disabled    = true;
-      }
+            // Liens
+            const linksEl = document.getElementById('p-links');
+            let kofiUrl = '';
+            let liens = [];
+            try { liens = JSON.parse(f['Liens'] || '[]'); } catch { }
 
-      starBtn.addEventListener('click', async () => {
-        if (hasStarred) return;
-        starBtn.disabled = true;
-        try {
-          const res  = await fetch('/api/star', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify({ id: RECORD_ID }),
-          });
-          const data = await res.json();
-          if (res.ok && data.success) {
-            starBtn.classList.add('starred');
-            starLbl.textContent = 'Mis en avant !';
-            document.getElementById('p-stars').textContent   = data.stars;
-            document.getElementById('p-stars-s').textContent = data.stars !== 1 ? 's' : '';
-            // Stocker en localStorage — persistant
-            localStorage.setItem(STAR_KEY, '1');
-            hasStarred = true;
-          }
-        } catch { starBtn.disabled = false; }
-      });
+            liens.forEach(l => {
+                if (l.label === 'Ko-fi') kofiUrl = l.url;
+                const a = document.createElement('a');
+                a.href = l.url; a.target = '_blank'; a.rel = 'noopener';
+                a.className = `profil-link${l.label === 'Ko-fi' ? ' kofi' : ''}`;
+                a.textContent = `${LINK_ICONS[l.label] || '→'} ${l.label}`;
+                linksEl.appendChild(a);
+            });
 
-      // Liens
-      const linksEl = document.getElementById('p-links');
-      let kofiUrl   = '';
-      let liens     = [];
-      try { liens = JSON.parse(f['Liens'] || '[]'); } catch {}
+            // Accroche
+            if (f['Accroche']) {
+                document.getElementById('p-accroche').textContent = f['Accroche'];
+                document.getElementById('p-accroche-block').style.display = 'block';
+            }
 
-      liens.forEach(l => {
-        if (l.label === 'Ko-fi') kofiUrl = l.url;
-        const a = document.createElement('a');
-        a.href = l.url; a.target = '_blank'; a.rel = 'noopener';
-        a.className = `profil-link${l.label === 'Ko-fi' ? ' kofi' : ''}`;
-        a.textContent = `${LINK_ICONS[l.label] || '→'} ${l.label}`;
-        linksEl.appendChild(a);
-      });
+            // Touche perso
+            if (f['Touche perso']) {
+                document.getElementById('p-touche').textContent = f['Touche perso'];
+                document.getElementById('p-touche-card').style.display = 'block';
+            }
 
-      // Accroche
-      if (f['Accroche']) {
-        document.getElementById('p-accroche').textContent = f['Accroche'];
-        document.getElementById('p-accroche-block').style.display = 'block';
-      }
+            // Techs
+            const techs = Array.isArray(f['Technologies'])
+                ? f['Technologies']
+                : (typeof f['Technologies'] === 'string'
+                    ? f['Technologies'].split(',').map(t => t.trim())
+                    : []);
 
-      // Touche perso
-      if (f['Touche perso']) {
-        document.getElementById('p-touche').textContent = f['Touche perso'];
-        document.getElementById('p-touche-card').style.display = 'block';
-      }
+            if (techs.length) {
+                document.getElementById('p-techs').innerHTML =
+                    techs.map(t => `<span class="tech-badge">${t}</span>`).join('');
 
-      // Techs
-      const techs = Array.isArray(f['Technologies'])
-  ? f['Technologies']
-  : (typeof f['Technologies'] === 'string'
-      ? f['Technologies'].split(',').map(t => t.trim())
-      : []);
+                document.getElementById('p-techs-card').style.display = 'block';
+            }
 
-if (techs.length) {
-  document.getElementById('p-techs').innerHTML =
-    techs.map(t => `<span class="tech-badge">${t}</span>`).join('');
+            // Boutons contact
+            const btnsEl = document.getElementById('p-contact-btns');
+            const email = f['Email'];
 
-  document.getElementById('p-techs-card').style.display = 'block';
-}
+            if (email) {
+                const a = document.createElement('a');
+                a.href = `mailto:${email}`;
+                a.className = 'profil-link email-btn';
+                a.innerHTML = '✉ Envoyer un email';
+                btnsEl.appendChild(a);
+            }
+            if (kofiUrl) {
+                const a = document.createElement('a');
+                a.href = kofiUrl; a.target = '_blank'; a.rel = 'noopener';
+                a.className = 'profil-link kofi';
+                a.innerHTML = '☕ Offrir un café';
+                btnsEl.appendChild(a);
+            }
+            if (!email && !kofiUrl) {
+                document.getElementById('p-contact').style.display = 'none';
+            }
+        }
 
-      // Boutons contact
-      const btnsEl = document.getElementById('p-contact-btns');
-      const email  = f['Email'];
-
-      if (email) {
-        const a = document.createElement('a');
-        a.href = `mailto:${email}`;
-        a.className = 'profil-link email-btn';
-        a.innerHTML = '✉ Envoyer un email';
-        btnsEl.appendChild(a);
-      }
-      if (kofiUrl) {
-        const a = document.createElement('a');
-        a.href = kofiUrl; a.target = '_blank'; a.rel = 'noopener';
-        a.className = 'profil-link kofi';
-        a.innerHTML = '☕ Offrir un café';
-        btnsEl.appendChild(a);
-      }
-      if (!email && !kofiUrl) {
-        document.getElementById('p-contact').style.display = 'none';
-      }
-    }
-
-    loadProfil();
-  </script>
+        loadProfil();
+    </script>
 </body>
+
 </html>
