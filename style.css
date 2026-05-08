@@ -1023,7 +1023,7 @@ img { max-width: 100%; display: block; }
 }
 
 .profil-counters {
-  display: flex; align-items: center; gap: 14px; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
 }
 .profil-counter {
   display: flex; align-items: center; gap: 5px;
