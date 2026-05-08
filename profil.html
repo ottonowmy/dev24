@@ -221,12 +221,18 @@
       }
 
       // Techs
-      const techs = f['Technologies'] || [];
-      if (techs.length) {
-        document.getElementById('p-techs').innerHTML =
-          techs.map(t => `<span class="tech-badge">${t}</span>`).join('');
-        document.getElementById('p-techs-card').style.display = 'block';
-      }
+      const techs = Array.isArray(f['Technologies'])
+  ? f['Technologies']
+  : (typeof f['Technologies'] === 'string'
+      ? f['Technologies'].split(',').map(t => t.trim())
+      : []);
+
+if (techs.length) {
+  document.getElementById('p-techs').innerHTML =
+    techs.map(t => `<span class="tech-badge">${t}</span>`).join('');
+
+  document.getElementById('p-techs-card').style.display = 'block';
+}
 
       // Boutons contact
       const btnsEl = document.getElementById('p-contact-btns');
