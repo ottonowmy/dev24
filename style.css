@@ -1030,7 +1030,8 @@ img { max-width: 100%; display: block; }
   font-size: .78rem; color: var(--ink4);
   border-radius: 20px;
   background-color: var(--sand-l);
-  border: 1 px solid var(--terracotta);
+  border: 1px solid var(--terracotta);
+  padding: 2px;
 }
 
 .profil-name {
