@@ -1023,11 +1023,14 @@ img { max-width: 100%; display: block; }
 }
 
 .profil-counters {
-  display: flex; align-items: center; gap: 16px; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 14px; margin-bottom: 10px;
 }
 .profil-counter {
   display: flex; align-items: center; gap: 5px;
-  font-size: 1rem; color: var(--ink4);
+  font-size: .78rem; color: var(--ink4);
+  border-radius: 20px;
+  background-color: var(--sand-l);
+  border: 1 px solid var(--terracotta);
 }
 
 .profil-name {
