@@ -181,26 +181,52 @@
 
             starBtn.addEventListener('click', async () => {
                 if (hasStarred) return;
+
                 starBtn.disabled = true;
+
                 try {
-                    const res = await fetch(`/api/dev?id=${RECORD_ID}`);
+
+                    const res = await fetch('/api/star', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: RECORD_ID
+                        }),
+                    });
 
                     if (!res.ok) {
-                        showError();
+                        starBtn.disabled = false;
                         return;
                     }
 
                     const data = await res.json();
-                    if (res.ok && data.success) {
+
+                    if (data.success) {
+
                         starBtn.classList.add('starred');
                         starLbl.textContent = 'Mis en avant !';
+
                         document.getElementById('p-stars').textContent = data.stars;
-                        document.getElementById('p-stars-s').textContent = data.stars !== 1 ? 's' : '';
-                        // Stocker en localStorage — persistant
+
+                        document.getElementById('p-stars-s').textContent =
+                            data.stars !== 1 ? 's' : '';
+
                         localStorage.setItem(STAR_KEY, '1');
+
                         hasStarred = true;
+
+                    } else {
+                        starBtn.disabled = false;
                     }
-                } catch { starBtn.disabled = false; }
+
+                } catch (err) {
+
+                    console.error(err);
+                    starBtn.disabled = false;
+
+                }
             });
 
             // Liens
