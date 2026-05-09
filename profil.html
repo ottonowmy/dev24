@@ -1,94 +1,225 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profil — Ottonowmy</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
-        rel="stylesheet" />
-    <link rel="stylesheet" href="style.css" />
-</head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profil — Ottonowmy</title>
+  <!-- Open Graph pour un beau partage sur réseaux sociaux -->
+  <meta property="og:site_name" content="Ottonowmy" />
+  <meta id="og-title"       property="og:title"       content="Profil développeur — Ottonowmy" />
+  <meta id="og-description" property="og:description" content="Développeur bénévole sur Ottonowmy" />
+  <meta id="og-image"       property="og:image"       content="https://ottonowmy.vercel.app/og-default.png" />
+  <meta property="og:type"  content="profile" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary" />
+  <meta id="tw-title"       name="twitter:title"       content="Profil développeur — Ottonowmy" />
+  <meta id="tw-description" name="twitter:description" content="Développeur bénévole sur Ottonowmy" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* ---- Badge GitHub vérifié ---- */
+    .github-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .03em;
+      color: #1a7f37;
+      background: #dafbe1;
+      border: 1px solid rgba(26,127,55,0.2);
+      padding: 4px 11px;
+      border-radius: var(--r-pill, 100px);
+    }
+    .github-badge::before {
+      content: '';
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #1a7f37;
+    }
+
+    /* ---- Bouton partage ---- */
+    .share-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+    .btn-share {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .8rem;
+      font-weight: 500;
+      color: var(--ink3, #7a7368);
+      background: white;
+      border: 1.5px solid var(--cream3, #e8dfd2);
+      padding: 7px 16px;
+      border-radius: var(--r-pill, 100px);
+      cursor: pointer;
+      transition: all .2s;
+      text-decoration: none;
+    }
+    .btn-share:hover {
+      border-color: var(--ink3, #7a7368);
+      color: var(--ink, #1c1a17);
+      transform: translateY(-1px);
+    }
+    .btn-share.copied {
+      background: #dafbe1;
+      border-color: rgba(26,127,55,0.3);
+      color: #1a7f37;
+    }
+
+    /* ---- GitHub stats mini ---- */
+    .github-stats {
+      display: flex;
+      gap: 14px;
+      margin-top: 6px;
+    }
+    .gh-stat {
+      font-size: .75rem;
+      color: var(--ink4, #b5aca0);
+    }
+    .gh-stat strong {
+      color: var(--ink2, #3e3a34);
+      font-weight: 500;
+    }
+
+    /* ---- Tooltip copié ---- */
+    .copy-toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--ink, #1c1a17);
+      color: white;
+      font-size: .83rem;
+      padding: 10px 20px;
+      border-radius: var(--r-pill, 100px);
+      opacity: 0;
+      transition: all .3s cubic-bezier(.22,1,.36,1);
+      pointer-events: none;
+      z-index: 1000;
+      white-space: nowrap;
+    }
+    .copy-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
 <body>
 
-    <nav class="nav">
+  <!-- Toast "Lien copié !" -->
+  <div id="copy-toast" class="copy-toast">Lien copié dans le presse-papier !</div>
+
+  <nav class="nav">
     <a href="index.html" class="nav-logo">Ottonowmy</a>
     <div class="nav-links">
-      <a href="devs.html">Annuaire</a>
-      <a href="inscription.html" class="btn-nav">Rejoindre</a>
+      <a href="devs.html" class="active">Annuaire</a>
+      <a href="inscription.html" class="btn-nav">Je suis dev</a>
     </div>
   </nav>
 
-    <main>
-        <div class="profil-wrap">
+  <main>
+    <div class="profil-wrap">
 
-            <div id="profil-loading" class="profil-loading">Chargement du profil…</div>
+      <div id="profil-loading" class="profil-loading">Chargement du profil…</div>
 
-            <div id="profil-error" class="profil-not-found" style="display:none">
-                <h2>Profil introuvable</h2>
-                <p>Ce développeur n'existe pas ou a été retiré de la plateforme.</p>
-                <a href="devs.html" class="btn-primary">← Retour à l'annuaire</a>
+      <div id="profil-error" class="profil-not-found" style="display:none">
+        <h2>Profil introuvable</h2>
+        <p>Ce développeur n'existe pas ou a été retiré de la plateforme.</p>
+        <a href="devs.html" class="btn-primary">← Retour à l'annuaire</a>
+      </div>
+
+      <div id="profil-content" style="display:none">
+
+        <!-- HERO -->
+        <div class="profil-hero">
+          <div id="p-avatar" class="profil-avatar"></div>
+          <div class="profil-hero-info">
+
+            <!-- Badges -->
+            <div class="profil-meta" id="p-meta">
+              <span id="p-spec" class="profil-spec" style="display:none"></span>
+              <!-- Badge GitHub injecté ici dynamiquement -->
             </div>
 
-            <div id="profil-content" style="display:none">
-
-                <!-- HERO -->
-                <div class="profil-hero">
-                    <div id="p-avatar-wrap">
-                        <div id="p-avatar" class="profil-avatar"></div>
-                    </div>
-                    <div class="profil-hero-info">
-                        <div class="profil-meta">
-                            <span id="p-spec" class="profil-spec" style="display:none"></span>
-                        </div>
-                        <div class="profil-counters">
-                            <div class="profil-counter">◎ <span id="p-vues">0</span> vue<span id="p-vues-s"></span>
-                            </div>
-                            <div class="profil-counter">★ <span id="p-stars">0</span> étoile<span id="p-stars-s"></span>
-                            </div>
-                        </div>
-                        <h1 id="p-name" class="profil-name"></h1>
-                        <button id="btn-star" class="btn-star">
-                            ★ <span id="btn-star-label">Mettre en avant</span>
-                        </button>
-                        <div id="p-links" class="profil-links" style="margin-top:14px"></div>
-                    </div>
-                </div>
-
-                <!-- ACCROCHE -->
-                <div id="p-accroche-block" class="profil-accroche-block" style="display:none">
-                    <p id="p-accroche" class="profil-accroche"></p>
-                </div>
-
-                <!-- CARDS -->
-                <div class="profil-cards">
-                    <div id="p-touche-card" class="profil-card" style="display:none">
-                        <div class="profil-card-label">Touche perso</div>
-                        <p id="p-touche" class="profil-touche"></p>
-                    </div>
-                    <div id="p-techs-card" class="profil-card" style="display:none">
-                        <div class="profil-card-label">Langages &amp; technologies</div>
-                        <div id="p-techs" class="profil-techs"></div>
-                    </div>
-                </div>
-
-                <!-- CONTACT -->
-                <div id="p-contact" class="profil-contact">
-                    <div>
-                        <h3>Vous avez un projet ?</h3>
-                        <p>Envoyez un email directement à ce développeur. Pas d'intermédiaire, juste vous et lui.</p>
-                    </div>
-                    <div id="p-contact-btns" class="profil-contact-btns"></div>
-                </div>
-
+            <!-- Stats vues / étoiles -->
+            <div class="profil-counters">
+              <div class="profil-counter">◎ <span id="p-vues">0</span> vue<span id="p-vues-s"></span></div>
+              <div class="profil-counter">★ <span id="p-stars">0</span> étoile<span id="p-stars-s"></span></div>
             </div>
+
+            <!-- Nom -->
+            <h1 id="p-name" class="profil-name"></h1>
+
+            <!-- GitHub stats (si vérifié) -->
+            <div id="p-github-stats" class="github-stats" style="display:none">
+              <span class="gh-stat"><strong id="gh-followers">0</strong> followers</span>
+              <span class="gh-stat"><strong id="gh-repos">0</strong> dépôts publics</span>
+            </div>
+
+            <!-- Bouton étoile -->
+            <button id="btn-star" class="btn-star" style="margin-top:14px">
+              ★ <span id="btn-star-label">Mettre en avant</span>
+            </button>
+
+            <!-- Liens externes -->
+            <div id="p-links" class="profil-links" style="margin-top:14px"></div>
+
+            <!-- Partage -->
+            <div class="share-row" id="share-row">
+              <button class="btn-share" id="btn-copy">
+                ⎘ Copier le lien
+              </button>
+              <a id="btn-twitter" class="btn-share" target="_blank" rel="noopener">
+                ✦ Partager sur X
+              </a>
+              <a id="btn-linkedin" class="btn-share" target="_blank" rel="noopener">
+                ◉ LinkedIn
+              </a>
+            </div>
+
+          </div>
         </div>
-    </main>
 
-    <footer class="footer">
+        <!-- ACCROCHE -->
+        <div id="p-accroche-block" class="profil-accroche-block" style="display:none">
+          <p id="p-accroche" class="profil-accroche"></p>
+        </div>
+
+        <!-- INFOS -->
+        <div class="profil-cards">
+          <div id="p-touche-card" class="profil-card" style="display:none">
+            <div class="profil-card-label">Touche perso</div>
+            <p id="p-touche" class="profil-touche"></p>
+          </div>
+          <div id="p-techs-card" class="profil-card" style="display:none">
+            <div class="profil-card-label">Langages &amp; technologies</div>
+            <div id="p-techs" class="profil-techs"></div>
+          </div>
+        </div>
+
+        <!-- CONTACT -->
+        <div id="p-contact" class="profil-contact">
+          <div>
+            <h3>Vous avez un projet ?</h3>
+            <p>Envoyez un email directement à ce développeur. Pas d'intermédiaire, juste vous et lui.</p>
+          </div>
+          <div id="p-contact-btns" class="profil-contact-btns"></div>
+        </div>
+
+      </div><!-- /profil-content -->
+    </div>
+  </main>
+
+  <footer class="footer">
     <div class="container footer-inner">
       <div class="footer-logo">Ottonowmy</div>
       <div class="footer-links">
@@ -98,201 +229,291 @@
     </div>
   </footer>
 
-    <script>
-        const LINK_ICONS = {
-            'GitHub': '⌥', 'Ko-fi': '☕', 'Portfolio': '◈', 'LinkedIn': '◉',
-            'Twitter / X': '◎', 'Dribbble': '◎', 'Behance': '◎', 'YouTube': '▶', 'Autre': '→',
-        };
+  <script>
+    /* ================================================
+       UTILITAIRES
+    ================================================ */
+    const LINK_ICONS = {
+      'GitHub':'⌥','Ko-fi':'☕','Portfolio':'◈','LinkedIn':'◉',
+      'Twitter / X':'◎','Dribbble':'◎','Behance':'◎','YouTube':'▶','Autre':'→',
+    };
 
-        const params = new URLSearchParams(window.location.search);
-        const RECORD_ID = params.get('id');
-        const STAR_KEY = `otto_starred_${RECORD_ID}`;
+    const params    = new URLSearchParams(window.location.search);
+    const RECORD_ID = params.get('id');
+    const PAGE_URL  = window.location.href;
+    const STAR_KEY  = `otto_starred_${RECORD_ID}`;
+    let   hasStarred = localStorage.getItem(STAR_KEY) === '1';
 
-        // Anti-doublon : stocké en localStorage (persistant entre sessions)
-        let hasStarred = localStorage.getItem(STAR_KEY) === '1';
+    function initials(name) {
+      if (!name) return '?';
+      return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    }
 
-        function initials(name) {
-            if (!name) return '?';
-            return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    /* ---- Toast ---- */
+    function showToast(msg) {
+      const t = document.getElementById('copy-toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2400);
+    }
+
+    /* ---- Erreur ---- */
+    function showError() {
+      document.getElementById('profil-loading').style.display = 'none';
+      document.getElementById('profil-error').style.display   = 'block';
+    }
+
+    /* ================================================
+       CHARGEMENT PROFIL
+    ================================================ */
+    async function loadProfil() {
+      if (!RECORD_ID) { showError(); return; }
+      try {
+        const res  = await fetch(`/api/dev?id=${RECORD_ID}`);
+        const data = await res.json();
+        if (!res.ok || data.error) { showError(); return; }
+        renderProfil(data);
+      } catch { showError(); }
+    }
+
+    /* ================================================
+       RENDU PROFIL
+    ================================================ */
+    async function renderProfil(record) {
+      const f = record.fields || {};
+
+      document.getElementById('profil-loading').style.display = 'none';
+      document.getElementById('profil-content').style.display = 'block';
+
+      const devName = f['Nom'] || 'Développeur';
+      document.title = `${devName} — Ottonowmy`;
+
+      // -- Open Graph dynamique --
+      const accroche = f['Accroche'] || `Développeur bénévole sur Ottonowmy`;
+      document.getElementById('og-title').content       = `${devName} — Ottonowmy`;
+      document.getElementById('og-description').content = accroche;
+      document.getElementById('tw-title').content       = `${devName} — Ottonowmy`;
+      document.getElementById('tw-description').content = accroche;
+      if (f['Photo']) {
+        document.getElementById('og-image').content = f['Photo'];
+      }
+
+      // -- Avatar --
+      const avatarEl = document.getElementById('p-avatar');
+      if (f['Photo']) {
+        const img = document.createElement('img');
+        img.src = f['Photo']; img.alt = devName; img.className = 'profil-avatar';
+        avatarEl.replaceWith(img);
+      } else {
+        avatarEl.textContent = initials(devName);
+      }
+
+      // -- Nom --
+      document.getElementById('p-name').textContent = devName;
+
+      // -- Spécialité --
+      if (f['Spécialité']) {
+        const el = document.getElementById('p-spec');
+        el.textContent = f['Spécialité']; el.style.display = 'inline-flex';
+      }
+
+      // -- Stats --
+      const vues  = f['Vues']  || 0;
+      const stars = f['Stars'] || 0;
+      document.getElementById('p-vues').textContent    = vues;
+      document.getElementById('p-stars').textContent   = stars;
+      document.getElementById('p-vues-s').textContent  = vues  !== 1 ? 's' : '';
+      document.getElementById('p-stars-s').textContent = stars !== 1 ? 's' : '';
+
+      // -- Bouton étoile --
+      const starBtn = document.getElementById('btn-star');
+      const starLbl = document.getElementById('btn-star-label');
+      if (hasStarred) {
+        starBtn.classList.add('starred');
+        starLbl.textContent = 'Mis en avant !';
+        starBtn.disabled    = true;
+      }
+      starBtn.addEventListener('click', async () => {
+        if (hasStarred) return;
+        starBtn.disabled = true;
+        try {
+          const res  = await fetch('/api/star', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ id: RECORD_ID }),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            starBtn.classList.add('starred');
+            starLbl.textContent = 'Mis en avant !';
+            document.getElementById('p-stars').textContent   = data.stars;
+            document.getElementById('p-stars-s').textContent = data.stars !== 1 ? 's' : '';
+            localStorage.setItem(STAR_KEY, '1');
+            hasStarred = true;
+            showToast('Merci ! Votre étoile a été comptée.');
+          }
+        } catch { starBtn.disabled = false; }
+      });
+
+      // -- Liens --
+      const linksEl = document.getElementById('p-links');
+      let kofiUrl   = '';
+      let githubUrl = '';
+      let liens     = [];
+      try { liens = JSON.parse(f['Liens'] || '[]'); } catch {}
+
+      liens.forEach(l => {
+        if (l.label === 'Ko-fi')   kofiUrl   = l.url;
+        if (l.label === 'GitHub')  githubUrl = l.url;
+
+        const a = document.createElement('a');
+        a.href = l.url; a.target = '_blank'; a.rel = 'noopener';
+        a.className = `profil-link${l.label === 'Ko-fi' ? ' kofi' : ''}`;
+        a.textContent = `${LINK_ICONS[l.label] || '→'} ${l.label}`;
+        linksEl.appendChild(a);
+      });
+
+      // -- Badge + stats GitHub --
+      if (githubUrl) {
+        verifyGitHub(githubUrl);
+      }
+
+      // -- Accroche --
+      if (f['Accroche']) {
+        document.getElementById('p-accroche').textContent = f['Accroche'];
+        document.getElementById('p-accroche-block').style.display = 'block';
+      }
+
+      // -- Touche perso --
+      if (f['Touche perso']) {
+        document.getElementById('p-touche').textContent = f['Touche perso'];
+        document.getElementById('p-touche-card').style.display = 'block';
+      }
+
+      // -- Technologies --
+      const techs = f['Technologies'] || [];
+      if (techs.length) {
+        document.getElementById('p-techs').innerHTML =
+          techs.map(t => `<span class="tech-badge">${t}</span>`).join('');
+        document.getElementById('p-techs-card').style.display = 'block';
+      }
+
+      // -- Contact --
+      const btnsEl = document.getElementById('p-contact-btns');
+      const email  = f['Email'];
+      if (email) {
+        const a = document.createElement('a');
+        a.href = `mailto:${email}`;
+        a.className = 'profil-link email-btn';
+        a.innerHTML = '✉ Envoyer un email';
+        btnsEl.appendChild(a);
+      }
+      if (kofiUrl) {
+        const a = document.createElement('a');
+        a.href = kofiUrl; a.target = '_blank'; a.rel = 'noopener';
+        a.className = 'profil-link kofi';
+        a.innerHTML = '☕ Offrir un café';
+        btnsEl.appendChild(a);
+      }
+      if (!email && !kofiUrl) {
+        document.getElementById('p-contact').style.display = 'none';
+      }
+
+      // -- Partage --
+      setupShare(devName, accroche);
+    }
+
+    /* ================================================
+       VÉRIFICATION GITHUB
+    ================================================ */
+    async function verifyGitHub(githubUrl) {
+      try {
+        // Extraire le pseudo depuis l'URL
+        const username = githubUrl
+          .replace(/https?:\/\/(www\.)?github\.com\//i, '')
+          .replace(/\/$/, '').trim();
+
+        if (!username) return;
+
+        const res  = await fetch(`/api/verify-github?username=${encodeURIComponent(username)}`);
+        const data = await res.json();
+
+        if (!data.verified) return;
+
+        // Injecter le badge dans la ligne meta
+        const metaEl = document.getElementById('p-meta');
+        const badge  = document.createElement('span');
+        badge.className   = 'github-badge';
+        badge.textContent = 'GitHub vérifié';
+        metaEl.appendChild(badge);
+
+        // Afficher les stats GitHub
+        document.getElementById('gh-followers').textContent = data.followers;
+        document.getElementById('gh-repos').textContent     = data.repos;
+        document.getElementById('p-github-stats').style.display = 'flex';
+
+      } catch { /* silencieux */ }
+    }
+
+    /* ================================================
+       SYSTÈME DE PARTAGE
+    ================================================ */
+    function setupShare(devName, accroche) {
+      const shareText = `${devName} est développeur bénévole sur Ottonowmy — ${accroche}`;
+      const shortText = shareText.slice(0, 240);
+
+      // Copier le lien
+      document.getElementById('btn-copy').addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(PAGE_URL);
+          const btn = document.getElementById('btn-copy');
+          btn.textContent = '✓ Lien copié !';
+          btn.classList.add('copied');
+          showToast('Lien copié dans le presse-papier !');
+          setTimeout(() => {
+            btn.textContent = '⎘ Copier le lien';
+            btn.classList.remove('copied');
+          }, 2500);
+        } catch {
+          // Fallback pour navigateurs anciens
+          const input = document.createElement('input');
+          input.value = PAGE_URL;
+          document.body.appendChild(input);
+          input.select();
+          document.execCommand('copy');
+          document.body.removeChild(input);
+          showToast('Lien copié !');
         }
+      });
 
-        function showError() {
-            document.getElementById('profil-loading').style.display = 'none';
-            document.getElementById('profil-error').style.display = 'block';
-        }
+      // Twitter / X
+      const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shortText)}&url=${encodeURIComponent(PAGE_URL)}`;
+      document.getElementById('btn-twitter').href = twitterUrl;
 
-        async function loadProfil() {
-            if (!RECORD_ID) { showError(); return; }
-            try {
-                const res = await fetch(`/api/dev?id=${RECORD_ID}`);
-                const data = await res.json();
-                if (!res.ok || data.error) { showError(); return; }
-                renderProfil(data);
-            } catch { showError(); }
-        }
+      // LinkedIn
+      const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(PAGE_URL)}`;
+      document.getElementById('btn-linkedin').href = linkedinUrl;
 
-        function renderProfil(record) {
-            const f = record.fields || {};
+      // Web Share API (mobile natif)
+      if (navigator.share) {
+        const btnNative = document.createElement('button');
+        btnNative.className   = 'btn-share';
+        btnNative.textContent = '↑ Partager';
+        btnNative.addEventListener('click', () => {
+          navigator.share({
+            title: `${devName} — Ottonowmy`,
+            text:  shortText,
+            url:   PAGE_URL,
+          }).catch(() => {});
+        });
+        document.getElementById('share-row').prepend(btnNative);
+      }
+    }
 
-            document.getElementById('profil-loading').style.display = 'none';
-            document.getElementById('profil-content').style.display = 'block';
-            document.title = `${f['Nom'] || 'Développeur'} — Ottonowmy`;
-
-            // Avatar
-            const avatarEl = document.getElementById('p-avatar');
-            if (f['Photo']) {
-                avatarEl.innerHTML = '';
-                const img = document.createElement('img');
-                img.src = f['Photo'];
-                img.alt = f['Nom'] || '';
-                img.className = 'profil-avatar-img';
-                avatarEl.appendChild(img);
-            } else {
-                avatarEl.textContent = initials(f['Nom']);
-            }
-
-            // Nom
-            document.getElementById('p-name').textContent = f['Nom'] || 'Développeur';
-
-            // Spécialité (facultatif)
-            if (f['Spécialité']) {
-                const el = document.getElementById('p-spec');
-                el.textContent = f['Spécialité']; el.style.display = 'inline-flex';
-            }
-
-            // Vues / Stars
-            const vues = f['Vues'] || 0;
-            const stars = f['Stars'] || 0;
-            document.getElementById('p-vues').textContent = vues;
-            document.getElementById('p-stars').textContent = stars;
-            document.getElementById('p-vues-s').textContent = vues !== 1 ? 's' : '';
-            document.getElementById('p-stars-s').textContent = stars !== 1 ? 's' : '';
-
-            // Bouton étoile
-            const starBtn = document.getElementById('btn-star');
-            const starLbl = document.getElementById('btn-star-label');
-            if (hasStarred) {
-                starBtn.classList.add('starred');
-                starLbl.textContent = 'Mis en avant !';
-                starBtn.disabled = true;
-            }
-
-            starBtn.addEventListener('click', async () => {
-                if (hasStarred) return;
-
-                starBtn.disabled = true;
-
-                try {
-
-                    const res = await fetch('/api/star', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            id: RECORD_ID
-                        }),
-                    });
-
-                    if (!res.ok) {
-                        starBtn.disabled = false;
-                        return;
-                    }
-
-                    const data = await res.json();
-
-                    if (data.success) {
-
-                        starBtn.classList.add('starred');
-                        starLbl.textContent = 'Mis en avant !';
-
-                        document.getElementById('p-stars').textContent = data.stars;
-
-                        document.getElementById('p-stars-s').textContent =
-                            data.stars !== 1 ? 's' : '';
-
-                        localStorage.setItem(STAR_KEY, '1');
-
-                        hasStarred = true;
-
-                    } else {
-                        starBtn.disabled = false;
-                    }
-
-                } catch (err) {
-
-                    console.error(err);
-                    starBtn.disabled = false;
-
-                }
-            });
-
-            // Liens
-            const linksEl = document.getElementById('p-links');
-            let kofiUrl = '';
-            let liens = [];
-            try { liens = JSON.parse(f['Liens'] || '[]'); } catch { }
-
-            liens.forEach(l => {
-                if (l.label === 'Ko-fi') kofiUrl = l.url;
-                const a = document.createElement('a');
-                a.href = l.url; a.target = '_blank'; a.rel = 'noopener';
-                a.className = `profil-link${l.label === 'Ko-fi' ? ' kofi' : ''}`;
-                a.textContent = `${LINK_ICONS[l.label] || '→'} ${l.label}`;
-                linksEl.appendChild(a);
-            });
-
-            // Accroche
-            if (f['Accroche']) {
-                document.getElementById('p-accroche').textContent = f['Accroche'];
-                document.getElementById('p-accroche-block').style.display = 'block';
-            }
-
-            // Touche perso
-            if (f['Touche perso']) {
-                document.getElementById('p-touche').textContent = f['Touche perso'];
-                document.getElementById('p-touche-card').style.display = 'block';
-            }
-
-            // Techs
-            const techs = Array.isArray(f['Technologies'])
-                ? f['Technologies']
-                : (typeof f['Technologies'] === 'string'
-                    ? f['Technologies'].split(',').map(t => t.trim())
-                    : []);
-
-            if (techs.length) {
-                document.getElementById('p-techs').innerHTML =
-                    techs.map(t => `<span class="tech-badge">${t}</span>`).join('');
-
-                document.getElementById('p-techs-card').style.display = 'block';
-            }
-
-            // Boutons contact
-            const btnsEl = document.getElementById('p-contact-btns');
-            const email = f['Email'];
-
-            if (email) {
-                const a = document.createElement('a');
-                a.href = `mailto:${email}`;
-                a.className = 'profil-link email-btn';
-                a.innerHTML = '✉ Envoyer un email';
-                btnsEl.appendChild(a);
-            }
-            if (kofiUrl) {
-                const a = document.createElement('a');
-                a.href = kofiUrl; a.target = '_blank'; a.rel = 'noopener';
-                a.className = 'profil-link kofi';
-                a.innerHTML = 'Faire un don';
-                btnsEl.appendChild(a);
-            }
-            if (!email && !kofiUrl) {
-                document.getElementById('p-contact').style.display = 'none';
-            }
-        }
-
-        loadProfil();
-    </script>
+    /* ================================================
+       INIT
+    ================================================ */
+    loadProfil();
+  </script>
 </body>
-
 </html>
