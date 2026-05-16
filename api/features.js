@@ -22,10 +22,23 @@ async function verifyClerkToken(req) {
     const authHeader = req.headers['authorization'] || '';
     const token = authHeader.replace('Bearer ', '').trim();
     if (!token) return null;
+    if (!CLERK_SECRET_KEY) {
+      console.error('[Clerk] CLERK_SECRET_KEY missing');
+      return null;
+    }
 
     const clerk = createClerkClient({ secretKey: CLERK_SECRET_KEY });
-    const payload = await clerk.verifyToken(token);
-    return payload?.sub || null;
+    // Try the common verifyToken API, fallback to sessions.verifySessionToken if present
+    if (typeof clerk.verifyToken === 'function') {
+      const payload = await clerk.verifyToken(token);
+      return payload?.sub || null;
+    } else if (clerk.sessions && typeof clerk.sessions.verifySessionToken === 'function') {
+      const payload = await clerk.sessions.verifySessionToken(token);
+      return payload?.sub || null;
+    } else {
+      console.error('[Clerk] verifyToken API unavailable on clerk client');
+      return null;
+    }
   } catch {
     return null;
   }
