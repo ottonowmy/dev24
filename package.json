@@ -13,6 +13,6 @@
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
     "dotenv": "^17.4.2",
-    "@clerk/backend": "^5.0.0"
+    "@clerk/backend": "^2.33.3"
   }
 }
