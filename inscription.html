@@ -5,144 +5,272 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inscription — Ottonowmy</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Clerk JS SDK -->
+  <script
+    async
+    crossorigin="anonymous"
+    data-clerk-publishable-key="__CLERK_PUBLISHABLE_KEY__"
+    src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
+    type="text/javascript"
+  ></script>
+
+  <style>
+    /* ── Auth gate ── */
+    #auth-gate {
+      display: none;
+      min-height: 60vh;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 24px;
+      text-align: center;
+      padding: 60px 24px;
+    }
+    #auth-gate.visible { display: flex; }
+    #auth-gate h2 { font-family: 'Instrument Serif', serif; font-size: 1.8rem; }
+    #auth-gate p  { color: var(--ink4, #888); max-width: 360px; line-height: 1.6; }
+    .auth-buttons { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .btn-sign-in  { padding: 12px 28px; background: var(--ink, #1a1a1a); color: #fff; border: none; border-radius: 8px; font-size: .95rem; cursor: pointer; font-family: 'Geist', sans-serif; }
+    .btn-sign-up  { padding: 12px 28px; background: transparent; color: var(--ink, #1a1a1a); border: 1.5px solid currentColor; border-radius: 8px; font-size: .95rem; cursor: pointer; font-family: 'Geist', sans-serif; }
+    .btn-sign-in:hover { opacity: .85; }
+    .btn-sign-up:hover  { background: var(--ink, #1a1a1a); color: #fff; }
+
+    /* ── Already-registered banner ── */
+    #already-registered {
+      display: none;
+      background: #f0fdf4;
+      border: 1.5px solid #86efac;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
+      color: #166534;
+      font-size: .92rem;
+      line-height: 1.6;
+    }
+    #already-registered.visible { display: block; }
+    #already-registered strong { display: block; font-size: 1rem; margin-bottom: 4px; }
+
+    /* ── User badge in nav ── */
+    #clerk-user-btn {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    #clerk-user-btn.visible { display: flex; }
+    #clerk-user-btn img {
+      width: 30px; height: 30px; border-radius: 50%; object-fit: cover;
+    }
+    #clerk-user-btn span {
+      font-size: .85rem; font-family: 'Geist', sans-serif;
+    }
+    .sign-out-link {
+      font-size: .82rem;
+      color: var(--ink4, #888);
+      cursor: pointer;
+      text-decoration: underline;
+      background: none; border: none; font-family: 'Geist', sans-serif;
+    }
+
+    /* ── Form content (hidden until auth) ── */
+    #form-content { display: none; }
+    #form-content.visible { display: block; }
+  </style>
 </head>
 <body>
-
   <nav class="nav">
     <a href="index.html" class="nav-logo">Ottonowmy</a>
     <div class="nav-links">
       <a href="devs.html">Annuaire</a>
-      <a href="inscription.html" class="btn-nav">Rejoindre</a>
+      <!-- Affiche le bouton Rejoindre OU le badge utilisateur -->
+      <a href="inscription.html" class="btn-nav active" id="nav-join">Rejoindre</a>
+      <div id="clerk-user-btn">
+        <img id="clerk-avatar" src="" alt="avatar" />
+        <span id="clerk-name"></span>
+        <button class="sign-out-link" id="sign-out-btn">Déconnexion</button>
+      </div>
     </div>
   </nav>
 
   <div class="page-header">
     <h1>Rejoindre la plateforme</h1>
-    <p>Votre profil est votre vitrine. Prenez le temps de bien le remplir — c'est ce qui fera la différence.</p>
+    <p>Inscrivez-vous en quelques minutes. Votre profil sera visible dans l'annuaire dès validation.</p>
   </div>
 
   <main class="form-main">
     <div class="form-wrap">
 
-      <div class="form-intro-grid">
-        <div class="form-intro-item">Inscription entièrement gratuite</div>
-        <div class="form-intro-item">Votre email est affiché sur votre profil</div>
-        <div class="form-intro-item">Jusqu'à 5 liens personnalisés</div>
-        <div class="form-intro-item">Suppression sur simple demande</div>
+      <!-- Gate : affiché si non connecté -->
+      <div id="auth-gate">
+        <h2>Connectez-vous pour continuer</h2>
+        <p>Un compte est nécessaire pour publier votre profil et gérer vos fonctionnalités.</p>
+        <div class="auth-buttons">
+          <button class="btn-sign-in" id="btn-signin">Se connecter</button>
+          <button class="btn-sign-up" id="btn-signup">Créer un compte</button>
+        </div>
       </div>
 
-      <form id="form" novalidate>
+      <!-- Contenu du formulaire : affiché si connecté -->
+      <div id="form-content">
 
-        <div class="form-section">
-          <div class="form-section-head"><h2>Identité</h2></div>
-          <div class="form-body">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="nom">Nom complet <span class="required">*</span></label>
-                <input type="text" id="nom" placeholder="Julie Lefevre" required />
+        <!-- Bannière si déjà inscrit -->
+        <div id="already-registered">
+          <strong>Vous avez déjà un profil ✓</strong>
+          Votre profil est déjà dans l'annuaire. Vous pouvez le mettre à jour en soumettant à nouveau ce formulaire, ou <a href="publier.html">publier une nouvelle fonctionnalité</a>.
+        </div>
+
+        <div class="form-intro-grid">
+          <div class="form-intro-item">Inscription et service entièrement gratuits</div>
+          <div class="form-intro-item">Vous choisissez vos disponibilités à tout moment</div>
+          <div class="form-intro-item">Ajoutez un lien Ko-fi pour recevoir des remerciements</div>
+          <div class="form-intro-item">Votre adresse email n'est jamais affichée publiquement</div>
+        </div>
+
+        <form id="form" novalidate>
+
+          <!-- PROFIL -->
+          <div class="form-section">
+            <div class="form-section-head"><h2>Profil</h2></div>
+            <div class="form-body">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="nom">Nom complet<span class="required">*</span></label>
+                  <input type="text" id="nom" placeholder="Julie Lefevre" required />
+                </div>
+                <div class="form-group">
+                  <label for="email">Adresse email<span class="required">*</span></label>
+                  <input type="email" id="email" placeholder="julie@exemple.com" required />
+                  <small>Non affichée publiquement</small>
+                </div>
               </div>
               <div class="form-group">
-                <label for="email">Email <span class="required">*</span></label>
-                <input type="email" id="email" placeholder="julie@exemple.com" required />
-                <small>Affiché publiquement sur votre profil pour être contacté</small>
+                <label for="accroche">Accroche courte</label>
+                <input type="text" id="accroche" maxlength="80" placeholder="Ex : Fullstack JS · Passionné d'open source" />
+                <small>Affichée sous votre nom dans la hero — 80 caractères max</small>
               </div>
-            </div>
-            <div class="form-group">
-              <label for="photo">Photo de profil</label>
-              <input type="url" id="photo" placeholder="https://github.com/votre-pseudo.png" />
-              <small>URL vers une image publique (ex : github.com/PSEUDO.png)</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-section form-section-highlight">
-          <div class="form-section-head"><h2>Votre touche perso — l'essentiel <span class="required">*</span></h2></div>
-          <div class="form-body">
-            <div class="form-group">
-              <label for="accroche">Une phrase qui vous définit <span class="required">*</span></label>
-              <input type="text" id="accroche"
-                placeholder="Ex : Je transforme des idées brouillonnes en produits qui marchent."
-                maxlength="120" required />
-              <small>Max 120 caractères — affiché en grand sur votre profil et dans l'annuaire</small>
-            </div>
-            <div class="form-group">
-              <label for="touche">Ce qui fait votre essence <span class="required">*</span></label>
-              <textarea id="touche" rows="5"
-                placeholder="Pourquoi faites-vous ça bénévolement ? Quel type de projets vous fait vibrer ? Qu'est-ce que vous apportez d'unique ?"
-                required></textarea>
-              <small>La partie la plus importante de votre profil. Soyez honnête et authentique.</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <div class="form-section-head"><h2>Compétences</h2></div>
-          <div class="form-body">
-            <div class="form-group">
-              <label>Langages &amp; technologies <span class="required">*</span></label>
-              <div class="tech-grid">
-                <label class="tech-check"><input type="checkbox" value="HTML/CSS" />HTML / CSS</label>
-                <label class="tech-check"><input type="checkbox" value="JavaScript" />JavaScript</label>
-                <label class="tech-check"><input type="checkbox" value="TypeScript" />TypeScript</label>
-                <label class="tech-check"><input type="checkbox" value="React" />React</label>
-                <label class="tech-check"><input type="checkbox" value="Vue.js" />Vue.js</label>
-                <label class="tech-check"><input type="checkbox" value="Angular" />Angular</label>
-                <label class="tech-check"><input type="checkbox" value="Next.js" />Next.js</label>
-                <label class="tech-check"><input type="checkbox" value="Node.js" />Node.js</label>
-                <label class="tech-check"><input type="checkbox" value="Python" />Python</label>
-                <label class="tech-check"><input type="checkbox" value="PHP" />PHP</label>
-                <label class="tech-check"><input type="checkbox" value="Laravel" />Laravel</label>
-                <label class="tech-check"><input type="checkbox" value="WordPress" />WordPress</label>
-                <label class="tech-check"><input type="checkbox" value="Flutter" />Flutter</label>
-                <label class="tech-check"><input type="checkbox" value="React Native" />React Native</label>
-                <label class="tech-check"><input type="checkbox" value="Swift" />Swift</label>
-                <label class="tech-check"><input type="checkbox" value="Kotlin" />Kotlin</label>
-                <label class="tech-check"><input type="checkbox" value="SQL" />SQL</label>
-                <label class="tech-check"><input type="checkbox" value="MongoDB" />MongoDB</label>
-                <label class="tech-check"><input type="checkbox" value="Docker" />Docker</label>
-                <label class="tech-check"><input type="checkbox" value="Git" />Git</label>
-                <label class="tech-check"><input type="checkbox" value="Figma" />Figma</label>
-                <label class="tech-check"><input type="checkbox" value="Rust" />Rust</label>
-                <label class="tech-check"><input type="checkbox" value="Go" />Go</label>
-                <label class="tech-check"><input type="checkbox" value="Java" />Java</label>
+              <div class="form-group">
+                <label for="description">Présentation<span class="required">*</span></label>
+                <textarea id="description" rows="4"
+                  placeholder="Décrivez votre parcours, ce que vous aimez faire, et la façon dont vous pouvez aider…"
+                  required></textarea>
+              </div>
+              <div class="form-group">
+                <label for="photo">Photo de profil</label>
+                <input type="url" id="photo" placeholder="https://github.com/votre-pseudo.png" />
+                <small>URL vers une image (avatar GitHub, Gravatar…)</small>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="form-section">
-          <div class="form-section-head"><h2>Liens (max 5)</h2></div>
-          <div class="form-body">
-            <p style="font-size:.84rem;color:var(--ink3);margin-bottom:18px;font-weight:300;">
-              GitHub, Ko-fi, Portfolio, LinkedIn… ajoutez ce que vous voulez.
-            </p>
-            <div id="links-container"></div>
-            <button type="button" id="add-link-btn" class="btn-add-link">+ Ajouter un lien</button>
+          <!-- COMPETENCES -->
+          <div class="form-section">
+            <div class="form-section-head"><h2>Compétences</h2></div>
+            <div class="form-body">
+              <div class="form-group">
+                <label for="specialite">Spécialité principale<span class="required">*</span></label>
+                <select id="specialite" required>
+                  <option value="">Sélectionner…</option>
+                  <option value="Frontend">Frontend</option>
+                  <option value="Backend">Backend</option>
+                  <option value="Fullstack">Fullstack</option>
+                  <option value="Mobile">Mobile</option>
+                  <option value="DevOps">DevOps</option>
+                  <option value="Data">Data</option>
+                  <option value="Design">Design</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Technologies maîtrisées<span class="required">*</span></label>
+                <div class="tech-grid" id="tech-grid">
+                  <label class="tech-check"><input type="checkbox" value="HTML/CSS" /> HTML / CSS</label>
+                  <label class="tech-check"><input type="checkbox" value="JavaScript" /> JavaScript</label>
+                  <label class="tech-check"><input type="checkbox" value="React" /> React</label>
+                  <label class="tech-check"><input type="checkbox" value="Vue.js" /> Vue.js</label>
+                  <label class="tech-check"><input type="checkbox" value="Angular" /> Angular</label>
+                  <label class="tech-check"><input type="checkbox" value="Node.js" /> Node.js</label>
+                  <label class="tech-check"><input type="checkbox" value="Python" /> Python</label>
+                  <label class="tech-check"><input type="checkbox" value="PHP" /> PHP</label>
+                  <label class="tech-check"><input type="checkbox" value="Laravel" /> Laravel</label>
+                  <label class="tech-check"><input type="checkbox" value="WordPress" /> WordPress</label>
+                  <label class="tech-check"><input type="checkbox" value="Flutter" /> Flutter</label>
+                  <label class="tech-check"><input type="checkbox" value="React Native" /> React Native</label>
+                  <label class="tech-check"><input type="checkbox" value="Swift" /> Swift</label>
+                  <label class="tech-check"><input type="checkbox" value="Kotlin" /> Kotlin</label>
+                  <label class="tech-check"><input type="checkbox" value="SQL" /> SQL</label>
+                  <label class="tech-check"><input type="checkbox" value="MongoDB" /> MongoDB</label>
+                  <label class="tech-check"><input type="checkbox" value="Docker" /> Docker</label>
+                  <label class="tech-check"><input type="checkbox" value="Git" /> Git</label>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div class="consent-row">
-          <input type="checkbox" id="cgv" required />
-          <label for="cgv">
-            J'ai lu et j'accepte les <a href="mentions-legales.html" target="_blank">mentions légales</a>.
-            Je consens à ce que mon profil, y compris mon adresse email, soit affiché publiquement sur Ottonowmy.
-            <span class="required">*</span>
-          </label>
-        </div>
+          <!-- LIENS -->
+          <div class="form-section">
+            <div class="form-section-head"><h2>Liens</h2></div>
+            <div class="form-body">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="github">GitHub</label>
+                  <input type="url" id="github" placeholder="https://github.com/pseudo" />
+                </div>
+                <div class="form-group">
+                  <label for="portfolio">Portfolio</label>
+                  <input type="url" id="portfolio" placeholder="https://votre-site.fr" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="kofi">Ko-fi</label>
+                <input type="url" id="kofi" placeholder="https://ko-fi.com/pseudo" />
+                <small>Optionnel — permet aux personnes aidées de vous remercier</small>
+              </div>
+            </div>
+          </div>
 
-        <div id="form-error" class="form-error" style="display:none;margin-top:20px"></div>
-        <div id="form-success" class="form-success" style="display:none;margin-top:20px">
-          Votre profil a bien été soumis et sera visible dans l'annuaire très prochainement.
-        </div>
+          <!-- DISPONIBILITE -->
+          <div class="form-section">
+            <div class="form-section-head"><h2>Disponibilité</h2></div>
+            <div class="form-body">
+              <div class="dispo-row">
+                <div>
+                  <p>Je suis disponible pour recevoir des demandes</p>
+                  <small>Vous pouvez modifier cela à tout moment en nous contactant</small>
+                </div>
+                <div class="toggle-wrap">
+                  <input type="checkbox" class="toggle-input" id="disponible" checked />
+                  <label class="toggle-track" for="disponible">
+                    <span class="toggle-thumb"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        <button type="submit" class="btn-primary btn-submit" id="submit-btn" style="margin-top:20px">
-          <span id="submit-text">Publier mon profil</span>
-          <span id="submit-loading" style="display:none">Envoi en cours…</span>
-        </button>
+          <!-- CONSENTEMENT -->
+          <div class="consent-row">
+            <input type="checkbox" id="cgv" required />
+            <label for="cgv">
+              J'ai lu et j'accepte les <a href="mentions-legales.html" target="_blank">mentions légales</a>.
+              Je consens à ce que mon profil (hors email) soit affiché publiquement sur Ottonowmy.<span class="required">*</span>
+            </label>
+          </div>
 
-      </form>
+          <div id="form-error" class="form-error" style="display:none;margin-top:20px"></div>
+          <div id="form-success" class="form-success" style="display:none;margin-top:20px">
+            Votre profil a bien été soumis. Il apparaîtra dans l'annuaire après vérification.
+            <br /><a href="publier.html" style="color:inherit;font-weight:600;text-decoration:underline">→ Publier une fonctionnalité maintenant</a>
+          </div>
+
+          <button type="submit" class="btn-primary btn-submit" id="submit-btn" style="margin-top:20px">
+            <span id="submit-text">Soumettre mon profil</span>
+            <span id="submit-loading" style="display:none">Envoi en cours…</span>
+          </button>
+
+        </form>
+      </div><!-- /form-content -->
     </div>
   </main>
 
@@ -150,6 +278,8 @@
     <div class="container footer-inner">
       <div class="footer-logo">Ottonowmy</div>
       <div class="footer-links">
+        <a href="devs.html">Annuaire</a>
+        <a href="inscription.html">Inscription</a>
         <a href="mentions-legales.html">Mentions légales</a>
       </div>
       <div class="footer-copy">© 2026 Ottonowmy</div>
@@ -157,113 +287,183 @@
   </footer>
 
   <script>
-    // Tech checkboxes
+    // ─── Tech checkbox styling ───────────────────────────────────────────────
     document.querySelectorAll('.tech-check input').forEach(input => {
       input.addEventListener('change', () => {
         input.closest('.tech-check').classList.toggle('checked', input.checked);
       });
     });
 
-    // Liens dynamiques
-    const PRESETS = [
-      { label: 'GitHub',    ph: 'https://github.com/pseudo' },
-      { label: 'Ko-fi',     ph: 'https://ko-fi.com/pseudo' },
-      { label: 'Portfolio', ph: 'https://votre-site.fr' },
-      { label: 'LinkedIn',  ph: 'https://linkedin.com/in/pseudo' },
-      { label: 'Autre',     ph: 'https://…' },
-    ];
-    const container = document.getElementById('links-container');
-    const addBtn    = document.getElementById('add-link-btn');
-    let   cnt       = 0;
+    // ─── Clerk initialisation ────────────────────────────────────────────────
+    window.addEventListener('load', async () => {
+      await window.Clerk.load();
+      const clerk = window.Clerk;
 
-    function addLink() {
-      if (cnt >= 5) return;
-      const p   = PRESETS[cnt] || PRESETS[4];
-      const row = document.createElement('div');
-      row.className = 'link-row';
-      row.innerHTML = `
-        <div class="link-row-inner">
-          <select class="link-label-select">
-            <option>GitHub</option><option>Ko-fi</option><option>Portfolio</option>
-            <option>LinkedIn</option><option>Twitter / X</option><option>Dribbble</option>
-            <option>Behance</option><option>YouTube</option><option>Autre</option>
-          </select>
-          <input type="url" class="link-url-input" placeholder="${p.ph}" />
-          <button type="button" class="link-remove-btn" title="Supprimer">×</button>
-        </div>`;
-      row.querySelector('select').value = p.label;
-      row.querySelector('.link-remove-btn').addEventListener('click', () => {
-        row.remove(); cnt--; upd();
-      });
-      container.appendChild(row);
-      cnt++; upd();
+      updateUI(clerk);
+
+      // Écoute les changements de session (connexion / déconnexion)
+      clerk.addListener(({ session }) => updateUI(clerk));
+    });
+
+    function updateUI(clerk) {
+      const user      = clerk.user;
+      const gate      = document.getElementById('auth-gate');
+      const content   = document.getElementById('form-content');
+      const navJoin   = document.getElementById('nav-join');
+      const userBtn   = document.getElementById('clerk-user-btn');
+      const avatarEl  = document.getElementById('clerk-avatar');
+      const nameEl    = document.getElementById('clerk-name');
+
+      if (user) {
+        // Connecté → afficher le formulaire
+        gate.classList.remove('visible');
+        content.classList.add('visible');
+        navJoin.style.display = 'none';
+        userBtn.classList.add('visible');
+
+        // Remplir le badge nav
+        avatarEl.src = user.imageUrl || '';
+        nameEl.textContent = user.firstName || user.username || '';
+
+        // Pré-remplir les champs depuis le profil Clerk
+        const nomInput   = document.getElementById('nom');
+        const emailInput = document.getElementById('email');
+        const photoInput = document.getElementById('photo');
+
+        if (!nomInput.value) {
+          nomInput.value = [user.firstName, user.lastName].filter(Boolean).join(' ');
+        }
+        if (!emailInput.value && user.primaryEmailAddress) {
+          emailInput.value = user.primaryEmailAddress.emailAddress;
+        }
+        if (!photoInput.value && user.imageUrl) {
+          photoInput.value = user.imageUrl;
+        }
+
+        // Vérifier si déjà inscrit en Airtable
+        checkAlreadyRegistered(user.primaryEmailAddress?.emailAddress);
+
+      } else {
+        // Non connecté → afficher le gate
+        gate.classList.add('visible');
+        content.classList.remove('visible');
+        navJoin.style.display = '';
+        userBtn.classList.remove('visible');
+      }
     }
-    function upd() { addBtn.style.display = cnt >= 5 ? 'none' : 'flex'; }
-    addBtn.addEventListener('click', addLink);
-    addLink();
 
-    // Soumission
-    document.getElementById('form').addEventListener('submit', async e => {
+    // Boutons du gate
+    document.getElementById('btn-signin').addEventListener('click', () => window.Clerk.openSignIn());
+    document.getElementById('btn-signup').addEventListener('click', () => window.Clerk.openSignUp());
+    document.getElementById('sign-out-btn').addEventListener('click', () => window.Clerk.signOut());
+
+    // ─── Vérif profil existant ───────────────────────────────────────────────
+    async function checkAlreadyRegistered(email) {
+      if (!email) return;
+      try {
+        const res = await fetch('/api/devs-list');
+        if (!res.ok) return;
+        const records = await res.json();
+        const exists = records.some(r => r.fields?.['Email'] === email);
+        if (exists) {
+          document.getElementById('already-registered').classList.add('visible');
+        }
+      } catch { /* silencieux */ }
+    }
+
+    // ─── Soumission du formulaire ─────────────────────────────────────────────
+    document.getElementById('form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const errEl = document.getElementById('form-error');
-      const okEl  = document.getElementById('form-success');
-      const btn   = document.getElementById('submit-btn');
-      errEl.style.display = okEl.style.display = 'none';
 
-      const nom      = document.getElementById('nom').value.trim();
-      const email    = document.getElementById('email').value.trim();
-      const accroche = document.getElementById('accroche').value.trim();
-      const touche   = document.getElementById('touche').value.trim();
-      const photo    = document.getElementById('photo').value.trim();
-      const cgv      = document.getElementById('cgv').checked;
-      const techs    = [...document.querySelectorAll('.tech-check input:checked')].map(i => i.value);
-      const liens    = [...document.querySelectorAll('.link-row')]
-        .map(r => ({ label: r.querySelector('select').value, url: r.querySelector('.link-url-input').value.trim() }))
-        .filter(l => l.url);
+      const errorEl   = document.getElementById('form-error');
+      const successEl = document.getElementById('form-success');
+      const btn       = document.getElementById('submit-btn');
 
-      if (!nom)      { errEl.textContent = 'Le nom est obligatoire.';            errEl.style.display = 'block'; return; }
-      if (!email)    { errEl.textContent = "L'email est obligatoire.";           errEl.style.display = 'block'; return; }
-      if (!accroche) { errEl.textContent = "L'accroche est obligatoire.";        errEl.style.display = 'block'; return; }
-      if (!touche)   { errEl.textContent = 'La touche perso est obligatoire.';   errEl.style.display = 'block'; return; }
-      if (!techs.length) { errEl.textContent = 'Sélectionnez au moins un langage.'; errEl.style.display = 'block'; return; }
-      if (!cgv)      { errEl.textContent = 'Acceptez les mentions légales.';     errEl.style.display = 'block'; return; }
+      errorEl.style.display  = 'none';
+      successEl.style.display = 'none';
 
-      document.getElementById('submit-text').style.display    = 'none';
+      const nom         = document.getElementById('nom').value.trim();
+      const email       = document.getElementById('email').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const specialite  = document.getElementById('specialite').value;
+      const accroche    = document.getElementById('accroche').value.trim();
+      const cgv         = document.getElementById('cgv').checked;
+      const techs       = Array.from(document.querySelectorAll('.tech-check input:checked')).map(i => i.value);
+
+      if (!nom || !email || !description || !specialite) {
+        errorEl.textContent = 'Merci de remplir tous les champs obligatoires.';
+        errorEl.style.display = 'block';
+        return;
+      }
+      if (!techs.length) {
+        errorEl.textContent = 'Sélectionnez au moins une technologie.';
+        errorEl.style.display = 'block';
+        return;
+      }
+      if (!cgv) {
+        errorEl.textContent = 'Vous devez accepter les mentions légales pour continuer.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      document.getElementById('submit-text').style.display = 'none';
       document.getElementById('submit-loading').style.display = 'inline';
       btn.disabled = true;
+
+      // Récupérer le token Clerk pour authentifier la requête côté serveur
+      let clerkToken = null;
+      try {
+        clerkToken = await window.Clerk.session?.getToken();
+      } catch { /* pas bloquant */ }
 
       const fields = {
         'Nom':              nom,
         'Email':            email,
-        'Accroche':         accroche,
-        'Touche perso':     touche,
+        'Description':      description,
+        'Spécialité':       specialite,
         'Technologies':     techs,
-        'Liens':            JSON.stringify(liens),
+        'Disponible':       document.getElementById('disponible').checked,
         'Date inscription': new Date().toISOString().split('T')[0],
+        'ClerkUserId':      window.Clerk.user?.id || '',
       };
-      if (photo) fields['Photo'] = photo;
+
+      if (accroche)  fields['Accroche']   = accroche;
+      const github    = document.getElementById('github').value.trim();
+      const portfolio = document.getElementById('portfolio').value.trim();
+      const kofi      = document.getElementById('kofi').value.trim();
+      const photo     = document.getElementById('photo').value.trim();
+      if (github)    fields['GitHub']      = github;
+      if (portfolio) fields['Portfolio']   = portfolio;
+      if (kofi)      fields['Lien Ko-fi']  = kofi;
+      if (photo)     fields['Photo']       = photo;
 
       try {
-        const res  = await fetch('/api/devs', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({ fields }),
+        const res = await fetch('/api/devs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(clerkToken ? { 'Authorization': `Bearer ${clerkToken}` } : {}),
+          },
+          body: JSON.stringify({ fields }),
         });
+
         let data;
-        try { data = await res.json(); } catch { throw new Error(`Statut ${res.status}`); }
-        if (!res.ok || data.error) throw new Error(data?.error || `Erreur ${res.status}`);
+        try { data = await res.json(); } catch { throw new Error('Réponse invalide du serveur'); }
 
-        okEl.style.display = 'block';
-        document.getElementById('form').reset();
-        document.querySelectorAll('.tech-check').forEach(el => el.classList.remove('checked'));
-        container.innerHTML = ''; cnt = 0; addLink(); upd();
-        okEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
+        if (data.id) {
+          successEl.style.display = 'block';
+          document.getElementById('form').reset();
+          document.querySelectorAll('.tech-check').forEach(el => el.classList.remove('checked'));
+          successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          throw new Error(JSON.stringify(data));
+        }
       } catch (err) {
-        errEl.textContent   = `Erreur : ${err.message}`;
-        errEl.style.display = 'block';
+        errorEl.textContent = "Une erreur est survenue lors de l'envoi. Vérifiez votre connexion et réessayez.";
+        errorEl.style.display = 'block';
+        console.error(err);
       } finally {
-        document.getElementById('submit-text').style.display    = 'inline';
+        document.getElementById('submit-text').style.display = 'inline';
         document.getElementById('submit-loading').style.display = 'none';
         btn.disabled = false;
       }

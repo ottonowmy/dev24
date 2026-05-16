@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Publier une fonctionnalité — Ottonowmy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Clerk JS SDK -->
+  <script
+    async
+    crossorigin="anonymous"
+    data-clerk-publishable-key="__CLERK_PUBLISHABLE_KEY__"
+    src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
+    type="text/javascript"
+  ></script>
+
+  <style>
+    /* ── Auth gate ── */
+    #auth-gate {
+      display: none;
+      min-height: 60vh;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 24px;
+      text-align: center;
+      padding: 60px 24px;
+    }
+    #auth-gate.visible { display: flex; }
+    #auth-gate h2 { font-family: 'Instrument Serif', serif; font-size: 1.8rem; }
+    #auth-gate p  { color: var(--ink4, #888); max-width: 380px; line-height: 1.6; }
+    .auth-buttons { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .btn-sign-in  { padding: 12px 28px; background: var(--ink, #1a1a1a); color: #fff; border: none; border-radius: 8px; font-size: .95rem; cursor: pointer; font-family: 'Geist', sans-serif; }
+    .btn-sign-up  { padding: 12px 28px; background: transparent; color: var(--ink, #1a1a1a); border: 1.5px solid currentColor; border-radius: 8px; font-size: .95rem; cursor: pointer; font-family: 'Geist', sans-serif; }
+    .btn-sign-in:hover { opacity: .85; }
+    .btn-sign-up:hover  { background: var(--ink, #1a1a1a); color: #fff; }
+
+    /* ── Gate : pas de profil Airtable ── */
+    #no-profile-gate {
+      display: none;
+      min-height: 50vh;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+      text-align: center;
+      padding: 60px 24px;
+    }
+    #no-profile-gate.visible { display: flex; }
+    #no-profile-gate h2 { font-family: 'Instrument Serif', serif; font-size: 1.7rem; }
+    #no-profile-gate p  { color: var(--ink4, #888); max-width: 380px; line-height: 1.6; }
+
+    /* ── User badge in nav ── */
+    #clerk-user-btn {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    #clerk-user-btn.visible { display: flex; }
+    #clerk-user-btn img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+    #clerk-user-btn span { font-size: .85rem; font-family: 'Geist', sans-serif; }
+    .sign-out-link {
+      font-size: .82rem; color: var(--ink4, #888); cursor: pointer;
+      text-decoration: underline; background: none; border: none; font-family: 'Geist', sans-serif;
+    }
+
+    /* ── Form content ── */
+    #form-content { display: none; }
+    #form-content.visible { display: block; }
+
+    /* ── Preview card ── */
+    .preview-section {
+      margin-top: 48px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border, #e5e5e5);
+    }
+    .preview-section h3 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      color: var(--ink4, #888);
+    }
+    .feature-card-preview {
+      background: var(--surface, #fafafa);
+      border: 1.5px solid var(--border, #e5e5e5);
+      border-radius: 14px;
+      padding: 24px;
+      max-width: 480px;
+    }
+    .fc-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+    .fc-emoji  { font-size: 2rem; line-height: 1; }
+    .fc-meta   { flex: 1; }
+    .fc-titre  { font-family: 'Instrument Serif', serif; font-size: 1.15rem; margin-bottom: 4px; }
+    .fc-stack  { display: flex; flex-wrap: wrap; gap: 6px; }
+    .fc-tag    { background: var(--ink, #1a1a1a); color: #fff; font-size: .72rem; padding: 3px 9px; border-radius: 20px; font-family: 'Geist', sans-serif; }
+    .fc-desc   { font-size: .88rem; color: var(--ink3, #555); line-height: 1.65; margin-bottom: 14px; }
+    .fc-links  { display: flex; gap: 10px; flex-wrap: wrap; }
+    .fc-link   {
+      font-size: .8rem; padding: 6px 14px; border-radius: 6px;
+      border: 1px solid var(--border, #ddd); text-decoration: none;
+      color: var(--ink, #1a1a1a); font-family: 'Geist', sans-serif;
+    }
+    .fc-link:hover { background: var(--ink, #1a1a1a); color: #fff; }
+
+    /* ── Liste des publications existantes ── */
+    #mes-fonctions { margin-top: 56px; }
+    #mes-fonctions h2 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.4rem;
+      margin-bottom: 24px;
+    }
+    .fn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .fn-card {
+      background: var(--surface, #fafafa);
+      border: 1.5px solid var(--border, #e5e5e5);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .fn-card-title { font-family: 'Instrument Serif', serif; font-size: 1rem; margin-bottom: 6px; }
+    .fn-card-desc  { font-size: .83rem; color: var(--ink4, #888); line-height: 1.55; margin-bottom: 12px; }
+    .fn-card-meta  { font-size: .75rem; color: var(--ink4, #aaa); }
+    .fn-empty { color: var(--ink4, #aaa); font-size: .9rem; }
+
+    /* ── Catégorie selector style ── */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .cat-option {
+      border: 1.5px solid var(--border, #e0e0e0);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: .83rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Geist', sans-serif;
+      transition: all .15s;
+      user-select: none;
+    }
+    .cat-option input { display: none; }
+    .cat-option:hover  { border-color: var(--ink, #1a1a1a); }
+    .cat-option.selected {
+      background: var(--ink, #1a1a1a);
+      color: #fff;
+      border-color: var(--ink, #1a1a1a);
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">Ottonowmy</a>
+    <div class="nav-links">
+      <a href="devs.html">Annuaire</a>
+      <a href="publier.html" class="btn-nav active" id="nav-publier">Publier</a>
+      <div id="clerk-user-btn">
+        <img id="clerk-avatar" src="" alt="avatar" />
+        <span id="clerk-name"></span>
+        <button class="sign-out-link" id="sign-out-btn">Déconnexion</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <h1>Publier une fonctionnalité</h1>
+    <p>Présentez ce que vous avez construit. Visible sur votre profil et dans l'annuaire.</p>
+  </div>
+
+  <main class="form-main">
+    <div class="form-wrap">
+
+      <!-- Gate : non connecté -->
+      <div id="auth-gate">
+        <h2>Connectez-vous pour publier</h2>
+        <p>Seuls les développeurs inscrits peuvent publier leurs fonctionnalités sur Ottonowmy.</p>
+        <div class="auth-buttons">
+          <button class="btn-sign-in" id="btn-signin">Se connecter</button>
+          <button class="btn-sign-up" id="btn-signup">Créer un compte</button>
+        </div>
+      </div>
+
+      <!-- Gate : connecté mais pas encore de profil Airtable -->
+      <div id="no-profile-gate">
+        <h2>Finalisez d'abord votre profil</h2>
+        <p>Pour publier une fonctionnalité, vous devez d'abord créer votre profil développeur.</p>
+        <a href="inscription.html" class="btn-primary">Créer mon profil</a>
+      </div>
+
+      <!-- Formulaire principal -->
+      <div id="form-content">
+
+        <form id="form" novalidate>
+
+          <!-- TITRE & EMOJI -->
+          <div class="form-section">
+            <div class="form-section-head"><h2>Présentation</h2></div>
+            <div class="form-body">
+              <div class="form-row">
+                <div class="form-group" style="flex:0 0 80px">
+                  <label for="emoji">Emoji</label>
+                  <input type="text" id="emoji" maxlength="2" placeholder="🚀" style="text-align:center;font-size:1.4rem" />
+                  <small>1 emoji</small>
+                </div>
+                <div class="form-group">
+                  <label for="titre">Titre<span class="required">*</span></label>
+                  <input type="text" id="titre" maxlength="80" placeholder="Ex : Composant de recherche avec debounce" required />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="desc">Description<span class="required">*</span></label>
+                <textarea id="desc" rows="4"
+                  placeholder="Décrivez ce que fait cette fonctionnalité, le problème qu'elle résout, et comment l'utiliser…"
+                  required></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- CATÉGORIE -->
+          <div class="form-section">
+            <div class="form-section-head"><h2>Catégorie</h2></div>
+            <div class="form-body">
+              <div class="form-group">
+                <label>Type de fonctionnalité<span class="required">*</span></label>
+                <div class="cat-grid" id="cat-grid">
+                  <label class="cat-option"><input type="radio" name="categorie" value="Composant UI" /> 🎨 Composant UI</label>
+                  <label class="cat-option"><input type="radio" name="categorie" value="API / Backend" /> ⚙️ API / Backend</label>
+                  <label class="cat-option"><input type="radio" name="categorie" value="Script / Outil" /> 🔧 Script / Outil</label>
+                  <label class="cat-option"><input type="radio" name="categorie" value="Intégration" /> 🔌 Intégration</label>
+                  <label class="cat-option"><input type="radio" name="categorie" value="Template" /> 📐 Template</label>
+                  <label class="cat-option"><input type="radio" name="categorie" value="Autre" /> 📦 Autre</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STACK -->
+          <div class="form-section">
+            <div class="form-section-head"><h2>Stack utilisée</h2></div>
+            <div class="form-body">
+              <div class="form-group">
+                <label for="stack">Technologies<span class="required">*</span></label>
+                <input type="text" id="stack" placeholder="React, Node.js, PostgreSQL…" required />
+                <small>Séparez par des virgules</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- LIENS -->
+          <div class="form-section">
+            <div class="form-section-head"><h2>Liens</h2></div>
+            <div class="form-body">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="lien-repo">Dépôt / Code source</label>
+                  <input type="url" id="lien-repo" placeholder="https://github.com/pseudo/projet" />
+                </div>
+                <div class="form-group">
+                  <label for="lien-demo">Démo en ligne</label>
+                  <input type="url" id="lien-demo" placeholder="https://ma-demo.vercel.app" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- VISIBILITÉ -->
+          <div class="form-section">
+            <div class="form-section-head"><h2>Visibilité</h2></div>
+            <div class="form-body">
+              <div class="dispo-row">
+                <div>
+                  <p>Afficher publiquement dans l'annuaire</p>
+                  <small>Si désactivé, la fonctionnalité reste sur votre profil mais n'apparaît pas dans la liste générale</small>
+                </div>
+                <div class="toggle-wrap">
+                  <input type="checkbox" class="toggle-input" id="publique" checked />
+                  <label class="toggle-track" for="publique">
+                    <span class="toggle-thumb"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="form-error" class="form-error" style="display:none;margin-top:20px"></div>
+          <div id="form-success" class="form-success" style="display:none;margin-top:20px">
+            Votre fonctionnalité a été publiée avec succès ! Elle est maintenant visible sur votre profil.
+          </div>
+
+          <button type="submit" class="btn-primary btn-submit" id="submit-btn" style="margin-top:20px">
+            <span id="submit-text">Publier la fonctionnalité</span>
+            <span id="submit-loading" style="display:none">Publication…</span>
+          </button>
+        </form>
+
+        <!-- Aperçu live -->
+        <div class="preview-section">
+          <h3>Aperçu en temps réel</h3>
+          <div class="feature-card-preview" id="preview-card">
+            <div class="fc-header">
+              <div class="fc-emoji" id="prev-emoji">🚀</div>
+              <div class="fc-meta">
+                <div class="fc-titre" id="prev-titre">Titre de votre fonctionnalité</div>
+                <div class="fc-stack" id="prev-stack"></div>
+              </div>
+            </div>
+            <p class="fc-desc" id="prev-desc">La description apparaîtra ici…</p>
+            <div class="fc-links" id="prev-links"></div>
+          </div>
+        </div>
+
+        <!-- Mes publications -->
+        <div id="mes-fonctions">
+          <h2>Mes fonctionnalités publiées</h2>
+          <div id="fn-list" class="fn-grid">
+            <p class="fn-empty" id="fn-loading">Chargement…</p>
+          </div>
+        </div>
+
+      </div><!-- /form-content -->
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-logo">Ottonowmy</div>
+      <div class="footer-links">
+        <a href="devs.html">Annuaire</a>
+        <a href="inscription.html">Inscription</a>
+        <a href="mentions-legales.html">Mentions légales</a>
+      </div>
+      <div class="footer-copy">© 2026 Ottonowmy</div>
+    </div>
+  </footer>
+
+  <script>
+    // ─── Catégorie radio styling ──────────────────────────────────────────────
+    document.querySelectorAll('.cat-option').forEach(label => {
+      const radio = label.querySelector('input');
+      radio.addEventListener('change', () => {
+        document.querySelectorAll('.cat-option').forEach(l => l.classList.remove('selected'));
+        if (radio.checked) label.classList.add('selected');
+      });
+    });
+
+    // ─── Live preview ─────────────────────────────────────────────────────────
+    function updatePreview() {
+      document.getElementById('prev-emoji').textContent =
+        document.getElementById('emoji').value || '🚀';
+      document.getElementById('prev-titre').textContent =
+        document.getElementById('titre').value || 'Titre de votre fonctionnalité';
+      document.getElementById('prev-desc').textContent =
+        document.getElementById('desc').value || 'La description apparaîtra ici…';
+
+      const stackRaw = document.getElementById('stack').value;
+      const tags = stackRaw.split(',').map(s => s.trim()).filter(Boolean);
+      document.getElementById('prev-stack').innerHTML =
+        tags.map(t => `<span class="fc-tag">${t}</span>`).join('');
+
+      const repo = document.getElementById('lien-repo').value.trim();
+      const demo = document.getElementById('lien-demo').value.trim();
+      document.getElementById('prev-links').innerHTML = [
+        repo ? `<a href="${repo}" class="fc-link" target="_blank">Code source</a>` : '',
+        demo ? `<a href="${demo}" class="fc-link" target="_blank">Voir la démo</a>` : '',
+      ].join('');
+    }
+
+    ['emoji','titre','desc','stack','lien-repo','lien-demo'].forEach(id => {
+      document.getElementById(id).addEventListener('input', updatePreview);
+    });
+
+    // ─── Clerk initialisation ────────────────────────────────────────────────
+    window.addEventListener('load', async () => {
+      await window.Clerk.load();
+      updateUI(window.Clerk);
+      window.Clerk.addListener(() => updateUI(window.Clerk));
+    });
+
+    async function updateUI(clerk) {
+      const user          = clerk.user;
+      const gate          = document.getElementById('auth-gate');
+      const noProfile     = document.getElementById('no-profile-gate');
+      const content       = document.getElementById('form-content');
+      const userBtn       = document.getElementById('clerk-user-btn');
+
+      // Reset
+      gate.classList.remove('visible');
+      noProfile.classList.remove('visible');
+      content.classList.remove('visible');
+      userBtn.classList.remove('visible');
+
+      if (!user) {
+        gate.classList.add('visible');
+        return;
+      }
+
+      // Badge nav
+      userBtn.classList.add('visible');
+      document.getElementById('clerk-avatar').src = user.imageUrl || '';
+      document.getElementById('clerk-name').textContent = user.firstName || user.username || '';
+
+      // Vérifier que le dev a bien un profil Airtable
+      const hasProfile = await checkProfile(user);
+      if (!hasProfile) {
+        noProfile.classList.add('visible');
+        return;
+      }
+
+      content.classList.add('visible');
+      loadMesFonctions(user.id);
+    }
+
+    async function checkProfile(user) {
+      try {
+        const res = await fetch('/api/devs-list');
+        if (!res.ok) return false;
+        const records = await res.json();
+        const email = user.primaryEmailAddress?.emailAddress;
+        return records.some(r =>
+          r.fields?.['Email'] === email || r.fields?.['ClerkUserId'] === user.id
+        );
+      } catch { return false; }
+    }
+
+    // ─── Charger les fonctionnalités existantes ───────────────────────────────
+    async function loadMesFonctions(clerkUserId) {
+      const list = document.getElementById('fn-list');
+      try {
+        const res = await fetch(`/api/features?clerkUserId=${encodeURIComponent(clerkUserId)}`);
+        if (!res.ok) throw new Error();
+        const records = await res.json();
+        if (!records.length) {
+          list.innerHTML = '<p class="fn-empty">Aucune fonctionnalité publiée pour l\'instant.</p>';
+          return;
+        }
+        list.innerHTML = records.map(r => {
+          const f = r.fields || {};
+          const date = f['Date publication'] || '';
+          return `
+            <div class="fn-card">
+              <div class="fn-card-title">${f['Emoji'] || ''} ${f['Titre'] || ''}</div>
+              <div class="fn-card-desc">${(f['Description'] || '').slice(0, 100)}${(f['Description']||'').length > 100 ? '…' : ''}</div>
+              <div class="fn-card-meta">${f['Catégorie'] || ''} · ${date}</div>
+            </div>`;
+        }).join('');
+      } catch {
+        list.innerHTML = '<p class="fn-empty">Impossible de charger vos fonctionnalités.</p>';
+      }
+    }
+
+    // Boutons gate
+    document.getElementById('btn-signin').addEventListener('click', () => window.Clerk.openSignIn());
+    document.getElementById('btn-signup').addEventListener('click', () => window.Clerk.openSignUp());
+    document.getElementById('sign-out-btn').addEventListener('click', () => window.Clerk.signOut());
+
+    // ─── Soumission ──────────────────────────────────────────────────────────
+    document.getElementById('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const errorEl   = document.getElementById('form-error');
+      const successEl = document.getElementById('form-success');
+      const btn       = document.getElementById('submit-btn');
+      errorEl.style.display  = 'none';
+      successEl.style.display = 'none';
+
+      const titre    = document.getElementById('titre').value.trim();
+      const desc     = document.getElementById('desc').value.trim();
+      const stack    = document.getElementById('stack').value.trim();
+      const catRadio = document.querySelector('input[name="categorie"]:checked');
+
+      if (!titre || !desc || !stack) {
+        errorEl.textContent = 'Merci de remplir tous les champs obligatoires.';
+        errorEl.style.display = 'block';
+        return;
+      }
+      if (!catRadio) {
+        errorEl.textContent = 'Sélectionnez une catégorie.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      document.getElementById('submit-text').style.display = 'none';
+      document.getElementById('submit-loading').style.display = 'inline';
+      btn.disabled = true;
+
+      let clerkToken = null;
+      try { clerkToken = await window.Clerk.session?.getToken(); } catch {}
+
+      const user   = window.Clerk.user;
+      const fields = {
+        'Titre':             titre,
+        'Description':       desc,
+        'Stack':             stack.split(',').map(s => s.trim()).filter(Boolean),
+        'Catégorie':         catRadio.value,
+        'Emoji':             document.getElementById('emoji').value.trim() || '🚀',
+        'Publique':          document.getElementById('publique').checked,
+        'Date publication':  new Date().toISOString().split('T')[0],
+        'ClerkUserId':       user?.id || '',
+        'Auteur':            [user?.firstName, user?.lastName].filter(Boolean).join(' '),
+      };
+
+      const repo = document.getElementById('lien-repo').value.trim();
+      const demo = document.getElementById('lien-demo').value.trim();
+      if (repo) fields['Lien repo']  = repo;
+      if (demo) fields['Lien démo']  = demo;
+
+      try {
+        const res = await fetch('/api/features', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(clerkToken ? { 'Authorization': `Bearer ${clerkToken}` } : {}),
+          },
+          body: JSON.stringify({ fields }),
+        });
+
+        let data;
+        try { data = await res.json(); } catch { throw new Error('Réponse invalide'); }
+
+        if (data.id) {
+          successEl.style.display = 'block';
+          document.getElementById('form').reset();
+          document.querySelectorAll('.cat-option').forEach(l => l.classList.remove('selected'));
+          updatePreview();
+          successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          loadMesFonctions(user.id);
+        } else {
+          throw new Error(JSON.stringify(data));
+        }
+      } catch (err) {
+        errorEl.textContent = "Une erreur est survenue lors de la publication. Réessayez.";
+        errorEl.style.display = 'block';
+        console.error(err);
+      } finally {
+        document.getElementById('submit-text').style.display = 'inline';
+        document.getElementById('submit-loading').style.display = 'none';
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
