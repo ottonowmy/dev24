@@ -8,10 +8,38 @@
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Clerk JS SDK -->
-  <!-- ⚠️ REMPLACE pk_test_XXXX par ta Publishable Key : dashboard.clerk.com → API Keys -->
-  <script>window.CLERK_KEY = "pk_test_Y2FyaW5nLXRyb2xsLTExLmNsZXJrLmFjY291bnRzLmRldiQ";</script>
-  <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js" crossorigin="anonymous"></script>
+  <!-- ============================================================ -->
+  <!-- CLERK : colle ta Publishable Key ci-dessous                  -->
+  <!-- dashboard.clerk.com → ton app → API Keys → Publishable key   -->
+  <!-- Elle commence par pk_test_ (dev) ou pk_live_ (prod)          -->
+  <!-- ============================================================ -->
+  <script>
+    const PUBLISHABLE_KEY = "pk_test_Y2FyaW5nLXRyb2xsLTExLmNsZXJrLmFjY291bnRzLmRldiQ";
+
+    // Charge le SDK Clerk dynamiquement puis l'initialise
+    (function() {
+      var s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js';
+      s.onload = async function() {
+        try {
+          await window.Clerk.load({ publishableKey: PUBLISHABLE_KEY });
+          window.__clerk = window.Clerk;
+          if (window.__clerkReady) window.__clerkReady(window.__clerk);
+        } catch(e) {
+          console.error('[Clerk load error]', e);
+          var gate = document.getElementById('auth-gate');
+          if (gate) {
+            gate.querySelector('p').textContent = 'Erreur Clerk : ' + e.message;
+            gate.classList.add('visible');
+          }
+        }
+      };
+      s.onerror = function() {
+        console.error('[Clerk] Script CDN introuvable');
+      };
+      document.head.appendChild(s);
+    })();
+  </script>
 
   <style>
     /* ── Auth gate ── */
@@ -291,24 +319,11 @@
     });
 
     // ─── Clerk initialisation ────────────────────────────────────────────────
-    // On attend que le DOM + le script Clerk soient chargés
-    document.addEventListener('DOMContentLoaded', async () => {
-      try {
-        // La bonne façon d'utiliser le CDN clerk-js v5
-        await window.Clerk.load({ publishableKey: window.CLERK_KEY });
-        window.__clerk = window.Clerk;
-        updateUI(window.__clerk);
-        window.__clerk.addListener(() => updateUI(window.__clerk));
-      } catch (err) {
-        console.error('[Clerk] Erreur :', err);
-        const gate = document.getElementById('auth-gate');
-        if (gate) {
-          gate.querySelector('p').textContent =
-            'Erreur Clerk — clé invalide ? (doit commencer par pk_test_ ou pk_live_)';
-          gate.classList.add('visible');
-        }
-      }
-    });
+    // __clerkReady est appelé par le script inline du <head> une fois Clerk chargé
+    window.__clerkReady = function(clerk) {
+      updateUI(clerk);
+      clerk.addListener(() => updateUI(clerk));
+    };
 
     function updateUI(clerk) {
       const user      = clerk.user;
