@@ -8,14 +8,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Clerk JS SDK -->
-  <script
-    async
-    crossorigin="anonymous"
-    data-clerk-publishable-key="__CLERK_PUBLISHABLE_KEY__"
-    src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
-    type="text/javascript"
-  ></script>
+  <!-- Clerk JS SDK — chargement manuel pour éviter les problèmes async -->
+  <script>
+    // ⚠️ Remplace cette valeur par ta clé Clerk (commence par pk_test_ ou pk_live_)
+    // Trouve-la sur : https://dashboard.clerk.com → ton app → API Keys → Publishable key
+    window.CLERK_KEY = "pk_test_REMPLACE_PAR_TA_VRAIE_CLE";
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" type="text/javascript"></script>
 
   <style>
     /* ── Auth gate ── */
@@ -296,13 +295,19 @@
 
     // ─── Clerk initialisation ────────────────────────────────────────────────
     window.addEventListener('load', async () => {
-      await window.Clerk.load();
-      const clerk = window.Clerk;
-
-      updateUI(clerk);
-
-      // Écoute les changements de session (connexion / déconnexion)
-      clerk.addListener(({ session }) => updateUI(clerk));
+      try {
+        const clerk = new window.Clerk(window.CLERK_KEY);
+        await clerk.load();
+        window.__clerk = clerk;
+        updateUI(clerk);
+        clerk.addListener(() => updateUI(clerk));
+      } catch (err) {
+        console.error('[Clerk] Erreur de chargement :', err);
+        const gate = document.getElementById('auth-gate');
+        gate.querySelector('p').textContent =
+          'Erreur Clerk. Vérifiez que la clé dans inscription.html est correcte (pk_test_...).';
+        gate.classList.add('visible');
+      }
     });
 
     function updateUI(clerk) {
@@ -353,9 +358,9 @@
     }
 
     // Boutons du gate
-    document.getElementById('btn-signin').addEventListener('click', () => window.Clerk.openSignIn());
-    document.getElementById('btn-signup').addEventListener('click', () => window.Clerk.openSignUp());
-    document.getElementById('sign-out-btn').addEventListener('click', () => window.Clerk.signOut());
+    document.getElementById('btn-signin').addEventListener('click', () => window.__clerk.openSignIn());
+    document.getElementById('btn-signup').addEventListener('click', () => window.__clerk.openSignUp());
+    document.getElementById('sign-out-btn').addEventListener('click', () => window.__clerk.signOut());
 
     // ─── Vérif profil existant ───────────────────────────────────────────────
     async function checkAlreadyRegistered(email) {
@@ -413,7 +418,7 @@
       // Récupérer le token Clerk pour authentifier la requête côté serveur
       let clerkToken = null;
       try {
-        clerkToken = await window.Clerk.session?.getToken();
+        clerkToken = await window.__clerk?.session?.getToken();
       } catch { /* pas bloquant */ }
 
       const fields = {
@@ -424,7 +429,7 @@
         'Technologies':     techs,
         'Disponible':       document.getElementById('disponible').checked,
         'Date inscription': new Date().toISOString().split('T')[0],
-        'ClerkUserId':      window.Clerk.user?.id || '',
+        'ClerkUserId':      window.__clerk?.user?.id || '',
       };
 
       if (accroche)  fields['Accroche']   = accroche;
