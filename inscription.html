@@ -8,13 +8,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Clerk JS SDK — chargement manuel pour éviter les problèmes async -->
-  <script>
-    // ⚠️ Remplace cette valeur par ta clé Clerk (commence par pk_test_ ou pk_live_)
-    // Trouve-la sur : https://dashboard.clerk.com → ton app → API Keys → Publishable key
-    window.CLERK_KEY = "pk_test_REMPLACE_PAR_TA_VRAIE_CLE";
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" type="text/javascript"></script>
+  <!-- Clerk JS SDK -->
+  <!-- ⚠️ REMPLACE pk_test_XXXX par ta Publishable Key : dashboard.clerk.com → API Keys -->
+  <script>window.CLERK_KEY = "pk_test_REMPLACE_PAR_TA_VRAIE_CLE";</script>
+  <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js" crossorigin="anonymous"></script>
 
   <style>
     /* ── Auth gate ── */
@@ -294,19 +291,22 @@
     });
 
     // ─── Clerk initialisation ────────────────────────────────────────────────
-    window.addEventListener('load', async () => {
+    // On attend que le DOM + le script Clerk soient chargés
+    document.addEventListener('DOMContentLoaded', async () => {
       try {
-        const clerk = new window.Clerk(window.CLERK_KEY);
-        await clerk.load();
-        window.__clerk = clerk;
-        updateUI(clerk);
-        clerk.addListener(() => updateUI(clerk));
+        // La bonne façon d'utiliser le CDN clerk-js v5
+        await window.Clerk.load({ publishableKey: window.CLERK_KEY });
+        window.__clerk = window.Clerk;
+        updateUI(window.__clerk);
+        window.__clerk.addListener(() => updateUI(window.__clerk));
       } catch (err) {
-        console.error('[Clerk] Erreur de chargement :', err);
+        console.error('[Clerk] Erreur :', err);
         const gate = document.getElementById('auth-gate');
-        gate.querySelector('p').textContent =
-          'Erreur Clerk. Vérifiez que la clé dans inscription.html est correcte (pk_test_...).';
-        gate.classList.add('visible');
+        if (gate) {
+          gate.querySelector('p').textContent =
+            'Erreur Clerk — clé invalide ? (doit commencer par pk_test_ ou pk_live_)';
+          gate.classList.add('visible');
+        }
       }
     });
 
@@ -357,10 +357,18 @@
       }
     }
 
-    // Boutons du gate
-    document.getElementById('btn-signin').addEventListener('click', () => window.__clerk.openSignIn());
-    document.getElementById('btn-signup').addEventListener('click', () => window.__clerk.openSignUp());
-    document.getElementById('sign-out-btn').addEventListener('click', () => window.__clerk.signOut());
+    // Boutons du gate — on utilise window.__clerk avec guard pour éviter undefined
+    document.getElementById('btn-signin').addEventListener('click', () => {
+      if (window.__clerk) window.__clerk.openSignIn();
+      else console.warn('Clerk pas encore chargé');
+    });
+    document.getElementById('btn-signup').addEventListener('click', () => {
+      if (window.__clerk) window.__clerk.openSignUp();
+      else console.warn('Clerk pas encore chargé');
+    });
+    document.getElementById('sign-out-btn').addEventListener('click', () => {
+      if (window.__clerk) window.__clerk.signOut();
+    });
 
     // ─── Vérif profil existant ───────────────────────────────────────────────
     async function checkAlreadyRegistered(email) {
