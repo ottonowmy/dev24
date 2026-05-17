@@ -7,15 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-
-  <!-- 1. La clé en premier -->
-  <script>
-    var CLERK_PK = "pk_test_Y2FyaW5nLXRyb2xsLTExLmNsZXJrLmFjY291bnRzLmRldiQ";
-  </script>
-
-  <!-- 2. Le script Clerk ensuite, synchrone -->
-  <script src="https://caring-troll-11.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
-
   <style>
     #auth-gate { display:none; min-height:55vh; flex-direction:column; align-items:center; justify-content:center; gap:20px; text-align:center; padding:60px 20px; }
     #auth-gate.show { display:flex; }
@@ -217,38 +208,51 @@
   </div>
 </footer>
 
-<!-- 3. Tout le JS en bas de page, après le DOM -->
 <script>
-  // Debug : vérifier que Clerk et la clé sont bien disponibles
-  console.log('[Debug] typeof Clerk:', typeof Clerk);
-  console.log('[Debug] CLERK_PK:', CLERK_PK);
-
+  // ─── Tech checkboxes ────────────────────────────────────────────────────────
   document.querySelectorAll('.tech-check input').forEach(function(input) {
     input.addEventListener('change', function() {
       input.closest('.tech-check').classList.toggle('checked', input.checked);
     });
   });
 
-  function showButtons(msg) {
-    document.querySelector('#auth-gate p').textContent = msg || 'Un compte est nécessaire pour créer votre profil développeur.';
+  // ─── Clerk : chargement dynamique avec la clé passée DANS le script ────────
+  // On crée le script ici (en bas de page, après le DOM) pour garantir
+  // que la clé est connue avant que Clerk s'initialise.
+  (function() {
+    var CLERK_PK = "pk_test_Y2FyaW5nLXRyb2xsLTExLmNsZXJrLmFjY291bnRzLmRldiQ";
+    var script = document.createElement('script');
+    script.src = "https://caring-troll-11.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js";
+    script.setAttribute("data-clerk-publishable-key", CLERK_PK);
+
+    script.onerror = function() {
+      document.querySelector('#auth-gate p').textContent = 'Impossible de charger Clerk. Vérifiez votre connexion.';
+      document.getElementById('auth-btns').style.display = 'flex';
+    };
+
+    script.onload = function() {
+      // Clerk est chargé et a lu data-clerk-publishable-key tout seul
+      window.Clerk.load().then(function() {
+        renderUI();
+        window.Clerk.addListener(renderUI);
+      }).catch(function(e) {
+        console.error('[Clerk]', e);
+        document.querySelector('#auth-gate p').textContent = 'Erreur : ' + e.message;
+        document.getElementById('auth-btns').style.display = 'flex';
+      });
+    };
+
+    document.body.appendChild(script);
+  })();
+
+  // ─── UI ─────────────────────────────────────────────────────────────────────
+  function showButtons() {
+    document.querySelector('#auth-gate p').textContent = 'Un compte est nécessaire pour créer votre profil développeur.';
     document.getElementById('auth-btns').style.display = 'flex';
   }
 
-  if (typeof Clerk === 'undefined') {
-    showButtons('Impossible de charger Clerk (script bloqué). Réessayez.');
-  } else {
-    var clerk = new Clerk(CLERK_PK);
-    clerk.load().then(function() {
-      renderUI();
-      clerk.addListener(renderUI);
-    }).catch(function(e) {
-      console.error('[Clerk]', e);
-      showButtons('Erreur Clerk : ' + e.message);
-    });
-  }
-
   function renderUI() {
-    var user = clerk.user;
+    var user = window.Clerk.user;
     if (user) {
       document.getElementById('auth-gate').classList.remove('show');
       document.getElementById('form-wrap').classList.add('show');
@@ -279,10 +283,11 @@
     } catch(e) {}
   }
 
-  document.getElementById('btn-signin').addEventListener('click', function() { clerk.openSignIn(); });
-  document.getElementById('btn-signup').addEventListener('click', function() { clerk.openSignUp(); });
-  document.getElementById('btn-signout').addEventListener('click', function() { clerk.signOut(); });
+  document.getElementById('btn-signin').addEventListener('click', function() { window.Clerk.openSignIn(); });
+  document.getElementById('btn-signup').addEventListener('click', function() { window.Clerk.openSignUp(); });
+  document.getElementById('btn-signout').addEventListener('click', function() { window.Clerk.signOut(); });
 
+  // ─── Soumission ──────────────────────────────────────────────────────────────
   document.getElementById('form').addEventListener('submit', async function(e) {
     e.preventDefault();
     var errorEl   = document.getElementById('form-error');
@@ -320,7 +325,7 @@
     if (portfolio) fields['Portfolio']  = portfolio;
     if (kofi)      fields['Lien Ko-fi'] = kofi;
     if (photo)     fields['Photo']      = photo;
-    if (clerk.user) fields['ClerkUserId'] = clerk.user.id;
+    if (window.Clerk && window.Clerk.user) fields['ClerkUserId'] = window.Clerk.user.id;
 
     try {
       var res = await fetch('/api/devs', {
