@@ -7,18 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-
-  <!--
-    ╔══════════════════════════════════════════════════════════╗
-    ║  CLERK — COLLE TA CLÉ ICI                                ║
-    ║  dashboard.clerk.com → ton app → API Keys                ║
-    ║  Publishable key  (commence par pk_test_ ou pk_live_)    ║
-    ╚══════════════════════════════════════════════════════════╝
-  -->
-  <script>
-    var CLERK_PK = "pk_test_Y2FyaW5nLXRyb2xsLTExLmNsZXJrLmFjY291bnRzLmRldiQ";
-  </script>
-
   <style>
     #auth-gate {
       display: none; min-height: 55vh; flex-direction: column;
@@ -29,16 +17,8 @@
     #auth-gate h2 { font-family: 'Instrument Serif', serif; font-size: 1.8rem; margin: 0; }
     #auth-gate p  { color: #888; max-width: 360px; line-height: 1.6; margin: 0; }
     .auth-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
-    .btn-clerk-in {
-      padding: 12px 28px; background: #1a1a1a; color: #fff;
-      border: none; border-radius: 8px; font-size: .95rem;
-      cursor: pointer; font-family: 'Geist', sans-serif;
-    }
-    .btn-clerk-up {
-      padding: 12px 28px; background: transparent; color: #1a1a1a;
-      border: 1.5px solid #1a1a1a; border-radius: 8px; font-size: .95rem;
-      cursor: pointer; font-family: 'Geist', sans-serif;
-    }
+    .btn-clerk-in { padding: 12px 28px; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; font-size: .95rem; cursor: pointer; font-family: 'Geist', sans-serif; }
+    .btn-clerk-up { padding: 12px 28px; background: transparent; color: #1a1a1a; border: 1.5px solid #1a1a1a; border-radius: 8px; font-size: .95rem; cursor: pointer; font-family: 'Geist', sans-serif; }
     .btn-clerk-in:hover { opacity: .82; }
     .btn-clerk-up:hover { background: #1a1a1a; color: #fff; }
     #form-wrap { display: none; }
@@ -47,15 +27,8 @@
     #user-badge.show { display: flex; }
     #user-badge img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
     #user-badge span { font-size: .85rem; font-family: 'Geist', sans-serif; }
-    #btn-signout {
-      font-size: .8rem; color: #999; cursor: pointer; text-decoration: underline;
-      background: none; border: none; font-family: 'Geist', sans-serif; padding: 0;
-    }
-    #banner-existing {
-      display: none; background: #f0fdf4; border: 1.5px solid #86efac;
-      border-radius: 10px; padding: 18px 22px; margin-bottom: 28px;
-      color: #166534; font-size: .91rem; line-height: 1.6;
-    }
+    #btn-signout { font-size: .8rem; color: #999; cursor: pointer; text-decoration: underline; background: none; border: none; font-family: 'Geist', sans-serif; padding: 0; }
+    #banner-existing { display: none; background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 10px; padding: 18px 22px; margin-bottom: 28px; color: #166534; font-size: .91rem; line-height: 1.6; }
     #banner-existing.show { display: block; }
     #banner-existing strong { display: block; font-size: 1rem; margin-bottom: 3px; }
   </style>
@@ -98,14 +71,12 @@
         Votre profil est dans l'annuaire. Soumettez à nouveau pour le mettre à jour,
         ou <a href="publier.html">publiez une fonctionnalité</a>.
       </div>
-
       <div class="form-intro-grid">
         <div class="form-intro-item">Inscription et service entièrement gratuits</div>
         <div class="form-intro-item">Vous choisissez vos disponibilités à tout moment</div>
         <div class="form-intro-item">Ajoutez un lien Ko-fi pour recevoir des remerciements</div>
         <div class="form-intro-item">Votre adresse email n'est jamais affichée publiquement</div>
       </div>
-
       <form id="form" novalidate>
         <div class="form-section">
           <div class="form-section-head"><h2>Profil</h2></div>
@@ -132,7 +103,6 @@
             </div>
           </div>
         </div>
-
         <div class="form-section">
           <div class="form-section-head"><h2>Compétences</h2></div>
           <div class="form-body">
@@ -151,7 +121,7 @@
             </div>
             <div class="form-group">
               <label>Technologies maîtrisées<span class="required">*</span></label>
-              <div class="tech-grid" id="tech-grid">
+              <div class="tech-grid">
                 <label class="tech-check"><input type="checkbox" value="HTML/CSS" /> HTML / CSS</label>
                 <label class="tech-check"><input type="checkbox" value="JavaScript" /> JavaScript</label>
                 <label class="tech-check"><input type="checkbox" value="React" /> React</label>
@@ -174,7 +144,6 @@
             </div>
           </div>
         </div>
-
         <div class="form-section">
           <div class="form-section-head"><h2>Liens</h2></div>
           <div class="form-body">
@@ -195,7 +164,6 @@
             </div>
           </div>
         </div>
-
         <div class="form-section">
           <div class="form-section-head"><h2>Disponibilité</h2></div>
           <div class="form-body">
@@ -211,7 +179,6 @@
             </div>
           </div>
         </div>
-
         <div class="consent-row">
           <input type="checkbox" id="cgv" required />
           <label for="cgv">
@@ -219,13 +186,11 @@
             Je consens à ce que mon profil (hors email) soit affiché publiquement sur Ottonowmy.<span class="required">*</span>
           </label>
         </div>
-
         <div id="form-error" class="form-error" style="display:none;margin-top:20px"></div>
         <div id="form-success" class="form-success" style="display:none;margin-top:20px">
           Votre profil a bien été soumis. Il apparaîtra dans l'annuaire après vérification.
           <br><a href="publier.html" style="color:inherit;font-weight:600;text-decoration:underline">→ Publier une fonctionnalité</a>
         </div>
-
         <button type="submit" class="btn-primary btn-submit" id="submit-btn" style="margin-top:20px">
           <span id="submit-text">Soumettre mon profil</span>
           <span id="submit-loading" style="display:none">Envoi en cours…</span>
@@ -247,10 +212,13 @@
   </div>
 </footer>
 
-<!-- Clerk JS — chargé juste avant le script, en bas de page -->
-<script src="https://caring-troll-11.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" crossorigin="anonymous"></script>
-
 <script>
+  // ══════════════════════════════════════════════════════════════
+  //  COLLE TA CLÉ CLERK ICI (pk_test_... ou pk_live_...)
+  //  dashboard.clerk.com → ton app → API Keys → Publishable key
+  // ══════════════════════════════════════════════════════════════
+  var CLERK_PK = "pk_test_Y2FyaW5nLXRyb2xsLTExLmNsZXJrLmFjY291bnRzLmRldiQ";
+
   // Tech checkboxes
   document.querySelectorAll('.tech-check input').forEach(function(input) {
     input.addEventListener('change', function() {
@@ -258,149 +226,134 @@
     });
   });
 
-  // ── Clerk v4 : new Clerk(key) + .load() ─────────────────────────────────
-  // On attend que le DOM soit prêt (le script est déjà chargé car il est au-dessus)
-  var clerk = new Clerk(CLERK_PK);
-
-  // Timeout 5s pour éviter un chargement infini
-  var clerkTimeout = setTimeout(function() {
-    console.warn('[Clerk] Timeout — affichage forcé des boutons');
+  function showButtons(msg) {
+    document.querySelector('#auth-gate p').textContent = msg || 'Un compte est nécessaire pour créer votre profil développeur.';
     document.getElementById('auth-btns').style.display = 'flex';
-    document.querySelector('#auth-gate p').textContent = 'Un compte est nécessaire pour créer votre profil développeur.';
-  }, 5000);
-
-  clerk.load({ routerPush: null, routerReplace: null }).then(function() {
-    clearTimeout(clerkTimeout);
-    document.getElementById('auth-btns').style.display = 'flex';
-    document.querySelector('#auth-gate p').textContent = 'Un compte est nécessaire pour créer votre profil développeur.';
-    renderUI();
-    clerk.addListener(renderUI);
-  }).catch(function(e) {
-    clearTimeout(clerkTimeout);
-    console.error('[Clerk]', e);
-    document.getElementById('auth-btns').style.display = 'flex';
-    document.querySelector('#auth-gate p').textContent = 'Erreur Clerk : ' + e.message;
-  });
-
-  function showGateError(msg) {
-    var gate = document.getElementById('auth-gate');
-    gate.classList.add('show');
-    gate.querySelector('p').textContent = msg;
   }
 
-  function renderUI() {
-    var user = clerk.user;
-    if (user) {
-      document.getElementById('auth-gate').classList.remove('show');
-      document.getElementById('form-wrap').classList.add('show');
-      document.getElementById('nav-join').style.display = 'none';
-      document.getElementById('user-badge').classList.add('show');
-      document.getElementById('user-avatar').src = user.imageUrl || '';
-      document.getElementById('user-name').textContent = user.firstName || '';
-      var nomEl   = document.getElementById('nom');
-      var emailEl = document.getElementById('email');
-      var photoEl = document.getElementById('photo');
-      if (!nomEl.value)   nomEl.value   = [user.firstName, user.lastName].filter(Boolean).join(' ');
-      if (!emailEl.value && user.primaryEmailAddress) emailEl.value = user.primaryEmailAddress.emailAddress;
-      if (!photoEl.value && user.imageUrl)            photoEl.value = user.imageUrl;
-      checkExisting(user.primaryEmailAddress && user.primaryEmailAddress.emailAddress);
-    } else {
-      document.getElementById('auth-gate').classList.add('show');
-      document.getElementById('form-wrap').classList.remove('show');
-      document.getElementById('nav-join').style.display = '';
-      document.getElementById('user-badge').classList.remove('show');
-    }
-  }
+  // Charger le script Clerk dynamiquement puis l'instancier
+  var s = document.createElement('script');
+  s.src = 'https://unpkg.com/@clerk/clerk-js@4/dist/clerk.browser.js';
+  s.onerror = function() {
+    showButtons('Impossible de charger Clerk. Vérifiez votre connexion.');
+  };
+  s.onload = function() {
+    // Ici Clerk est défini — on peut l'instancier
+    var clerk = new Clerk(CLERK_PK);
+    clerk.load().then(function() {
+      renderUI(clerk);
+      clerk.addListener(function() { renderUI(clerk); });
+    }).catch(function(e) {
+      console.error('[Clerk]', e);
+      showButtons('Erreur Clerk : ' + e.message);
+    });
 
-  async function checkExisting(email) {
-    if (!email) return;
-    try {
-      var res = await fetch('/api/devs-list');
-      if (!res.ok) return;
-      var records = await res.json();
-      if (records.some(function(r){ return r.fields && r.fields['Email'] === email; }))
-        document.getElementById('banner-existing').classList.add('show');
-    } catch(e) {}
-  }
-
-  document.getElementById('btn-signin').addEventListener('click', function() { clerk.openSignIn(); });
-  document.getElementById('btn-signup').addEventListener('click', function() { clerk.openSignUp(); });
-  document.getElementById('btn-signout').addEventListener('click', function() { clerk.signOut(); });
-
-  // ── Soumission ───────────────────────────────────────────────────────────
-  document.getElementById('form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    var errorEl   = document.getElementById('form-error');
-    var successEl = document.getElementById('form-success');
-    var btn       = document.getElementById('submit-btn');
-    errorEl.style.display = 'none';
-    successEl.style.display = 'none';
-
-    var nom         = document.getElementById('nom').value.trim();
-    var email       = document.getElementById('email').value.trim();
-    var description = document.getElementById('description').value.trim();
-    var specialite  = document.getElementById('specialite').value;
-    var cgv         = document.getElementById('cgv').checked;
-    var techs       = Array.from(document.querySelectorAll('.tech-check input:checked')).map(function(i){ return i.value; });
-
-    if (!nom || !email || !description || !specialite) {
-      errorEl.textContent = 'Merci de remplir tous les champs obligatoires.';
-      errorEl.style.display = 'block'; return;
-    }
-    if (!techs.length) {
-      errorEl.textContent = 'Sélectionnez au moins une technologie.';
-      errorEl.style.display = 'block'; return;
-    }
-    if (!cgv) {
-      errorEl.textContent = 'Vous devez accepter les mentions légales.';
-      errorEl.style.display = 'block'; return;
-    }
-
-    document.getElementById('submit-text').style.display = 'none';
-    document.getElementById('submit-loading').style.display = 'inline';
-    btn.disabled = true;
-
-    var fields = {
-      'Nom': nom, 'Email': email, 'Description': description,
-      'Spécialité': specialite, 'Technologies': techs,
-      'Disponible': document.getElementById('disponible').checked,
-      'Date inscription': new Date().toISOString().split('T')[0],
-    };
-    var github    = document.getElementById('github').value.trim();
-    var portfolio = document.getElementById('portfolio').value.trim();
-    var kofi      = document.getElementById('kofi').value.trim();
-    var photo     = document.getElementById('photo').value.trim();
-    if (github)    fields['GitHub']     = github;
-    if (portfolio) fields['Portfolio']  = portfolio;
-    if (kofi)      fields['Lien Ko-fi'] = kofi;
-    if (photo)     fields['Photo']      = photo;
-    if (clerk.user) fields['ClerkUserId'] = clerk.user.id;
-
-    try {
-      var res = await fetch('/api/devs', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fields: fields }),
-      });
-      var data = await res.json();
-      if (data.id) {
-        successEl.style.display = 'block';
-        document.getElementById('form').reset();
-        document.querySelectorAll('.tech-check').forEach(function(el){ el.classList.remove('checked'); });
-        successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    function renderUI(clerk) {
+      var user = clerk.user;
+      if (user) {
+        document.getElementById('auth-gate').classList.remove('show');
+        document.getElementById('form-wrap').classList.add('show');
+        document.getElementById('nav-join').style.display = 'none';
+        document.getElementById('user-badge').classList.add('show');
+        document.getElementById('user-avatar').src = user.imageUrl || '';
+        document.getElementById('user-name').textContent = user.firstName || '';
+        var nomEl   = document.getElementById('nom');
+        var emailEl = document.getElementById('email');
+        var photoEl = document.getElementById('photo');
+        if (!nomEl.value)   nomEl.value   = [user.firstName, user.lastName].filter(Boolean).join(' ');
+        if (!emailEl.value && user.primaryEmailAddress) emailEl.value = user.primaryEmailAddress.emailAddress;
+        if (!photoEl.value && user.imageUrl)            photoEl.value = user.imageUrl;
+        checkExisting(user.primaryEmailAddress && user.primaryEmailAddress.emailAddress);
       } else {
-        throw new Error(JSON.stringify(data));
+        document.getElementById('auth-gate').classList.add('show');
+        document.getElementById('form-wrap').classList.remove('show');
+        document.getElementById('nav-join').style.display = '';
+        document.getElementById('user-badge').classList.remove('show');
+        showButtons();
       }
-    } catch(err) {
-      errorEl.textContent = "Erreur lors de l'envoi. Réessayez.";
-      errorEl.style.display = 'block';
-      console.error(err);
-    } finally {
-      document.getElementById('submit-text').style.display = 'inline';
-      document.getElementById('submit-loading').style.display = 'none';
-      btn.disabled = false;
     }
-  });
+
+    async function checkExisting(email) {
+      if (!email) return;
+      try {
+        var res = await fetch('/api/devs-list');
+        if (!res.ok) return;
+        var records = await res.json();
+        if (records.some(function(r){ return r.fields && r.fields['Email'] === email; }))
+          document.getElementById('banner-existing').classList.add('show');
+      } catch(e) {}
+    }
+
+    document.getElementById('btn-signin').addEventListener('click', function() { clerk.openSignIn(); });
+    document.getElementById('btn-signup').addEventListener('click', function() { clerk.openSignUp(); });
+    document.getElementById('btn-signout').addEventListener('click', function() { clerk.signOut(); });
+
+    document.getElementById('form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var errorEl   = document.getElementById('form-error');
+      var successEl = document.getElementById('form-success');
+      var btn       = document.getElementById('submit-btn');
+      errorEl.style.display = 'none';
+      successEl.style.display = 'none';
+
+      var nom         = document.getElementById('nom').value.trim();
+      var email       = document.getElementById('email').value.trim();
+      var description = document.getElementById('description').value.trim();
+      var specialite  = document.getElementById('specialite').value;
+      var cgv         = document.getElementById('cgv').checked;
+      var techs       = Array.from(document.querySelectorAll('.tech-check input:checked')).map(function(i){ return i.value; });
+
+      if (!nom || !email || !description || !specialite) { errorEl.textContent = 'Merci de remplir tous les champs obligatoires.'; errorEl.style.display = 'block'; return; }
+      if (!techs.length) { errorEl.textContent = 'Sélectionnez au moins une technologie.'; errorEl.style.display = 'block'; return; }
+      if (!cgv) { errorEl.textContent = 'Vous devez accepter les mentions légales.'; errorEl.style.display = 'block'; return; }
+
+      document.getElementById('submit-text').style.display = 'none';
+      document.getElementById('submit-loading').style.display = 'inline';
+      btn.disabled = true;
+
+      var fields = {
+        'Nom': nom, 'Email': email, 'Description': description,
+        'Spécialité': specialite, 'Technologies': techs,
+        'Disponible': document.getElementById('disponible').checked,
+        'Date inscription': new Date().toISOString().split('T')[0],
+      };
+      var github = document.getElementById('github').value.trim();
+      var portfolio = document.getElementById('portfolio').value.trim();
+      var kofi = document.getElementById('kofi').value.trim();
+      var photo = document.getElementById('photo').value.trim();
+      if (github)    fields['GitHub']     = github;
+      if (portfolio) fields['Portfolio']  = portfolio;
+      if (kofi)      fields['Lien Ko-fi'] = kofi;
+      if (photo)     fields['Photo']      = photo;
+      if (clerk.user) fields['ClerkUserId'] = clerk.user.id;
+
+      try {
+        var res = await fetch('/api/devs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fields: fields }),
+        });
+        var data = await res.json();
+        if (data.id) {
+          successEl.style.display = 'block';
+          document.getElementById('form').reset();
+          document.querySelectorAll('.tech-check').forEach(function(el){ el.classList.remove('checked'); });
+          successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          throw new Error(JSON.stringify(data));
+        }
+      } catch(err) {
+        errorEl.textContent = "Erreur lors de l'envoi. Réessayez.";
+        errorEl.style.display = 'block';
+        console.error(err);
+      } finally {
+        document.getElementById('submit-text').style.display = 'inline';
+        document.getElementById('submit-loading').style.display = 'none';
+        btn.disabled = false;
+      }
+    });
+  };
+  document.head.appendChild(s);
 </script>
 </body>
 </html>
