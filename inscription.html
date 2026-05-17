@@ -83,10 +83,10 @@
 <main class="form-main">
   <div class="form-wrap" style="max-width:700px;margin:0 auto;padding:0 20px 80px;">
 
-    <div id="auth-gate">
+    <div id="auth-gate" class="show">
       <h2>Connectez-vous pour continuer</h2>
-      <p>Un compte est nécessaire pour créer votre profil développeur.</p>
-      <div class="auth-btns">
+      <p>Chargement…</p>
+      <div class="auth-btns" id="auth-btns" style="display:none">
         <button class="btn-clerk-in" id="btn-signin">Se connecter</button>
         <button class="btn-clerk-up" id="btn-signup">Créer un compte</button>
       </div>
@@ -263,11 +263,15 @@
   var clerk = new Clerk(CLERK_PK);
 
   clerk.load().then(function() {
+    // Clerk est prêt : afficher les boutons du gate
+    document.getElementById('auth-btns').style.display = 'flex';
+    document.querySelector('#auth-gate p').textContent = 'Un compte est nécessaire pour créer votre profil développeur.';
     renderUI();
     clerk.addListener(renderUI);
   }).catch(function(e) {
     console.error('[Clerk]', e);
-    showGateError('Erreur Clerk : ' + e.message);
+    document.getElementById('auth-btns').style.display = 'flex';
+    document.querySelector('#auth-gate p').textContent = 'Erreur Clerk : ' + e.message;
   });
 
   function showGateError(msg) {
