@@ -248,7 +248,7 @@
 </footer>
 
 <!-- Clerk JS — chargé juste avant le script, en bas de page -->
-<script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@4/dist/clerk.browser.js" type="text/javascript"></script>
+<script src="https://unpkg.com/@clerk/clerk-js@4/dist/clerk.browser.js" type="text/javascript"></script>
 
 <script>
   // Tech checkboxes
@@ -262,13 +262,21 @@
   // On attend que le DOM soit prêt (le script est déjà chargé car il est au-dessus)
   var clerk = new Clerk(CLERK_PK);
 
-  clerk.load().then(function() {
-    // Clerk est prêt : afficher les boutons du gate
+  // Timeout 5s pour éviter un chargement infini
+  var clerkTimeout = setTimeout(function() {
+    console.warn('[Clerk] Timeout — affichage forcé des boutons');
+    document.getElementById('auth-btns').style.display = 'flex';
+    document.querySelector('#auth-gate p').textContent = 'Un compte est nécessaire pour créer votre profil développeur.';
+  }, 5000);
+
+  clerk.load({ routerPush: null, routerReplace: null }).then(function() {
+    clearTimeout(clerkTimeout);
     document.getElementById('auth-btns').style.display = 'flex';
     document.querySelector('#auth-gate p').textContent = 'Un compte est nécessaire pour créer votre profil développeur.';
     renderUI();
     clerk.addListener(renderUI);
   }).catch(function(e) {
+    clearTimeout(clerkTimeout);
     console.error('[Clerk]', e);
     document.getElementById('auth-btns').style.display = 'flex';
     document.querySelector('#auth-gate p').textContent = 'Erreur Clerk : ' + e.message;
