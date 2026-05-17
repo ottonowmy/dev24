@@ -17,17 +17,6 @@
   -->
   <script>
     var CLERK_PK = "pk_test_Y2FyaW5nLXRyb2xsLTExLmNsZXJrLmFjY291bnRzLmRldiQ";
-
-    // Charge Clerk dynamiquement et attend qu'il soit prêt
-    function loadClerk() {
-      return new Promise(function(resolve, reject) {
-        var s = document.createElement('script');
-        s.src = 'https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js';
-        s.onload = resolve;
-        s.onerror = reject;
-        document.head.appendChild(s);
-      });
-    }
   </script>
 
   <style>
@@ -258,6 +247,9 @@
   </div>
 </footer>
 
+<!-- Clerk JS — chargé juste avant le script, en bas de page -->
+<script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@4/dist/clerk.browser.js" type="text/javascript"></script>
+
 <script>
   // Tech checkboxes
   document.querySelectorAll('.tech-check input').forEach(function(input) {
@@ -266,27 +258,26 @@
     });
   });
 
-  // Clerk
-  // On charge Clerk dynamiquement puis on l'initialise
-  loadClerk().then(async function() {
-    try {
-      await window.Clerk.load({ publishableKey: CLERK_PK });
-      renderUI();
-      window.Clerk.addListener(renderUI);
-    } catch(e) {
-      console.error('[Clerk]', e);
-      document.getElementById('auth-gate').classList.add('show');
-      document.getElementById('auth-gate').querySelector('p').textContent =
-        'Erreur Clerk : ' + e.message;
-    }
-  }).catch(function() {
-    document.getElementById('auth-gate').classList.add('show');
-    document.getElementById('auth-gate').querySelector('p').textContent =
-      'Impossible de charger Clerk. Vérifiez votre connexion.';
+  // ── Clerk v4 : new Clerk(key) + .load() ─────────────────────────────────
+  // On attend que le DOM soit prêt (le script est déjà chargé car il est au-dessus)
+  var clerk = new Clerk(CLERK_PK);
+
+  clerk.load().then(function() {
+    renderUI();
+    clerk.addListener(renderUI);
+  }).catch(function(e) {
+    console.error('[Clerk]', e);
+    showGateError('Erreur Clerk : ' + e.message);
   });
 
+  function showGateError(msg) {
+    var gate = document.getElementById('auth-gate');
+    gate.classList.add('show');
+    gate.querySelector('p').textContent = msg;
+  }
+
   function renderUI() {
-    var user = window.Clerk.user;
+    var user = clerk.user;
     if (user) {
       document.getElementById('auth-gate').classList.remove('show');
       document.getElementById('form-wrap').classList.add('show');
@@ -294,12 +285,12 @@
       document.getElementById('user-badge').classList.add('show');
       document.getElementById('user-avatar').src = user.imageUrl || '';
       document.getElementById('user-name').textContent = user.firstName || '';
-      var nomEl = document.getElementById('nom');
+      var nomEl   = document.getElementById('nom');
       var emailEl = document.getElementById('email');
       var photoEl = document.getElementById('photo');
-      if (!nomEl.value) nomEl.value = [user.firstName, user.lastName].filter(Boolean).join(' ');
+      if (!nomEl.value)   nomEl.value   = [user.firstName, user.lastName].filter(Boolean).join(' ');
       if (!emailEl.value && user.primaryEmailAddress) emailEl.value = user.primaryEmailAddress.emailAddress;
-      if (!photoEl.value && user.imageUrl) photoEl.value = user.imageUrl;
+      if (!photoEl.value && user.imageUrl)            photoEl.value = user.imageUrl;
       checkExisting(user.primaryEmailAddress && user.primaryEmailAddress.emailAddress);
     } else {
       document.getElementById('auth-gate').classList.add('show');
@@ -320,25 +311,25 @@
     } catch(e) {}
   }
 
-  document.getElementById('btn-signin').addEventListener('click', function() { window.Clerk.openSignIn(); });
-  document.getElementById('btn-signup').addEventListener('click', function() { window.Clerk.openSignUp(); });
-  document.getElementById('btn-signout').addEventListener('click', function() { window.Clerk.signOut(); });
+  document.getElementById('btn-signin').addEventListener('click', function() { clerk.openSignIn(); });
+  document.getElementById('btn-signup').addEventListener('click', function() { clerk.openSignUp(); });
+  document.getElementById('btn-signout').addEventListener('click', function() { clerk.signOut(); });
 
-  // Soumission
+  // ── Soumission ───────────────────────────────────────────────────────────
   document.getElementById('form').addEventListener('submit', async function(e) {
     e.preventDefault();
-    var errorEl = document.getElementById('form-error');
+    var errorEl   = document.getElementById('form-error');
     var successEl = document.getElementById('form-success');
-    var btn = document.getElementById('submit-btn');
+    var btn       = document.getElementById('submit-btn');
     errorEl.style.display = 'none';
     successEl.style.display = 'none';
 
-    var nom = document.getElementById('nom').value.trim();
-    var email = document.getElementById('email').value.trim();
+    var nom         = document.getElementById('nom').value.trim();
+    var email       = document.getElementById('email').value.trim();
     var description = document.getElementById('description').value.trim();
-    var specialite = document.getElementById('specialite').value;
-    var cgv = document.getElementById('cgv').checked;
-    var techs = Array.from(document.querySelectorAll('.tech-check input:checked')).map(function(i){ return i.value; });
+    var specialite  = document.getElementById('specialite').value;
+    var cgv         = document.getElementById('cgv').checked;
+    var techs       = Array.from(document.querySelectorAll('.tech-check input:checked')).map(function(i){ return i.value; });
 
     if (!nom || !email || !description || !specialite) {
       errorEl.textContent = 'Merci de remplir tous les champs obligatoires.';
@@ -363,15 +354,15 @@
       'Disponible': document.getElementById('disponible').checked,
       'Date inscription': new Date().toISOString().split('T')[0],
     };
-    var github = document.getElementById('github').value.trim();
+    var github    = document.getElementById('github').value.trim();
     var portfolio = document.getElementById('portfolio').value.trim();
-    var kofi = document.getElementById('kofi').value.trim();
-    var photo = document.getElementById('photo').value.trim();
-    if (github) fields['GitHub'] = github;
-    if (portfolio) fields['Portfolio'] = portfolio;
-    if (kofi) fields['Lien Ko-fi'] = kofi;
-    if (photo) fields['Photo'] = photo;
-    if (window.Clerk && window.Clerk.user) fields['ClerkUserId'] = window.Clerk.user.id;
+    var kofi      = document.getElementById('kofi').value.trim();
+    var photo     = document.getElementById('photo').value.trim();
+    if (github)    fields['GitHub']     = github;
+    if (portfolio) fields['Portfolio']  = portfolio;
+    if (kofi)      fields['Lien Ko-fi'] = kofi;
+    if (photo)     fields['Photo']      = photo;
+    if (clerk.user) fields['ClerkUserId'] = clerk.user.id;
 
     try {
       var res = await fetch('/api/devs', {
