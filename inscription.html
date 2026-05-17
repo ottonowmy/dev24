@@ -15,8 +15,20 @@
     ║  Publishable key  (commence par pk_test_ ou pk_live_)    ║
     ╚══════════════════════════════════════════════════════════╝
   -->
-  <script>var CLERK_PK = "pk_test_Y2FyaW5nLXRyb2xsLTExLmNsZXJrLmFjY291bnRzLmRldiQ";</script>
-  <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js"></script>
+  <script>
+    var CLERK_PK = "pk_test_Y2FyaW5nLXRyb2xsLTExLmNsZXJrLmFjY291bnRzLmRldiQ";
+
+    // Charge Clerk dynamiquement et attend qu'il soit prêt
+    function loadClerk() {
+      return new Promise(function(resolve, reject) {
+        var s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js';
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+  </script>
 
   <style>
     #auth-gate {
@@ -255,7 +267,8 @@
   });
 
   // Clerk
-  window.addEventListener('load', async function() {
+  // On charge Clerk dynamiquement puis on l'initialise
+  loadClerk().then(async function() {
     try {
       await window.Clerk.load({ publishableKey: CLERK_PK });
       renderUI();
@@ -266,6 +279,10 @@
       document.getElementById('auth-gate').querySelector('p').textContent =
         'Erreur Clerk : ' + e.message;
     }
+  }).catch(function() {
+    document.getElementById('auth-gate').classList.add('show');
+    document.getElementById('auth-gate').querySelector('p').textContent =
+      'Impossible de charger Clerk. Vérifiez votre connexion.';
   });
 
   function renderUI() {
