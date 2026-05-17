@@ -7,6 +7,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+
+  <!-- 1. La clé en premier -->
+  <script>
+    var CLERK_PK = "pk_test_Y2FyaW5nLXRyb2xsLTExLmNsZXJrLmFjY291bnRzLmRldiQ";
+  </script>
+
+  <!-- 2. Le script Clerk ensuite, synchrone -->
+  <script src="https://caring-troll-11.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
+
   <style>
     #auth-gate { display:none; min-height:55vh; flex-direction:column; align-items:center; justify-content:center; gap:20px; text-align:center; padding:60px 20px; }
     #auth-gate.show { display:flex; }
@@ -28,9 +37,6 @@
     #banner-existing.show { display:block; }
     #banner-existing strong { display:block; font-size:1rem; margin-bottom:3px; }
   </style>
-
-  <!-- Clerk chargé depuis ton propre domaine Clerk — jamais bloqué -->
-  <script src="https://caring-troll-11.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
 </head>
 <body>
 
@@ -211,8 +217,11 @@
   </div>
 </footer>
 
+<!-- 3. Tout le JS en bas de page, après le DOM -->
 <script>
-  var CLERK_PK = "pk_test_Y2FyaW5nLXRyb2xsLTExLmNsZXJrLmFjY291bnRzLmRldiQ";
+  // Debug : vérifier que Clerk et la clé sont bien disponibles
+  console.log('[Debug] typeof Clerk:', typeof Clerk);
+  console.log('[Debug] CLERK_PK:', CLERK_PK);
 
   document.querySelectorAll('.tech-check input').forEach(function(input) {
     input.addEventListener('change', function() {
@@ -225,15 +234,18 @@
     document.getElementById('auth-btns').style.display = 'flex';
   }
 
-  // Clerk est chargé en <head> de façon synchrone — il est dispo ici
-  var clerk = new Clerk(CLERK_PK);
-  clerk.load().then(function() {
-    renderUI();
-    clerk.addListener(renderUI);
-  }).catch(function(e) {
-    console.error('[Clerk]', e);
-    showButtons('Erreur Clerk : ' + e.message);
-  });
+  if (typeof Clerk === 'undefined') {
+    showButtons('Impossible de charger Clerk (script bloqué). Réessayez.');
+  } else {
+    var clerk = new Clerk(CLERK_PK);
+    clerk.load().then(function() {
+      renderUI();
+      clerk.addListener(renderUI);
+    }).catch(function(e) {
+      console.error('[Clerk]', e);
+      showButtons('Erreur Clerk : ' + e.message);
+    });
+  }
 
   function renderUI() {
     var user = clerk.user;
