@@ -8,494 +8,379 @@
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 
-  <!-- ============================================================ -->
-  <!-- CLERK : colle ta Publishable Key ci-dessous                  -->
-  <!-- dashboard.clerk.com → ton app → API Keys → Publishable key   -->
-  <!-- Elle commence par pk_test_ (dev) ou pk_live_ (prod)          -->
-  <!-- ============================================================ -->
-  <script>
-    const PUBLISHABLE_KEY = "pk_test_Y2FyaW5nLXRyb2xsLTExLmNsZXJrLmFjY291bnRzLmRldiQ";
-
-    // Charge le SDK Clerk dynamiquement puis l'initialise
-    (function() {
-      var s = document.createElement('script');
-      s.src = 'https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js';
-      s.onload = async function() {
-        try {
-          await window.Clerk.load({ publishableKey: PUBLISHABLE_KEY });
-          window.__clerk = window.Clerk;
-          if (window.__clerkReady) window.__clerkReady(window.__clerk);
-        } catch(e) {
-          console.error('[Clerk load error]', e);
-          var gate = document.getElementById('auth-gate');
-          if (gate) {
-            gate.querySelector('p').textContent = 'Erreur Clerk : ' + e.message;
-            gate.classList.add('visible');
-          }
-        }
-      };
-      s.onerror = function() {
-        console.error('[Clerk] Script CDN introuvable');
-      };
-      document.head.appendChild(s);
-    })();
-  </script>
+  <!--
+    ╔══════════════════════════════════════════════════════════╗
+    ║  CLERK — COLLE TA CLÉ ICI                                ║
+    ║  dashboard.clerk.com → ton app → API Keys                ║
+    ║  Publishable key  (commence par pk_test_ ou pk_live_)    ║
+    ╚══════════════════════════════════════════════════════════╝
+  -->
+  <script>var CLERK_PK = "pk_test_Y2FyaW5nLXRyb2xsLTExLmNsZXJrLmFjY291bnRzLmRldiQ";</script>
+  <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js"></script>
 
   <style>
-    /* ── Auth gate ── */
     #auth-gate {
-      display: none;
-      min-height: 60vh;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 24px;
-      text-align: center;
-      padding: 60px 24px;
+      display: none; min-height: 55vh; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 20px; text-align: center; padding: 60px 20px;
     }
-    #auth-gate.visible { display: flex; }
-    #auth-gate h2 { font-family: 'Instrument Serif', serif; font-size: 1.8rem; }
-    #auth-gate p  { color: var(--ink4, #888); max-width: 360px; line-height: 1.6; }
-    .auth-buttons { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-    .btn-sign-in  { padding: 12px 28px; background: var(--ink, #1a1a1a); color: #fff; border: none; border-radius: 8px; font-size: .95rem; cursor: pointer; font-family: 'Geist', sans-serif; }
-    .btn-sign-up  { padding: 12px 28px; background: transparent; color: var(--ink, #1a1a1a); border: 1.5px solid currentColor; border-radius: 8px; font-size: .95rem; cursor: pointer; font-family: 'Geist', sans-serif; }
-    .btn-sign-in:hover { opacity: .85; }
-    .btn-sign-up:hover  { background: var(--ink, #1a1a1a); color: #fff; }
-
-    /* ── Already-registered banner ── */
-    #already-registered {
-      display: none;
-      background: #f0fdf4;
-      border: 1.5px solid #86efac;
-      border-radius: 10px;
-      padding: 20px 24px;
-      margin-bottom: 28px;
-      color: #166534;
-      font-size: .92rem;
-      line-height: 1.6;
+    #auth-gate.show { display: flex; }
+    #auth-gate h2 { font-family: 'Instrument Serif', serif; font-size: 1.8rem; margin: 0; }
+    #auth-gate p  { color: #888; max-width: 360px; line-height: 1.6; margin: 0; }
+    .auth-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+    .btn-clerk-in {
+      padding: 12px 28px; background: #1a1a1a; color: #fff;
+      border: none; border-radius: 8px; font-size: .95rem;
+      cursor: pointer; font-family: 'Geist', sans-serif;
     }
-    #already-registered.visible { display: block; }
-    #already-registered strong { display: block; font-size: 1rem; margin-bottom: 4px; }
-
-    /* ── User badge in nav ── */
-    #clerk-user-btn {
-      display: none;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
+    .btn-clerk-up {
+      padding: 12px 28px; background: transparent; color: #1a1a1a;
+      border: 1.5px solid #1a1a1a; border-radius: 8px; font-size: .95rem;
+      cursor: pointer; font-family: 'Geist', sans-serif;
     }
-    #clerk-user-btn.visible { display: flex; }
-    #clerk-user-btn img {
-      width: 30px; height: 30px; border-radius: 50%; object-fit: cover;
+    .btn-clerk-in:hover { opacity: .82; }
+    .btn-clerk-up:hover { background: #1a1a1a; color: #fff; }
+    #form-wrap { display: none; }
+    #form-wrap.show { display: block; }
+    #user-badge { display: none; align-items: center; gap: 8px; }
+    #user-badge.show { display: flex; }
+    #user-badge img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+    #user-badge span { font-size: .85rem; font-family: 'Geist', sans-serif; }
+    #btn-signout {
+      font-size: .8rem; color: #999; cursor: pointer; text-decoration: underline;
+      background: none; border: none; font-family: 'Geist', sans-serif; padding: 0;
     }
-    #clerk-user-btn span {
-      font-size: .85rem; font-family: 'Geist', sans-serif;
+    #banner-existing {
+      display: none; background: #f0fdf4; border: 1.5px solid #86efac;
+      border-radius: 10px; padding: 18px 22px; margin-bottom: 28px;
+      color: #166534; font-size: .91rem; line-height: 1.6;
     }
-    .sign-out-link {
-      font-size: .82rem;
-      color: var(--ink4, #888);
-      cursor: pointer;
-      text-decoration: underline;
-      background: none; border: none; font-family: 'Geist', sans-serif;
-    }
-
-    /* ── Form content (hidden until auth) ── */
-    #form-content { display: none; }
-    #form-content.visible { display: block; }
+    #banner-existing.show { display: block; }
+    #banner-existing strong { display: block; font-size: 1rem; margin-bottom: 3px; }
   </style>
 </head>
 <body>
-  <nav class="nav">
-    <a href="index.html" class="nav-logo">Ottonowmy</a>
-    <div class="nav-links">
-      <a href="devs.html">Annuaire</a>
-      <!-- Affiche le bouton Rejoindre OU le badge utilisateur -->
-      <a href="inscription.html" class="btn-nav active" id="nav-join">Rejoindre</a>
-      <div id="clerk-user-btn">
-        <img id="clerk-avatar" src="" alt="avatar" />
-        <span id="clerk-name"></span>
-        <button class="sign-out-link" id="sign-out-btn">Déconnexion</button>
-      </div>
-    </div>
-  </nav>
 
-  <div class="page-header">
-    <h1>Rejoindre la plateforme</h1>
-    <p>Inscrivez-vous en quelques minutes. Votre profil sera visible dans l'annuaire dès validation.</p>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Ottonowmy</a>
+  <div class="nav-links">
+    <a href="devs.html">Annuaire</a>
+    <a href="inscription.html" class="btn-nav active" id="nav-join">Rejoindre</a>
+    <div id="user-badge">
+      <img id="user-avatar" src="" alt="" />
+      <span id="user-name"></span>
+      <button id="btn-signout">Déconnexion</button>
+    </div>
   </div>
+</nav>
 
-  <main class="form-main">
-    <div class="form-wrap">
+<div class="page-header">
+  <h1>Rejoindre la plateforme</h1>
+  <p>Inscrivez-vous en quelques minutes. Votre profil sera visible dans l'annuaire dès validation.</p>
+</div>
 
-      <!-- Gate : affiché si non connecté -->
-      <div id="auth-gate">
-        <h2>Connectez-vous pour continuer</h2>
-        <p>Un compte est nécessaire pour publier votre profil et gérer vos fonctionnalités.</p>
-        <div class="auth-buttons">
-          <button class="btn-sign-in" id="btn-signin">Se connecter</button>
-          <button class="btn-sign-up" id="btn-signup">Créer un compte</button>
-        </div>
+<main class="form-main">
+  <div class="form-wrap" style="max-width:700px;margin:0 auto;padding:0 20px 80px;">
+
+    <div id="auth-gate">
+      <h2>Connectez-vous pour continuer</h2>
+      <p>Un compte est nécessaire pour créer votre profil développeur.</p>
+      <div class="auth-btns">
+        <button class="btn-clerk-in" id="btn-signin">Se connecter</button>
+        <button class="btn-clerk-up" id="btn-signup">Créer un compte</button>
+      </div>
+    </div>
+
+    <div id="form-wrap">
+      <div id="banner-existing">
+        <strong>Vous avez déjà un profil ✓</strong>
+        Votre profil est dans l'annuaire. Soumettez à nouveau pour le mettre à jour,
+        ou <a href="publier.html">publiez une fonctionnalité</a>.
       </div>
 
-      <!-- Contenu du formulaire : affiché si connecté -->
-      <div id="form-content">
-
-        <!-- Bannière si déjà inscrit -->
-        <div id="already-registered">
-          <strong>Vous avez déjà un profil ✓</strong>
-          Votre profil est déjà dans l'annuaire. Vous pouvez le mettre à jour en soumettant à nouveau ce formulaire, ou <a href="publier.html">publier une nouvelle fonctionnalité</a>.
-        </div>
-
-        <div class="form-intro-grid">
-          <div class="form-intro-item">Inscription et service entièrement gratuits</div>
-          <div class="form-intro-item">Vous choisissez vos disponibilités à tout moment</div>
-          <div class="form-intro-item">Ajoutez un lien Ko-fi pour recevoir des remerciements</div>
-          <div class="form-intro-item">Votre adresse email n'est jamais affichée publiquement</div>
-        </div>
-
-        <form id="form" novalidate>
-
-          <!-- PROFIL -->
-          <div class="form-section">
-            <div class="form-section-head"><h2>Profil</h2></div>
-            <div class="form-body">
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="nom">Nom complet<span class="required">*</span></label>
-                  <input type="text" id="nom" placeholder="Julie Lefevre" required />
-                </div>
-                <div class="form-group">
-                  <label for="email">Adresse email<span class="required">*</span></label>
-                  <input type="email" id="email" placeholder="julie@exemple.com" required />
-                  <small>Non affichée publiquement</small>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="accroche">Accroche courte</label>
-                <input type="text" id="accroche" maxlength="80" placeholder="Ex : Fullstack JS · Passionné d'open source" />
-                <small>Affichée sous votre nom dans la hero — 80 caractères max</small>
-              </div>
-              <div class="form-group">
-                <label for="description">Présentation<span class="required">*</span></label>
-                <textarea id="description" rows="4"
-                  placeholder="Décrivez votre parcours, ce que vous aimez faire, et la façon dont vous pouvez aider…"
-                  required></textarea>
-              </div>
-              <div class="form-group">
-                <label for="photo">Photo de profil</label>
-                <input type="url" id="photo" placeholder="https://github.com/votre-pseudo.png" />
-                <small>URL vers une image (avatar GitHub, Gravatar…)</small>
-              </div>
-            </div>
-          </div>
-
-          <!-- COMPETENCES -->
-          <div class="form-section">
-            <div class="form-section-head"><h2>Compétences</h2></div>
-            <div class="form-body">
-              <div class="form-group">
-                <label for="specialite">Spécialité principale<span class="required">*</span></label>
-                <select id="specialite" required>
-                  <option value="">Sélectionner…</option>
-                  <option value="Frontend">Frontend</option>
-                  <option value="Backend">Backend</option>
-                  <option value="Fullstack">Fullstack</option>
-                  <option value="Mobile">Mobile</option>
-                  <option value="DevOps">DevOps</option>
-                  <option value="Data">Data</option>
-                  <option value="Design">Design</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Technologies maîtrisées<span class="required">*</span></label>
-                <div class="tech-grid" id="tech-grid">
-                  <label class="tech-check"><input type="checkbox" value="HTML/CSS" /> HTML / CSS</label>
-                  <label class="tech-check"><input type="checkbox" value="JavaScript" /> JavaScript</label>
-                  <label class="tech-check"><input type="checkbox" value="React" /> React</label>
-                  <label class="tech-check"><input type="checkbox" value="Vue.js" /> Vue.js</label>
-                  <label class="tech-check"><input type="checkbox" value="Angular" /> Angular</label>
-                  <label class="tech-check"><input type="checkbox" value="Node.js" /> Node.js</label>
-                  <label class="tech-check"><input type="checkbox" value="Python" /> Python</label>
-                  <label class="tech-check"><input type="checkbox" value="PHP" /> PHP</label>
-                  <label class="tech-check"><input type="checkbox" value="Laravel" /> Laravel</label>
-                  <label class="tech-check"><input type="checkbox" value="WordPress" /> WordPress</label>
-                  <label class="tech-check"><input type="checkbox" value="Flutter" /> Flutter</label>
-                  <label class="tech-check"><input type="checkbox" value="React Native" /> React Native</label>
-                  <label class="tech-check"><input type="checkbox" value="Swift" /> Swift</label>
-                  <label class="tech-check"><input type="checkbox" value="Kotlin" /> Kotlin</label>
-                  <label class="tech-check"><input type="checkbox" value="SQL" /> SQL</label>
-                  <label class="tech-check"><input type="checkbox" value="MongoDB" /> MongoDB</label>
-                  <label class="tech-check"><input type="checkbox" value="Docker" /> Docker</label>
-                  <label class="tech-check"><input type="checkbox" value="Git" /> Git</label>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- LIENS -->
-          <div class="form-section">
-            <div class="form-section-head"><h2>Liens</h2></div>
-            <div class="form-body">
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="github">GitHub</label>
-                  <input type="url" id="github" placeholder="https://github.com/pseudo" />
-                </div>
-                <div class="form-group">
-                  <label for="portfolio">Portfolio</label>
-                  <input type="url" id="portfolio" placeholder="https://votre-site.fr" />
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="kofi">Ko-fi</label>
-                <input type="url" id="kofi" placeholder="https://ko-fi.com/pseudo" />
-                <small>Optionnel — permet aux personnes aidées de vous remercier</small>
-              </div>
-            </div>
-          </div>
-
-          <!-- DISPONIBILITE -->
-          <div class="form-section">
-            <div class="form-section-head"><h2>Disponibilité</h2></div>
-            <div class="form-body">
-              <div class="dispo-row">
-                <div>
-                  <p>Je suis disponible pour recevoir des demandes</p>
-                  <small>Vous pouvez modifier cela à tout moment en nous contactant</small>
-                </div>
-                <div class="toggle-wrap">
-                  <input type="checkbox" class="toggle-input" id="disponible" checked />
-                  <label class="toggle-track" for="disponible">
-                    <span class="toggle-thumb"></span>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- CONSENTEMENT -->
-          <div class="consent-row">
-            <input type="checkbox" id="cgv" required />
-            <label for="cgv">
-              J'ai lu et j'accepte les <a href="mentions-legales.html" target="_blank">mentions légales</a>.
-              Je consens à ce que mon profil (hors email) soit affiché publiquement sur Ottonowmy.<span class="required">*</span>
-            </label>
-          </div>
-
-          <div id="form-error" class="form-error" style="display:none;margin-top:20px"></div>
-          <div id="form-success" class="form-success" style="display:none;margin-top:20px">
-            Votre profil a bien été soumis. Il apparaîtra dans l'annuaire après vérification.
-            <br /><a href="publier.html" style="color:inherit;font-weight:600;text-decoration:underline">→ Publier une fonctionnalité maintenant</a>
-          </div>
-
-          <button type="submit" class="btn-primary btn-submit" id="submit-btn" style="margin-top:20px">
-            <span id="submit-text">Soumettre mon profil</span>
-            <span id="submit-loading" style="display:none">Envoi en cours…</span>
-          </button>
-
-        </form>
-      </div><!-- /form-content -->
-    </div>
-  </main>
-
-  <footer class="footer">
-    <div class="container footer-inner">
-      <div class="footer-logo">Ottonowmy</div>
-      <div class="footer-links">
-        <a href="devs.html">Annuaire</a>
-        <a href="inscription.html">Inscription</a>
-        <a href="mentions-legales.html">Mentions légales</a>
+      <div class="form-intro-grid">
+        <div class="form-intro-item">Inscription et service entièrement gratuits</div>
+        <div class="form-intro-item">Vous choisissez vos disponibilités à tout moment</div>
+        <div class="form-intro-item">Ajoutez un lien Ko-fi pour recevoir des remerciements</div>
+        <div class="form-intro-item">Votre adresse email n'est jamais affichée publiquement</div>
       </div>
-      <div class="footer-copy">© 2026 Ottonowmy</div>
-    </div>
-  </footer>
 
-  <script>
-    // ─── Tech checkbox styling ───────────────────────────────────────────────
-    document.querySelectorAll('.tech-check input').forEach(input => {
-      input.addEventListener('change', () => {
-        input.closest('.tech-check').classList.toggle('checked', input.checked);
-      });
+      <form id="form" novalidate>
+        <div class="form-section">
+          <div class="form-section-head"><h2>Profil</h2></div>
+          <div class="form-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="nom">Nom complet<span class="required">*</span></label>
+                <input type="text" id="nom" placeholder="Julie Lefevre" required />
+              </div>
+              <div class="form-group">
+                <label for="email">Adresse email<span class="required">*</span></label>
+                <input type="email" id="email" placeholder="julie@exemple.com" required />
+                <small>Non affichée publiquement</small>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="description">Présentation<span class="required">*</span></label>
+              <textarea id="description" rows="4" placeholder="Décrivez votre parcours…" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="photo">Photo de profil</label>
+              <input type="url" id="photo" placeholder="https://github.com/votre-pseudo.png" />
+              <small>URL vers une image (avatar GitHub, Gravatar…)</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-head"><h2>Compétences</h2></div>
+          <div class="form-body">
+            <div class="form-group">
+              <label for="specialite">Spécialité principale<span class="required">*</span></label>
+              <select id="specialite" required>
+                <option value="">Sélectionner…</option>
+                <option value="Frontend">Frontend</option>
+                <option value="Backend">Backend</option>
+                <option value="Fullstack">Fullstack</option>
+                <option value="Mobile">Mobile</option>
+                <option value="DevOps">DevOps</option>
+                <option value="Data">Data</option>
+                <option value="Design">Design</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Technologies maîtrisées<span class="required">*</span></label>
+              <div class="tech-grid" id="tech-grid">
+                <label class="tech-check"><input type="checkbox" value="HTML/CSS" /> HTML / CSS</label>
+                <label class="tech-check"><input type="checkbox" value="JavaScript" /> JavaScript</label>
+                <label class="tech-check"><input type="checkbox" value="React" /> React</label>
+                <label class="tech-check"><input type="checkbox" value="Vue.js" /> Vue.js</label>
+                <label class="tech-check"><input type="checkbox" value="Angular" /> Angular</label>
+                <label class="tech-check"><input type="checkbox" value="Node.js" /> Node.js</label>
+                <label class="tech-check"><input type="checkbox" value="Python" /> Python</label>
+                <label class="tech-check"><input type="checkbox" value="PHP" /> PHP</label>
+                <label class="tech-check"><input type="checkbox" value="Laravel" /> Laravel</label>
+                <label class="tech-check"><input type="checkbox" value="WordPress" /> WordPress</label>
+                <label class="tech-check"><input type="checkbox" value="Flutter" /> Flutter</label>
+                <label class="tech-check"><input type="checkbox" value="React Native" /> React Native</label>
+                <label class="tech-check"><input type="checkbox" value="Swift" /> Swift</label>
+                <label class="tech-check"><input type="checkbox" value="Kotlin" /> Kotlin</label>
+                <label class="tech-check"><input type="checkbox" value="SQL" /> SQL</label>
+                <label class="tech-check"><input type="checkbox" value="MongoDB" /> MongoDB</label>
+                <label class="tech-check"><input type="checkbox" value="Docker" /> Docker</label>
+                <label class="tech-check"><input type="checkbox" value="Git" /> Git</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-head"><h2>Liens</h2></div>
+          <div class="form-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="github">GitHub</label>
+                <input type="url" id="github" placeholder="https://github.com/pseudo" />
+              </div>
+              <div class="form-group">
+                <label for="portfolio">Portfolio</label>
+                <input type="url" id="portfolio" placeholder="https://votre-site.fr" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="kofi">Ko-fi</label>
+              <input type="url" id="kofi" placeholder="https://ko-fi.com/pseudo" />
+              <small>Optionnel — permet aux personnes aidées de vous remercier</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-head"><h2>Disponibilité</h2></div>
+          <div class="form-body">
+            <div class="dispo-row">
+              <div>
+                <p>Je suis disponible pour recevoir des demandes</p>
+                <small>Vous pouvez modifier cela à tout moment en nous contactant</small>
+              </div>
+              <div class="toggle-wrap">
+                <input type="checkbox" class="toggle-input" id="disponible" checked />
+                <label class="toggle-track" for="disponible"><span class="toggle-thumb"></span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="consent-row">
+          <input type="checkbox" id="cgv" required />
+          <label for="cgv">
+            J'ai lu et j'accepte les <a href="mentions-legales.html" target="_blank">mentions légales</a>.
+            Je consens à ce que mon profil (hors email) soit affiché publiquement sur Ottonowmy.<span class="required">*</span>
+          </label>
+        </div>
+
+        <div id="form-error" class="form-error" style="display:none;margin-top:20px"></div>
+        <div id="form-success" class="form-success" style="display:none;margin-top:20px">
+          Votre profil a bien été soumis. Il apparaîtra dans l'annuaire après vérification.
+          <br><a href="publier.html" style="color:inherit;font-weight:600;text-decoration:underline">→ Publier une fonctionnalité</a>
+        </div>
+
+        <button type="submit" class="btn-primary btn-submit" id="submit-btn" style="margin-top:20px">
+          <span id="submit-text">Soumettre mon profil</span>
+          <span id="submit-loading" style="display:none">Envoi en cours…</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-logo">Ottonowmy</div>
+    <div class="footer-links">
+      <a href="devs.html">Annuaire</a>
+      <a href="inscription.html">Inscription</a>
+      <a href="mentions-legales.html">Mentions légales</a>
+    </div>
+    <div class="footer-copy">© 2026 Ottonowmy</div>
+  </div>
+</footer>
+
+<script>
+  // Tech checkboxes
+  document.querySelectorAll('.tech-check input').forEach(function(input) {
+    input.addEventListener('change', function() {
+      input.closest('.tech-check').classList.toggle('checked', input.checked);
     });
+  });
 
-    // ─── Clerk initialisation ────────────────────────────────────────────────
-    // __clerkReady est appelé par le script inline du <head> une fois Clerk chargé
-    window.__clerkReady = function(clerk) {
-      updateUI(clerk);
-      clerk.addListener(() => updateUI(clerk));
+  // Clerk
+  window.addEventListener('load', async function() {
+    try {
+      await window.Clerk.load({ publishableKey: CLERK_PK });
+      renderUI();
+      window.Clerk.addListener(renderUI);
+    } catch(e) {
+      console.error('[Clerk]', e);
+      document.getElementById('auth-gate').classList.add('show');
+      document.getElementById('auth-gate').querySelector('p').textContent =
+        'Erreur Clerk : ' + e.message;
+    }
+  });
+
+  function renderUI() {
+    var user = window.Clerk.user;
+    if (user) {
+      document.getElementById('auth-gate').classList.remove('show');
+      document.getElementById('form-wrap').classList.add('show');
+      document.getElementById('nav-join').style.display = 'none';
+      document.getElementById('user-badge').classList.add('show');
+      document.getElementById('user-avatar').src = user.imageUrl || '';
+      document.getElementById('user-name').textContent = user.firstName || '';
+      var nomEl = document.getElementById('nom');
+      var emailEl = document.getElementById('email');
+      var photoEl = document.getElementById('photo');
+      if (!nomEl.value) nomEl.value = [user.firstName, user.lastName].filter(Boolean).join(' ');
+      if (!emailEl.value && user.primaryEmailAddress) emailEl.value = user.primaryEmailAddress.emailAddress;
+      if (!photoEl.value && user.imageUrl) photoEl.value = user.imageUrl;
+      checkExisting(user.primaryEmailAddress && user.primaryEmailAddress.emailAddress);
+    } else {
+      document.getElementById('auth-gate').classList.add('show');
+      document.getElementById('form-wrap').classList.remove('show');
+      document.getElementById('nav-join').style.display = '';
+      document.getElementById('user-badge').classList.remove('show');
+    }
+  }
+
+  async function checkExisting(email) {
+    if (!email) return;
+    try {
+      var res = await fetch('/api/devs-list');
+      if (!res.ok) return;
+      var records = await res.json();
+      if (records.some(function(r){ return r.fields && r.fields['Email'] === email; }))
+        document.getElementById('banner-existing').classList.add('show');
+    } catch(e) {}
+  }
+
+  document.getElementById('btn-signin').addEventListener('click', function() { window.Clerk.openSignIn(); });
+  document.getElementById('btn-signup').addEventListener('click', function() { window.Clerk.openSignUp(); });
+  document.getElementById('btn-signout').addEventListener('click', function() { window.Clerk.signOut(); });
+
+  // Soumission
+  document.getElementById('form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var errorEl = document.getElementById('form-error');
+    var successEl = document.getElementById('form-success');
+    var btn = document.getElementById('submit-btn');
+    errorEl.style.display = 'none';
+    successEl.style.display = 'none';
+
+    var nom = document.getElementById('nom').value.trim();
+    var email = document.getElementById('email').value.trim();
+    var description = document.getElementById('description').value.trim();
+    var specialite = document.getElementById('specialite').value;
+    var cgv = document.getElementById('cgv').checked;
+    var techs = Array.from(document.querySelectorAll('.tech-check input:checked')).map(function(i){ return i.value; });
+
+    if (!nom || !email || !description || !specialite) {
+      errorEl.textContent = 'Merci de remplir tous les champs obligatoires.';
+      errorEl.style.display = 'block'; return;
+    }
+    if (!techs.length) {
+      errorEl.textContent = 'Sélectionnez au moins une technologie.';
+      errorEl.style.display = 'block'; return;
+    }
+    if (!cgv) {
+      errorEl.textContent = 'Vous devez accepter les mentions légales.';
+      errorEl.style.display = 'block'; return;
+    }
+
+    document.getElementById('submit-text').style.display = 'none';
+    document.getElementById('submit-loading').style.display = 'inline';
+    btn.disabled = true;
+
+    var fields = {
+      'Nom': nom, 'Email': email, 'Description': description,
+      'Spécialité': specialite, 'Technologies': techs,
+      'Disponible': document.getElementById('disponible').checked,
+      'Date inscription': new Date().toISOString().split('T')[0],
     };
+    var github = document.getElementById('github').value.trim();
+    var portfolio = document.getElementById('portfolio').value.trim();
+    var kofi = document.getElementById('kofi').value.trim();
+    var photo = document.getElementById('photo').value.trim();
+    if (github) fields['GitHub'] = github;
+    if (portfolio) fields['Portfolio'] = portfolio;
+    if (kofi) fields['Lien Ko-fi'] = kofi;
+    if (photo) fields['Photo'] = photo;
+    if (window.Clerk && window.Clerk.user) fields['ClerkUserId'] = window.Clerk.user.id;
 
-    function updateUI(clerk) {
-      const user      = clerk.user;
-      const gate      = document.getElementById('auth-gate');
-      const content   = document.getElementById('form-content');
-      const navJoin   = document.getElementById('nav-join');
-      const userBtn   = document.getElementById('clerk-user-btn');
-      const avatarEl  = document.getElementById('clerk-avatar');
-      const nameEl    = document.getElementById('clerk-name');
-
-      if (user) {
-        // Connecté → afficher le formulaire
-        gate.classList.remove('visible');
-        content.classList.add('visible');
-        navJoin.style.display = 'none';
-        userBtn.classList.add('visible');
-
-        // Remplir le badge nav
-        avatarEl.src = user.imageUrl || '';
-        nameEl.textContent = user.firstName || user.username || '';
-
-        // Pré-remplir les champs depuis le profil Clerk
-        const nomInput   = document.getElementById('nom');
-        const emailInput = document.getElementById('email');
-        const photoInput = document.getElementById('photo');
-
-        if (!nomInput.value) {
-          nomInput.value = [user.firstName, user.lastName].filter(Boolean).join(' ');
-        }
-        if (!emailInput.value && user.primaryEmailAddress) {
-          emailInput.value = user.primaryEmailAddress.emailAddress;
-        }
-        if (!photoInput.value && user.imageUrl) {
-          photoInput.value = user.imageUrl;
-        }
-
-        // Vérifier si déjà inscrit en Airtable
-        checkAlreadyRegistered(user.primaryEmailAddress?.emailAddress);
-
+    try {
+      var res = await fetch('/api/devs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: fields }),
+      });
+      var data = await res.json();
+      if (data.id) {
+        successEl.style.display = 'block';
+        document.getElementById('form').reset();
+        document.querySelectorAll('.tech-check').forEach(function(el){ el.classList.remove('checked'); });
+        successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } else {
-        // Non connecté → afficher le gate
-        gate.classList.add('visible');
-        content.classList.remove('visible');
-        navJoin.style.display = '';
-        userBtn.classList.remove('visible');
+        throw new Error(JSON.stringify(data));
       }
+    } catch(err) {
+      errorEl.textContent = "Erreur lors de l'envoi. Réessayez.";
+      errorEl.style.display = 'block';
+      console.error(err);
+    } finally {
+      document.getElementById('submit-text').style.display = 'inline';
+      document.getElementById('submit-loading').style.display = 'none';
+      btn.disabled = false;
     }
-
-    // Boutons du gate — on utilise window.__clerk avec guard pour éviter undefined
-    document.getElementById('btn-signin').addEventListener('click', () => {
-      if (window.__clerk) window.__clerk.openSignIn();
-      else console.warn('Clerk pas encore chargé');
-    });
-    document.getElementById('btn-signup').addEventListener('click', () => {
-      if (window.__clerk) window.__clerk.openSignUp();
-      else console.warn('Clerk pas encore chargé');
-    });
-    document.getElementById('sign-out-btn').addEventListener('click', () => {
-      if (window.__clerk) window.__clerk.signOut();
-    });
-
-    // ─── Vérif profil existant ───────────────────────────────────────────────
-    async function checkAlreadyRegistered(email) {
-      if (!email) return;
-      try {
-        const res = await fetch('/api/devs-list');
-        if (!res.ok) return;
-        const records = await res.json();
-        const exists = records.some(r => r.fields?.['Email'] === email);
-        if (exists) {
-          document.getElementById('already-registered').classList.add('visible');
-        }
-      } catch { /* silencieux */ }
-    }
-
-    // ─── Soumission du formulaire ─────────────────────────────────────────────
-    document.getElementById('form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const errorEl   = document.getElementById('form-error');
-      const successEl = document.getElementById('form-success');
-      const btn       = document.getElementById('submit-btn');
-
-      errorEl.style.display  = 'none';
-      successEl.style.display = 'none';
-
-      const nom         = document.getElementById('nom').value.trim();
-      const email       = document.getElementById('email').value.trim();
-      const description = document.getElementById('description').value.trim();
-      const specialite  = document.getElementById('specialite').value;
-      const accroche    = document.getElementById('accroche').value.trim();
-      const cgv         = document.getElementById('cgv').checked;
-      const techs       = Array.from(document.querySelectorAll('.tech-check input:checked')).map(i => i.value);
-
-      if (!nom || !email || !description || !specialite) {
-        errorEl.textContent = 'Merci de remplir tous les champs obligatoires.';
-        errorEl.style.display = 'block';
-        return;
-      }
-      if (!techs.length) {
-        errorEl.textContent = 'Sélectionnez au moins une technologie.';
-        errorEl.style.display = 'block';
-        return;
-      }
-      if (!cgv) {
-        errorEl.textContent = 'Vous devez accepter les mentions légales pour continuer.';
-        errorEl.style.display = 'block';
-        return;
-      }
-
-      document.getElementById('submit-text').style.display = 'none';
-      document.getElementById('submit-loading').style.display = 'inline';
-      btn.disabled = true;
-
-      // Récupérer le token Clerk pour authentifier la requête côté serveur
-      let clerkToken = null;
-      try {
-        clerkToken = await window.__clerk?.session?.getToken();
-      } catch { /* pas bloquant */ }
-
-      const fields = {
-        'Nom':              nom,
-        'Email':            email,
-        'Description':      description,
-        'Spécialité':       specialite,
-        'Technologies':     techs,
-        'Disponible':       document.getElementById('disponible').checked,
-        'Date inscription': new Date().toISOString().split('T')[0],
-        'ClerkUserId':      window.__clerk?.user?.id || '',
-      };
-
-      if (accroche)  fields['Accroche']   = accroche;
-      const github    = document.getElementById('github').value.trim();
-      const portfolio = document.getElementById('portfolio').value.trim();
-      const kofi      = document.getElementById('kofi').value.trim();
-      const photo     = document.getElementById('photo').value.trim();
-      if (github)    fields['GitHub']      = github;
-      if (portfolio) fields['Portfolio']   = portfolio;
-      if (kofi)      fields['Lien Ko-fi']  = kofi;
-      if (photo)     fields['Photo']       = photo;
-
-      try {
-        const res = await fetch('/api/devs', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(clerkToken ? { 'Authorization': `Bearer ${clerkToken}` } : {}),
-          },
-          body: JSON.stringify({ fields }),
-        });
-
-        let data;
-        try { data = await res.json(); } catch { throw new Error('Réponse invalide du serveur'); }
-
-        if (data.id) {
-          successEl.style.display = 'block';
-          document.getElementById('form').reset();
-          document.querySelectorAll('.tech-check').forEach(el => el.classList.remove('checked'));
-          successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else {
-          throw new Error(JSON.stringify(data));
-        }
-      } catch (err) {
-        errorEl.textContent = "Une erreur est survenue lors de l'envoi. Vérifiez votre connexion et réessayez.";
-        errorEl.style.display = 'block';
-        console.error(err);
-      } finally {
-        document.getElementById('submit-text').style.display = 'inline';
-        document.getElementById('submit-loading').style.display = 'none';
-        btn.disabled = false;
-      }
-    });
-  </script>
+  });
+</script>
 </body>
 </html>
